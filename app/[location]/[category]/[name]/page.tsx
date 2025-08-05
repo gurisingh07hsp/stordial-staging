@@ -1,0 +1,760 @@
+'use client';
+
+import React, { useState } from 'react';
+import { 
+  Phone, 
+  MapPin, 
+  Star, 
+  Clock, 
+  Globe, 
+  MessageSquare,
+  ArrowLeft,
+  Share2,
+  Camera,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Bookmark,
+  CheckCircle,
+  Calendar,
+  Users,
+  Award,
+  Navigation
+} from 'lucide-react';
+import Link from 'next/link';
+import { businesses } from '../../../../data/mockData';
+import { Business } from '../../../../types';
+
+const similarBusinesses = [
+  {
+    id: '4',
+    name: 'Café Central',
+    category: 'Restaurants',
+    subcategory: 'Coffee Shop',
+    city: 'New York',
+    rating: 4.5,
+    reviews: 98
+  },
+  {
+    id: '5',
+    name: 'Java Junction',
+    category: 'Restaurants',
+    subcategory: 'Coffee Shop',
+    city: 'New York',
+    rating: 4.3,
+    reviews: 76
+  },
+  {
+    id: '6',
+    name: 'Brew & Bean',
+    category: 'Restaurants',
+    subcategory: 'Coffee Shop',
+    city: 'New York',
+    rating: 4.7,
+    reviews: 112
+  }
+];
+
+// Sample restaurant with menu for testing - keeping for future use
+/*
+const sampleRestaurant: Business = {
+  id: '2',
+  name: 'Spice Garden',
+  description: 'Authentic Indian cuisine with modern twists.',
+  category: 'Restaurants',
+  subcategory: 'Indian',
+  services: ['Dine-in', 'Takeout', 'Delivery', 'Catering'],
+  phone: '+1 (555) 987-6543',
+  email: 'info@spicegarden.com',
+  address: '456 Oak Avenue',
+  city: 'Los Angeles',
+  rating: 4.6,
+  reviews: 89,
+  website: 'https://spicegarden.com',
+  yearsInBusiness: 8,
+  isClaimed: true,
+  images: ['/indian1', '/indian2', '/indian3'],
+  hours: {
+    monday: { open: '11:00', close: '22:00', closed: false },
+    tuesday: { open: '11:00', close: '22:00', closed: false },
+    wednesday: { open: '11:00', close: '22:00', closed: false },
+    thursday: { open: '11:00', close: '22:00', closed: false },
+    friday: { open: '11:00', close: '23:00', closed: false },
+    saturday: { open: '12:00', close: '23:00', closed: false },
+    sunday: { open: '12:00', close: '21:00', closed: false }
+  },
+  specialties: ['Tandoori', 'Curries', 'Biryani'],
+  teamSize: 15,
+  awards: ['Best Indian Restaurant 2023'],
+  menu: {
+    categories: [
+      {
+        name: 'Appetizers',
+        items: [
+          {
+            name: 'Samosa',
+            description: 'Crispy pastry filled with spiced potatoes and peas',
+            price: '$6.50',
+            vegetarian: true,
+            popular: true
+          },
+          {
+            name: 'Chicken Tikka',
+            description: 'Tender chicken marinated in yogurt and spices',
+            price: '$8.50',
+            popular: true
+          }
+        ]
+      },
+      {
+        name: 'Main Course',
+        items: [
+          {
+            name: 'Butter Chicken',
+            description: 'Creamy tomato-based curry with tender chicken',
+            price: '$16.50',
+            popular: true
+          },
+          {
+            name: 'Lamb Vindaloo',
+            description: 'Spicy curry with tender lamb pieces',
+            price: '$18.50',
+            spicy: true
+          },
+          {
+            name: 'Paneer Tikka',
+            description: 'Grilled cottage cheese with aromatic spices',
+            price: '$14.50',
+            vegetarian: true
+          }
+        ]
+      },
+      {
+        name: 'Breads & Rice',
+        items: [
+          {
+            name: 'Naan',
+            description: 'Soft leavened bread baked in tandoor',
+            price: '$3.50',
+            vegetarian: true
+          },
+          {
+            name: 'Biryani',
+            description: 'Fragrant rice with spices and tender meat',
+            price: '$19.50',
+            popular: true
+          }
+        ]
+      }
+    ]
+  }
+};
+*/
+
+interface BusinessPageProps {
+  params: {
+    location: string;
+    category: string;
+    name: string;
+  };
+}
+
+export default function BusinessPage({ params }: BusinessPageProps) {
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
+
+  const decodedLocation = decodeURIComponent(params.location);
+  const decodedCategory = decodeURIComponent(params.category);
+  const decodedName = decodeURIComponent(params.name);
+
+  const business = businesses.find(b => {
+    const businessLocation = b.city.toLowerCase().replace(/\s+/g, '-');
+    const businessCategory = b.category.toLowerCase().replace(/\s+/g, '-');
+    const businessName = b.name.toLowerCase().replace(/\s+/g, '-').replace(/-+/g, '-');
+    
+    const matches = businessLocation === decodedLocation.toLowerCase() &&
+           businessCategory === decodedCategory.toLowerCase() &&
+           businessName === decodedName.toLowerCase();
+    
+
+    
+    return matches;
+  });
+
+  if (!business) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center bg-white rounded-2xl p-8 shadow-xl max-w-md">
+          <h1 className="text-3xl font-bold text-gray-800 mb-4">Business Not Found</h1>
+                          <p className="text-gray-600 mb-6">
+                  The business &quot;{decodedName}&quot; in {decodedCategory} category in {decodedLocation} could not be found.
+                </p>
+          <div className="space-y-3">
+            <Link 
+              href={`/${decodedLocation.toLowerCase().replace(/\s+/g, '-')}/${decodedCategory.toLowerCase().replace(/\s+/g, '-')}`}
+              className="block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all duration-300"
+            >
+              Browse {decodedCategory} in {decodedLocation}
+            </Link>
+            <Link 
+              href="/" 
+              className="block bg-gray-600 text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all duration-300"
+            >
+              Go Home
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const formatHours = (hours: { [key: string]: { open: string; close: string; closed: boolean } } | undefined) => {
+    if (!hours) return null;
+    
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    return days.map(day => {
+      const dayHours = hours[day];
+      if (!dayHours) return null;
+      
+      const dayName = day.charAt(0).toUpperCase() + day.slice(1);
+      if (dayHours.closed) {
+        return <div key={day} className="flex justify-between py-1"><span>{dayName}</span><span className="text-red-500">Closed</span></div>;
+      }
+      return <div key={day} className="flex justify-between py-1"><span>{dayName}</span><span>{dayHours.open} - {dayHours.close}</span></div>;
+    }).filter(Boolean);
+  };
+
+  const formatBusinessUrl = (business: { id: string; name: string; category: string; city: string }) => {
+    const location = business.city.toLowerCase().replace(/\s+/g, '-');
+    const category = business.category.toLowerCase().replace(/\s+/g, '-');
+    const name = business.name.toLowerCase().replace(/\s+/g, '-');
+    return `/${location}/${category}/${name}`;
+  };
+
+  const openImageModal = (index: number) => {
+    setSelectedImageIndex(index);
+    setShowImageModal(true);
+  };
+
+  const closeImageModal = () => {
+    setShowImageModal(false);
+    setSelectedImageIndex(null);
+  };
+
+  const nextImage = () => {
+    if (selectedImageIndex !== null && business.images && business.images.length > 1) {
+      setSelectedImageIndex((selectedImageIndex + 1) % business.images.length);
+    }
+  };
+
+  const prevImage = () => {
+    if (selectedImageIndex !== null && business.images && business.images.length > 1) {
+      setSelectedImageIndex(selectedImageIndex === 0 ? business.images.length - 1 : selectedImageIndex - 1);
+    }
+  };
+
+  const shouldShowMenu = (business: Business) => {
+    const foodCategories = ['Restaurants', 'Cafes', 'Bars', 'Hotels', 'Resorts', 'Catering'];
+    const foodSubcategories = ['Coffee Shop', 'Bakery', 'Pizzeria', 'Sushi', 'Italian', 'Mexican', 'Chinese', 'Indian', 'Thai', 'American', 'French', 'Japanese', 'Korean', 'Mediterranean', 'Seafood', 'Steakhouse', 'BBQ', 'Food Truck', 'Deli', 'Ice Cream', 'Dessert'];
+    
+    return foodCategories.includes(business.category) || 
+           foodSubcategories.includes(business.subcategory) ||
+           business.menu !== undefined;
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+
+      {/* Breadcrumbs */}
+      <div className="bg-white/60 backdrop-blur-sm border-b border-gray-200">
+        <div className="container mx-auto px-4 py-3">
+          <nav className="flex items-center space-x-2 text-sm text-gray-600">
+            <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
+            <span className="text-gray-400">›</span>
+            <Link href={`/${decodedLocation}`} className="hover:text-blue-600 transition-colors capitalize">{decodedLocation}</Link>
+            <span className="text-gray-400">›</span>
+            <Link href={`/${decodedLocation}/${decodedCategory}`} className="hover:text-blue-600 transition-colors capitalize">{decodedCategory}</Link>
+            <span className="text-gray-400">›</span>
+            <span className="text-gray-800 font-medium capitalize">{decodedName}</span>
+          </nav>
+        </div>
+      </div>
+
+      {/* Back Button */}
+      <div className="container mx-auto px-4 py-6">
+        <Link href="/" className="inline-flex items-center text-gray-600 hover:text-blue-600 transition-colors bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Search
+        </Link>
+      </div>
+
+      <div className="container mx-auto px-4 pb-12">
+        {/* Hero Section */}
+        <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-8">
+          {/* Image Gallery */}
+          <div className="relative h-80 lg:h-96 bg-gradient-to-br from-gray-100 to-gray-200">
+            <div className="grid grid-cols-4 gap-3 p-6 h-full">
+              <div className="col-span-3">
+                <div 
+                  className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
+                  onClick={() => openImageModal(0)}
+                >
+                  <div className="text-6xl">☕</div>
+                </div>
+              </div>
+              <div className="space-y-3">
+                {business.images && business.images.slice(1, 4).map((image, index) => (
+                  <div 
+                    key={index + 1}
+                    className="h-1/3 bg-gradient-to-br from-green-100 to-blue-100 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
+                    onClick={() => openImageModal(index + 1)}
+                  >
+                    <div className="text-2xl">☕</div>
+                  </div>
+                ))}
+                {business.images && business.images.length > 4 && (
+                  <div className="h-1/3 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg">
+                    <div className="text-2xl">☕</div>
+                  </div>
+                )}
+              </div>
+            </div>
+            <button className="absolute bottom-6 right-6 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300">
+              <Camera className="w-6 h-6 text-gray-600" />
+            </button>
+          </div>
+
+          {/* Business Info */}
+          <div className="p-8">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+              <div className="flex-1">
+                <div className="flex items-center mb-4">
+                  <h1 className="text-3xl font-bold text-gray-800 mr-4">{business.name}</h1>
+                  {business.isClaimed && (
+                    <div className="flex items-center bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                      <CheckCircle className="w-4 h-4 mr-1" />
+                      <span className="text-sm font-medium">Verified</span>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex flex-wrap items-center gap-4 mb-6">
+                  <div className="flex items-center bg-yellow-100 px-4 py-2 rounded-full">
+                    <Star className="w-5 h-5 text-yellow-500 fill-current mr-2" />
+                    <span className="font-bold text-gray-800">{business.rating}</span>
+                    <span className="text-gray-600 ml-1">({business.reviews} reviews)</span>
+                  </div>
+                  <div className="flex items-center bg-green-100 text-green-700 px-4 py-2 rounded-full">
+                    <Clock className="w-4 h-4 mr-2" />
+                    <span className="text-sm font-medium">Opens in 15 mins</span>
+                  </div>
+                  <div className="flex items-center bg-blue-100 text-blue-700 px-4 py-2 rounded-full">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    <span className="text-sm font-medium">{business.yearsInBusiness} Years</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center text-gray-600 mb-6">
+                  <MapPin className="w-5 h-5 mr-2" />
+                  <span className="font-medium">{business.city.charAt(0).toUpperCase() + business.city.slice(1)} • {business.category} • {business.subcategory}</span>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap items-center gap-4 mb-6">
+                  <a 
+                    href={`tel:${business.phone}`}
+                    className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center font-semibold"
+                  >
+                    <Phone className="w-5 h-5 mr-2" />
+                    Call Now
+                  </a>
+                  <button className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center font-semibold">
+                    <MessageSquare className="w-5 h-5 mr-2" />
+                    WhatsApp
+                  </button>
+                  <button className="bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
+                    <Share2 className="w-5 h-5" />
+                  </button>
+                  <button className="bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
+                    <Bookmark className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Specialties */}
+                {business.specialties && (
+                  <div className="flex flex-wrap gap-2">
+                    {business.specialties.map((specialty, index) => (
+                      <span key={index} className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium">
+                        {specialty}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Quick Stats */}
+              <div className="lg:w-64 space-y-4">
+                <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6">
+                  <div className="flex items-center mb-3">
+                    <Users className="w-5 h-5 text-blue-600 mr-2" />
+                    <span className="font-semibold text-gray-800">Team Size</span>
+                  </div>
+                  <p className="text-2xl font-bold text-blue-600">{business.teamSize} people</p>
+                </div>
+                
+                <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-6">
+                  <div className="flex items-center mb-3">
+                    <Award className="w-5 h-5 text-green-600 mr-2" />
+                    <span className="font-semibold text-gray-800">Awards</span>
+                  </div>
+                  <p className="text-sm text-gray-600">{business.awards ? business.awards.length : 0} awards</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content Tabs */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-3">
+            <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
+              {/* Tab Navigation */}
+              <div className="border-b border-gray-200">
+                <nav className="flex space-x-8 px-8">
+                  {[
+                    { id: 'overview', label: 'Overview', icon: '📋' },
+                    ...(shouldShowMenu(business) ? [{ id: 'menu', label: 'Menu', icon: '🍽️' }] : []),
+                    { id: 'services', label: 'Services', icon: '🛠️' },
+                    { id: 'hours', label: 'Hours', icon: '🕒' },
+                    { id: 'photos', label: 'Photos', icon: '📸' },
+                    { id: 'reviews', label: 'Reviews', icon: '⭐' }
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`py-6 px-1 border-b-2 font-medium transition-colors ${
+                        activeTab === tab.id
+                          ? 'border-blue-500 text-blue-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700'
+                      }`}
+                    >
+                      <span className="mr-2">{tab.icon}</span>
+                      {tab.label}
+                    </button>
+                  ))}
+                </nav>
+              </div>
+
+              {/* Tab Content */}
+              <div className="p-8">
+                {activeTab === 'overview' && (
+                  <div className="space-y-8">
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-800 mb-4">About Us</h3>
+                      <p className="text-gray-700 leading-relaxed text-lg">{business.description}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-800 mb-4">Our Services</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {business.services.map((service, index) => (
+                          <div key={index} className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-4 text-center">
+                            <div className="text-2xl mb-2">☕</div>
+                            <span className="font-medium text-gray-800">{service}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {business.awards && business.awards.length > 0 && (
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4">Awards & Recognition</h3>
+                        <div className="space-y-3">
+                          {business.awards.map((award, index) => (
+                            <div key={index} className="flex items-center bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-4">
+                              <Award className="w-5 h-5 text-yellow-600 mr-3" />
+                              <span className="font-medium text-gray-800">{award}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'services' && (
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-4">What We Offer</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {business.services.map((service, index) => (
+                        <div key={index} className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-6">
+                          <div className="flex items-center mb-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mr-4">
+                              <span className="text-white text-lg">☕</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-800">{service}</h4>
+                          </div>
+                          <p className="text-gray-600">Professional {service.toLowerCase()} services with the highest quality standards.</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'hours' && (
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                      <Clock className="w-6 h-6 mr-3 text-blue-600" />
+                      Operating Hours
+                    </h3>
+                    <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-6">
+                      <div className="space-y-1">
+                        {formatHours(business.hours)}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'photos' && (
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-800 mb-6">Photo Gallery</h3>
+                    {business.images && business.images.length > 0 ? (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {business.images.map((image, index) => (
+                          <div 
+                            key={index}
+                            className="aspect-square bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center"
+                            onClick={() => openImageModal(index)}
+                          >
+                            <div className="text-4xl">☕</div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-gray-500">
+                        <p>No photos available</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'menu' && shouldShowMenu(business) && business.menu && (
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-800 mb-6">Our Menu</h3>
+                    <div className="space-y-8">
+                      {business.menu.categories.map((category, categoryIndex) => (
+                        <div key={categoryIndex} className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-6">
+                          <h4 className="text-lg font-semibold text-gray-800 mb-4">{category.name}</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {category.items.map((item, itemIndex) => (
+                              <div key={itemIndex} className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                                <div className="flex justify-between items-start mb-2">
+                                  <h5 className="font-semibold text-gray-800">{item.name}</h5>
+                                  <span className="font-bold text-green-600">{item.price}</span>
+                                </div>
+                                <p className="text-gray-600 text-sm mb-3">{item.description}</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {item.popular && (
+                                    <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-medium">
+                                      Popular
+                                    </span>
+                                  )}
+                                  {item.spicy && (
+                                    <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium">
+                                      Spicy
+                                    </span>
+                                  )}
+                                  {item.vegetarian && (
+                                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                                      Vegetarian
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'reviews' && (
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-800 mb-6">Customer Reviews</h3>
+                    <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-6">
+                      <p className="text-gray-600">Reviews coming soon...</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Similar Businesses */}
+            <div className="bg-white rounded-3xl shadow-xl mt-8 overflow-hidden">
+              <div className="p-8">
+                <h3 className="text-2xl font-semibold text-gray-800 mb-6">Similar Businesses</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {similarBusinesses.map((similarBusiness) => (
+                    <Link 
+                      key={similarBusiness.id}
+                      href={formatBusinessUrl(similarBusiness)}
+                      className="block group"
+                    >
+                      <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl h-48 mb-4 flex items-center justify-center group-hover:shadow-lg transition-all duration-300">
+                        <div className="text-4xl">☕</div>
+                      </div>
+                      <h4 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors text-lg">
+                        {similarBusiness.name}
+                      </h4>
+                      <p className="text-gray-600 mb-2">{similarBusiness.category}</p>
+                      <div className="flex items-center">
+                        <Star className="w-4 h-4 text-yellow-500 fill-current mr-1" />
+                        <span className="font-medium">{similarBusiness.rating}</span>
+                        <span className="text-gray-600 ml-1">({similarBusiness.reviews} reviews)</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Contact Card */}
+            <div className="bg-white rounded-3xl shadow-xl p-6 border border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-800 mb-6">Contact Information</h3>
+              
+              <div className="space-y-6">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mr-4">
+                    <Phone className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Phone</p>
+                    <a href={`tel:${business.phone}`} className="text-gray-800 font-semibold hover:text-blue-600 transition-colors">
+                      {business.phone}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mr-4">
+                    <MapPin className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Address</p>
+                    <p className="text-gray-800 font-semibold">{business.address}</p>
+                  </div>
+                </div>
+
+                {business.website && (
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mr-4">
+                      <Globe className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Website</p>
+                      <a href={business.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 transition-colors font-semibold">
+                        Visit Website
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mr-4">
+                    <MessageSquare className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Email</p>
+                    <a href={`mailto:${business.email}`} className="text-gray-800 font-semibold hover:text-blue-600 transition-colors">
+                      {business.email}
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 space-y-4">
+                <a 
+                  href={`tel:${business.phone}`}
+                  className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 px-6 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center justify-center font-semibold"
+                >
+                  <Phone className="w-5 h-5 mr-2" />
+                  Call Now
+                </a>
+                
+                <button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-6 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center justify-center font-semibold">
+                  <MessageSquare className="w-5 h-5 mr-2" />
+                  Send Message
+                </button>
+              </div>
+            </div>
+
+            {/* Map Placeholder */}
+            <div className="bg-white rounded-3xl shadow-xl p-6 border border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                <Navigation className="w-6 h-6 mr-3 text-blue-600" />
+                Location
+              </h3>
+              <div className="bg-gradient-to-br from-gray-100 to-blue-100 rounded-2xl h-48 flex items-center justify-center">
+                <div className="text-center">
+                  <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <p className="text-gray-600 font-medium">Interactive Map</p>
+                  <p className="text-gray-500 text-sm">Coming soon...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Image Modal */}
+      {showImageModal && selectedImageIndex !== null && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="relative max-w-5xl max-h-full p-4">
+            <button
+              onClick={closeImageModal}
+              className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 rounded-full p-2"
+            >
+              <X className="w-8 h-8" />
+            </button>
+            
+            <div className="relative">
+              <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl h-[600px] w-full flex items-center justify-center shadow-2xl">
+                <div className="text-gray-400 text-8xl">☕</div>
+              </div>
+              
+              {business.images && business.images.length > 1 && (
+                <>
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black/70 transition-colors"
+                  >
+                    <ChevronLeft className="w-8 h-8" />
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black/70 transition-colors"
+                  >
+                    <ChevronRight className="w-8 h-8" />
+                  </button>
+                </>
+              )}
+            </div>
+            
+            <div className="text-center mt-6">
+              <span className="text-white text-lg font-medium">
+                {selectedImageIndex + 1} of {business.images ? business.images.length : 0}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+} 
