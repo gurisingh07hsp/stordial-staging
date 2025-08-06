@@ -6,6 +6,17 @@ exports.registerUser = async (req, res, next) => {
   try {
     const { name, email, phone, password } = req.body;
 
+    console.log(name, email, phone, password);
+
+    const isuser = await User.findOne({ email});
+
+    if(isuser){
+      return res.status(400).json({
+        success: false,
+        message: 'User already exists with this email'
+      })
+    }
+
     const user = await User.create({
       name,
       email,
@@ -16,6 +27,8 @@ exports.registerUser = async (req, res, next) => {
         url: 'sample_url'
       }
     });
+
+    console.log("user created: ", user);
 
     sendToken(user, 201, res);
   } catch (error) {

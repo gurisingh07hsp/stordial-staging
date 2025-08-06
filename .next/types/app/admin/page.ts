@@ -1,4 +1,4 @@
-// File: /Users/drmac/Downloads/directory/app/admin/page.tsx
+// File: D:\work\stordial\app\admin\page.tsx
 import * as entry from '../../../../app/admin/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
