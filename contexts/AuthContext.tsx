@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../types';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 interface AuthContextType {
   user: User | null;
@@ -20,50 +22,97 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
+  const router = useRouter();
+
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const login = (email: string, password: string) => {
+  useEffect(()=>{
+    const getProfile = async ()=>{
+      const response = await axios.get('http://localhost:5001/api/v1/auth/me',{withCredentials: true});
+      console.log("Profile response: ", response.data);
+
+      if(response.data.success)
+      {
+        setUser(response.data.user);
+      }
+      else if(response.status == 401){
+        setUser(null);
+        router.push('/');
+      }
+
+    }
+    getProfile();
+  },[]);
+
+
+  const login = async(email: string, password: string) => {
     // Simple validation
     if (!email || !password) {
       alert('Please enter both email and password');
       return;
     }
-    
-    const newUser: User = {
-      id: '1',
-      name: 'John Doe',
-      email: email,
-      phone: '+1 555-123-4567',
-      businessOwner: false
-    };
-    setUser(newUser);
-    setShowAuthModal(false);
+
+    const data = {
+      email,
+      password
+    }
+    try{
+    const response = await axios.post('http://localhost:5001/api/v1/auth/login', data, {withCredentials: true});
+    console.log("Login response : ", response.data);
+      if(response.data.success){
+    setUser(response.data.user);
     alert('Successfully signed in!');
+    setShowAuthModal(false);
+      }
+    }catch(error){
+      if (axios.isAxiosError(error)) {
+    const message = error.response?.data?.message || 'Failed to login';
+    alert(message);
+  } else {
+    alert('An unexpected error occurred');
+  }
+    }
   };
 
-  const signup = (userData: { name: string; email: string; phone: string; password: string }) => {
+  const signup = async(userData: { name: string; email: string; phone: string; password: string }) => {
     // Simple validation
     if (!userData.name || !userData.email || !userData.password) {
       alert('Please fill in all required fields');
       return;
     }
-    
-    const newUser: User = {
-      id: '1',
+
+    const newUser = {
       name: userData.name,
       email: userData.email,
       phone: userData.phone || '+1 555-123-4567',
+      password: userData.password,
       businessOwner: false
-    };
-    setUser(newUser);
-    setShowAuthModal(false);
-    alert('Account created successfully!');
+    }
+
+    const response = await axios.post('http://localhost:5001/api/v1/auth/register', newUser,{withCredentials: true});
+    console.log('User registered: ', response.data);
+
+    try{
+      if(response.data.success) {
+        setUser(response.data.user);
+        alert('Account created successfully!');
+        setShowAuthModal(false);
+      }
+    }catch(error){
+      alert(response.data.message || 'Failed to register user');
+    }
   };
 
-  const logout = () => {
-    setUser(null);
+  const logout = async() => {
+    const response = await axios.get('http://localhost:5001/api/v1/auth/logout', {withCredentials: true});
+    if(response.status == 200){
+      alert(`${response.data.message}`);
+      setUser(null);
+      router.push('/');
+    }
   };
 
   const openAuthModal = () => {
