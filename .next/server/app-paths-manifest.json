@@ -1,6 +1,16 @@
 {
-  "/page": "app/page.js",
-  "/[location]/[category]/page": "app/[location]/[category]/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/about/page": "app/about/page.js",
   "/[location]/[category]/[name]/page": "app/[location]/[category]/[name]/page.js",
-  "/list-business/page": "app/list-business/page.js"
+  "/[location]/[category]/page": "app/[location]/[category]/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/advertise/page": "app/advertise/page.js",
+  "/business-login/page": "app/business-login/page.js",
+  "/contact/page": "app/contact/page.js",
+  "/business/[id]/page": "app/business/[id]/page.js",
+  "/how-it-works/page": "app/how-it-works/page.js",
+  "/list-business/page": "app/list-business/page.js",
+  "/terms/page": "app/terms/page.js",
+  "/page": "app/page.js",
+  "/privacy/page": "app/privacy/page.js"
 }

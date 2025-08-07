@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 import BusinessDetailPage from '../../../components/BusinessDetailPage';
-import { businesses } from '../../../data/mockData';
 
 
 export default function BusinessDetail() {
