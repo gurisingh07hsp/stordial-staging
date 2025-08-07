@@ -36,7 +36,7 @@ const businessSchema = new mongoose.Schema({
   },
   services: [{
     type: String,
-    required: true
+    // required: true
   }],
   phone: {
     type: String,
@@ -59,11 +59,11 @@ const businessSchema = new mongoose.Schema({
   },
   state: {
     type: String,
-    required: [true, 'Please enter business state']
+    // required: [true, 'Please enter business state']
   },
   zipCode: {
     type: String,
-    required: [true, 'Please enter business zip code']
+    // required: [true, 'Please enter business zip code']
   },
   coordinates: {
     latitude: {
@@ -87,26 +87,26 @@ const businessSchema = new mongoose.Schema({
   },
   verified: {
     type: Boolean,
-    default: false
+    default: true,
   },
   images: [{
     public_id: {
       type: String,
-      required: true
+      // required: true
     },
     url: {
       type: String,
-      required: true
+      // required: true
     }
   }],
   logo: {
     public_id: {
       type: String,
-      required: true
+      // required: true
     },
     url: {
       type: String,
-      required: true
+      // required: true
     }
   },
   hours: {
@@ -163,7 +163,7 @@ const businessSchema = new mongoose.Schema({
       close: String,
       closed: {
         type: Boolean,
-        default: false
+        default: true
       }
     }
   },
@@ -195,7 +195,7 @@ const businessSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
-    required: true
+    // required: true
   },
   createdAt: {
     type: Date,

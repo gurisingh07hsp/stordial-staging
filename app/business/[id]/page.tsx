@@ -1,16 +1,34 @@
 'use client';
 
 import React from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useParams } from 'next/navigation';
 import BusinessDetailPage from '../../../components/BusinessDetailPage';
 import { businesses } from '../../../data/mockData';
 
 
 export default function BusinessDetail() {
+  const [business, setBusiness] = useState(null);
   const params = useParams();
   const businessId = params.id as string;
+
+  useEffect(() => {
+    const getBusinessById = async() => {
+      try{
+        const response = await axios.get(`http://localhost:5001/api/v1/businesses/${businessId}`, {withCredentials: true});
+        if(response.status == 200){
+          setBusiness(response.data.business);
+        }
+
+      }catch(error){
+        console.log('Error fetching business: ', error);
+      }
+    }
+    getBusinessById();
+  }, [])
   
-  const business = businesses.find(b => b.id === businessId);
+  
   
   if (!business) {
     return (

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import axios from 'axios';
 import AdminLayout from '../../components/admin/AdminLayout';
 import Dashboard from '../../components/admin/Dashboard';
 import BusinessManagement from '../../components/admin/BusinessManagement';
@@ -10,6 +11,15 @@ import Growth from '../../components/admin/Growth';
 
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState('dashboard');
+
+
+  const logout = async() => {
+    const response = await axios.get('http://localhost:5001/api/v1/auth/logout', {withCredentials: true});
+    if(response.status == 200){
+      alert(`${response.data.message}`);
+      window.location.href = '/';
+    }
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -60,7 +70,7 @@ export default function AdminPanel() {
     <AdminLayout
       activeTab={activeTab}
       onTabChange={setActiveTab}
-      onLogout={() => window.location.href = '/'}
+      onLogout={() =>{logout()}}
     >
       {renderContent()}
     </AdminLayout>
