@@ -2,7 +2,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { Star, Phone, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
-import { businesses } from '../../../data/mockData';
 import { Business } from '../../../types';
 import axios from 'axios';
 
