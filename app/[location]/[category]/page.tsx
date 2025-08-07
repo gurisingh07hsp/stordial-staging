@@ -1,9 +1,10 @@
 'use client';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { Star, Phone, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
 import { businesses } from '../../../data/mockData';
 import { Business } from '../../../types';
+import axios from 'axios';
 
 interface CategoryPageProps {
   params: {
@@ -16,15 +17,22 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const decodedLocation = decodeURIComponent(params.location);
   const decodedCategory = decodeURIComponent(params.category);
 
-  const filteredBusinesses = useMemo(() => {
-    return businesses.filter(business => {
-      const matchesLocation = business.city.toLowerCase().includes(decodedLocation.toLowerCase()) ||
-                             business.address.toLowerCase().includes(decodedLocation.toLowerCase());
-      const matchesCategory = business.category.toLowerCase().includes(decodedCategory.toLowerCase()) ||
-                             business.subcategory.toLowerCase().includes(decodedCategory.toLowerCase());
-      return matchesLocation && matchesCategory;
-    });
-  }, [decodedLocation, decodedCategory]);
+  const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
+
+  useEffect(() => {
+    const getBusinessesByCategotyAndLocation = async () => {
+      try{
+        const response = await axios.get(`http://localhost:5001/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}`, {withCredentials: true});
+        if(response.status == 200){
+          setFilteredBusinesses(response.data.businesses);
+        }
+      }catch(error){
+        console.error('Error fetching businesses: ', error);
+      }
+    }
+    getBusinessesByCategotyAndLocation();
+  }, [decodedLocation, decodedCategory])
+
 
   const [sortBy, setSortBy] = useState<'rating' | 'reviews' | 'name'>('rating');
   const [selectedServices, setSelectedServices] = useState<string[]>([]);

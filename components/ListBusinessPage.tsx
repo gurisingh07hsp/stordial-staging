@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import axios from 'axios';
 import { BusinessFormData, Business, User } from '../types';
 import { ArrowLeft, Upload, Clock, MapPin, Phone, Image as ImageIcon, X } from 'lucide-react';
 
@@ -57,19 +58,23 @@ export default function ListBusinessPage({
     const files = Array.from(event.target.files || []);
     setUploadedImages(prev => [...prev, ...files]);
   };
-
   const removeImage = (index: number) => {
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert('Business listing submitted successfully! We will review and approve within 24-48 hours.');
-      onBack();
-    }, 2000);
+    try{
+      const response = await axios.post('http://localhost:5001/api/v1/businesses/new', formData,{withCredentials: true});
+      if(response.status == 201){
+        setIsSubmitting(false);
+        alert('Business listing submitted successfully');
+        onBack();
+      }
+    }catch(error){
+      console.error('Error submitting business listing: ', error);
+    }
   };
 
   const categories = [
