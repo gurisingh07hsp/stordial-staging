@@ -4,7 +4,7 @@ const User = require('../models/user');
 // Create new business
 exports.createBusiness = async (req, res, next) => {
   try {
-  req.body.owner = req.user.id;
+    req.body.owner = req.user.id;
 
   const business = await Business.create(req.body);
 
@@ -80,11 +80,12 @@ exports.getBusiness = async (req, res, next) => {
       .populate('owner', 'name email phone')
       .populate({
         path: 'reviews',
-        populate: {
-          path: 'user',
-          select: 'name avatar'
-        }
+        // populate: {
+        //   path: 'user',
+        //   // select: 'name avatar'
+        // }
       });
+
 
     if (!business) {
       return res.status(404).json({
@@ -204,6 +205,7 @@ exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
     const businesses = await Business.find(query)
       .populate('owner', 'name email')
       .sort({ rating: -1, reviews: -1 });
+
 
     res.status(200).json({
       success: true,
