@@ -15,16 +15,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/[location]/[category]/[name]/page.js"
-    ],
-    "/list-business/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/list-business/page.js"
-    ],
-    "/[location]/[category]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/[location]/[category]/page.js"
     ]
   }
 }
