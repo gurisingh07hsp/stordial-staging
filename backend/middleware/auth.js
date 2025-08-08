@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const isAuthenticated = async (req, res, next) => {
-  try {
     const { token } = req.cookies;
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -10,22 +9,10 @@ const isAuthenticated = async (req, res, next) => {
       next();
       
     }
-
-  } catch (err) {
-    console.log(err);
-    if(err.name === 'JsonWebTokenError'){
       return res.status(401).json({
         success: false,
         message: 'Please login to access this resource'
       });
-    }
-    else{
-      return res.status(401).json({
-        success: false,
-        message: 'Please login to access this resource'
-      });
-    }
-  }
 };
 
 const authorizeRoles = (...roles) => {

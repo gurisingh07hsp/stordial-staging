@@ -65,15 +65,24 @@ export default function ListBusinessPage({
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    try{
-      const response = await axios.post('http://localhost:5001/api/v1/businesses/new', formData,{withCredentials: true});
-      if(response.status == 201){
-        setIsSubmitting(false);
-        alert('Business listing submitted successfully');
-        onBack();
-      }
-    }catch(error){
-      console.error('Error submitting business listing: ', error);
+      formData.city = formData.city.toLowerCase();
+      formData.category = formData.category.toLowerCase();
+      try{
+        const response = await axios.post('http://localhost:5001/api/v1/businesses/new', formData,{withCredentials: true});
+        console.log(response.data);
+        if(response.status == 201){
+          setIsSubmitting(false);
+          alert('Business listing submitted successfully');
+          onBack();
+        }
+      }catch(error){
+      if (axios.isAxiosError(error)) {
+    // const message = error.response?.data?.message || 'Failed to login';
+    setIsSubmitting(false);
+    alert('You must be logged in to submit a business listing');
+  } else {
+    alert('An unexpected error occurred');
+  }
     }
   };
 
@@ -160,7 +169,7 @@ export default function ListBusinessPage({
                     <select
                       required
                       value={formData.category}
-                      onChange={(e) => setFormData({...formData, category: e.target.value.toLowerCase(), subcategory: ''})}
+                      onChange={(e) => setFormData({...formData, category: e.target.value, subcategory: ''})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">Select Category</option>
@@ -262,7 +271,7 @@ export default function ListBusinessPage({
                       type="text"
                       required
                       value={formData.city}
-                      onChange={(e) => setFormData({...formData, city: e.target.value.toLowerCase()})}
+                      onChange={(e) => setFormData({...formData, city: e.target.value})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="City Name"
                     />
