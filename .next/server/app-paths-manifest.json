@@ -1,7 +1,5 @@
 {
-  "/list-business/page": "app/list-business/page.js",
   "/page": "app/page.js",
-  "/[location]/[category]/page": "app/[location]/[category]/page.js",
-  "/business/[id]/page": "app/business/[id]/page.js",
-  "/[location]/[category]/[name]/page": "app/[location]/[category]/[name]/page.js"
+  "/list-business/page": "app/list-business/page.js",
+  "/[location]/[category]/page": "app/[location]/[category]/page.js"
 }
