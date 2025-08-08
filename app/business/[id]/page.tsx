@@ -15,7 +15,7 @@ export default function BusinessDetail() {
   useEffect(() => {
     const getBusinessById = async() => {
       try{
-        const response = await axios.get(`http://localhost:5001/api/v1/businesses/${businessId}`, {withCredentials: true});
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/${businessId}`, {withCredentials: true});
         if(response.status == 200){
           setBusiness(response.data.business);
         }

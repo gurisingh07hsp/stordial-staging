@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(()=>{
     const getProfile = async ()=>{
       try{
-        const response = await axios.get('http://localhost:5001/api/v1/auth/me',{withCredentials: true});
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/me`,{withCredentials: true});
         console.log("Profile response: ", response.data);
   
         if(response.data.success)
@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       password
     }
     try{
-    const response = await axios.post('http://localhost:5001/api/v1/auth/login', data, {withCredentials: true});
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login`, data, {withCredentials: true});
     console.log("Login response : ", response.data);
       if(response.data.success){
     setUser(response.data.user);
@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       businessOwner: false
     }
 
-    const response = await axios.post('http://localhost:5001/api/v1/auth/register', newUser,{withCredentials: true});
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/register`, newUser,{withCredentials: true});
     console.log('User registered: ', response.data);
 
     try{
@@ -114,7 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async() => {
-    const response = await axios.get('http://localhost:5001/api/v1/auth/logout', {withCredentials: true});
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/logout`, {withCredentials: true});
     if(response.status == 200){
       alert(`${response.data.message}`);
       setUser(null);

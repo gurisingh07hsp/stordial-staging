@@ -37,7 +37,7 @@ export default function HomePage() {
     // Simulate search
 
     try{
-        const response = await axios.get(`http://localhost:5001/api/v1/businesses/location/${location}/category/${category}`, {withCredentials: true});
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${location}/category/${category}`, {withCredentials: true});
         if(response.status == 200){
           setSearchResults(response.data.businesses);
           console.log(response.data);
@@ -65,7 +65,7 @@ export default function HomePage() {
 
   useEffect(() => {
     const getFeaturedBusinesses = async () => {
-      const response = await axios.get('http://localhost:5001/api/v1/businesses/featured', {withCredentials: true});
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/featured`, {withCredentials: true});
       if(response.status == 200){
         setFeaturedBusinesses(response.data.businesses);
         console.log('Featured businesses : ', response.data.businesses);
@@ -102,7 +102,7 @@ export default function HomePage() {
 
   return (
     <div className="bg-gray-50">
-      
+
       <div id='search'></div>
       <HeroSection 
         onSearch={handleSearch}
