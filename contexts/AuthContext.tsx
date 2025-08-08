@@ -31,17 +31,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(()=>{
     const getProfile = async ()=>{
-      const response = await axios.get('http://localhost:5001/api/v1/auth/me',{withCredentials: true});
-      console.log("Profile response: ", response.data);
-
-      if(response.data.success)
-      {
-        setUser(response.data.user);
-      }
-      else if(response.status == 401){
-        setUser(null);
+      try{
+        const response = await axios.get('http://localhost:5001/api/v1/auth/me',{withCredentials: true});
+        console.log("Profile response: ", response.data);
+  
+        if(response.data.success)
+        {
+          setUser(response.data.user);
+        }
+      }catch(error){
+      if (axios.isAxiosError(error)) {
+    const message = error.response?.data?.message || 'Failed to login';
+    // alert(message);
+      setUser(null);
         router.push('/');
-      }
+  } else {
+    alert('An unexpected error occurred');
+  }
+    }
 
     }
     getProfile();
