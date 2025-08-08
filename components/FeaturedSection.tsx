@@ -19,7 +19,7 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
   };
 
   // Filter featured businesses and limit to 4 businesses (1 row of 4)
-  const featuredBusinesses = businesses.filter(business => business.featured);
+  const featuredBusinesses = businesses;
   const limitedBusinesses = featuredBusinesses.slice(0, 4);
 
   return (
@@ -38,7 +38,7 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {limitedBusinesses.map((business) => (
             <div 
-              key={business.id} 
+              key={business.email} 
               className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow cursor-pointer border border-gray-200 overflow-hidden group"
             >
               <Link href={formatBusinessUrl(business)} className="block">

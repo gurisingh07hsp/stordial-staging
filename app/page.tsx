@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HeroSection from '../components/HeroSection';
 import CategoryGrid from '../components/CategoryGrid';
 import FeaturedSection from '../components/FeaturedSection';
@@ -11,12 +11,13 @@ import { businesses } from '../data/mockData';
 import { Business } from '../types';
 import { Star, Users, MapPin, CheckCircle, ArrowRight } from 'lucide-react';
 import { useAutoLocation } from '../hooks/useAutoLocation';
-
+import axios from 'axios';
 export default function HomePage() {
   const [showBusinessModal, setShowBusinessModal] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
   const [searchResults, setSearchResults] = useState<Business[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [featuredBusinesses, setFeaturedBusinesses] = useState<Business[]>([]);
 
   // Auto-detect user location
   const { location: userLocation } = useAutoLocation();
@@ -31,25 +32,48 @@ export default function HomePage() {
     setShowBusinessModal(true);
   };
 
-  const handleSearch = (query: string, location: string, category: string) => {
+  const handleSearch = async(query: string, location: string, category: string) => {
     setIsSearching(true);
     // Simulate search
-    setTimeout(() => {
-      const results = businesses.filter(business => {
-        const matchesQuery = query === '' || 
-          business.name.toLowerCase().includes(query.toLowerCase()) || 
-          business.description.toLowerCase().includes(query.toLowerCase()) ||
-          business.services.some(service => service.toLowerCase().includes(query.toLowerCase()));
-        const matchesLocation = location === '' || 
-          business.city.toLowerCase().includes(location.toLowerCase()) ||
-          business.address.toLowerCase().includes(location.toLowerCase());
-        const matchesCategory = category === 'All Categories' || business.category === category;
-        return matchesQuery && matchesLocation && matchesCategory;
-      });
-      setSearchResults(results);
-      setIsSearching(false);
-    }, 1000);
+
+    try{
+        const response = await axios.get(`http://localhost:5001/api/v1/businesses/location/${location}/category/${category}`, {withCredentials: true});
+        if(response.status == 200){
+          setSearchResults(response.data.businesses);
+          console.log(response.data);
+          setIsSearching(false);
+        }
+      }catch(error){
+        console.error('Error fetching businesses: ', error);
+      }
+    // setTimeout(() => {
+    //   const results = businesses.filter(business => {
+    //     const matchesQuery = query === '' || 
+    //       business.name.toLowerCase().includes(query.toLowerCase()) || 
+    //       business.description.toLowerCase().includes(query.toLowerCase()) ||
+    //       business.services.some(service => service.toLowerCase().includes(query.toLowerCase()));
+    //     const matchesLocation = location === '' || 
+    //       business.city.toLowerCase().includes(location.toLowerCase()) ||
+    //       business.address.toLowerCase().includes(location.toLowerCase());
+    //     const matchesCategory = category === 'All Categories' || business.category === category;
+    //     return matchesQuery && matchesLocation && matchesCategory;
+    //   });
+    //   setSearchResults(results);
+    //   setIsSearching(false);
+    // }, 1000);
   };
+
+  useEffect(() => {
+    const getFeaturedBusinesses = async () => {
+      const response = await axios.get('http://localhost:5001/api/v1/businesses/featured', {withCredentials: true});
+      if(response.status == 200){
+        setFeaturedBusinesses(response.data.businesses);
+        console.log('Featured businesses : ', response.data.businesses);
+      }
+    }
+    getFeaturedBusinesses();
+  }, [])
+  
 
   const handleBrowseCategories = () => {
     // Scroll to category section
@@ -67,13 +91,19 @@ export default function HomePage() {
     setSearchResults(categoryBusinesses);
   };
 
-
+  const scrollToSearch = () => {
+    const searchSection = document.getElementById('search');
+    if (searchSection) {
+      searchSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
 
 
   return (
     <div className="bg-gray-50">
       
+      <div id='search'></div>
       <HeroSection 
         onSearch={handleSearch}
         onBrowseCategories={handleBrowseCategories}
@@ -99,7 +129,7 @@ export default function HomePage() {
       </div>
 
       {/* Featured Businesses Section */}
-      <FeaturedSection businesses={businesses} />
+      <FeaturedSection businesses={featuredBusinesses} />
       <TrendingSection businesses={businesses} />
 
       {/* How It Works Section */}
@@ -256,11 +286,11 @@ export default function HomePage() {
             Join thousands of satisfied customers who have discovered amazing local businesses through Stordial
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center">
+            <button onClick={scrollToSearch} className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center">
               Start Searching
               <ArrowRight className="w-5 h-5 ml-2" />
             </button>
-            <button className="bg-white text-gray-700 px-8 py-3 rounded-lg font-semibold border border-gray-300 hover:bg-gray-50 transition-colors">
+            <button onClick={()=>window.location.href = 'list-business'} className="bg-white text-gray-700 px-8 py-3 rounded-lg font-semibold border border-gray-300 hover:bg-gray-50 transition-colors">
               List Your Business
             </button>
           </div>

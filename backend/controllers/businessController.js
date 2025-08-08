@@ -103,6 +103,40 @@ exports.getBusiness = async (req, res, next) => {
   }
 };
 
+
+exports.getBusinessByName = async (req, res, next) => {
+  try {
+    let { location, category, name } = req.params;
+
+    location = location.toLowerCase();
+
+    const business = await Business.findOne({ name: name, city: location, category: category })
+      .populate('owner', 'name email phone')
+      .populate({
+        path: 'reviews',
+        // populate: {
+        //   path: 'user',
+        //   // select: 'name avatar'
+        // }
+      });
+
+
+    if (!business) {
+      return res.status(404).json({
+        success: false,
+        message: 'Business not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      business
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Update business
 exports.updateBusiness = async (req, res, next) => {
   try {
@@ -190,7 +224,9 @@ exports.getFeaturedBusinesses = async (req, res, next) => {
 // Get businesses by category and location
 exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
   try {
-    const { location, category } = req.params;
+    let { location, category } = req.params;
+
+    location = location.toLowerCase();
     
     let query = {};
 
@@ -198,7 +234,7 @@ exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
       query.city = { $regex: location, $options: 'i' };
     }
 
-    if (category && category !== 'all') {
+    if (category && category !== 'All Categories') {
       query.category = { $regex: category, $options: 'i' };
     }
 
