@@ -68,7 +68,7 @@ export default function ListBusinessPage({
       formData.city = formData.city.toLowerCase();
       formData.category = formData.category.toLowerCase();
       try{
-        const response = await axios.post('http://localhost:5001/api/v1/businesses/new', formData,{withCredentials: true});
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, formData,{withCredentials: true});
         console.log(response.data);
         if(response.status == 201){
           setIsSubmitting(false);

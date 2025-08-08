@@ -172,7 +172,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   useEffect(() => {
     const getBusinessByName = async () => {
       try{
-        const response = await axios.get(`http://localhost:5001/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}/name/${decodedName}`, {withCredentials: true});
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}/name/${decodedName}`, {withCredentials: true});
         if(response.status == 200){
           setBusiness(response.data.business);
         }

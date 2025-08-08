@@ -14,7 +14,7 @@ export default function AdminPanel() {
 
 
   const logout = async() => {
-    const response = await axios.get('http://localhost:5001/api/v1/auth/logout', {withCredentials: true});
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/logout`, {withCredentials: true});
     if(response.status == 200){
       alert(`${response.data.message}`);
       window.location.href = '/';
