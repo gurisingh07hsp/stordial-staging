@@ -160,7 +160,7 @@ export default function ListBusinessPage({
                     <select
                       required
                       value={formData.category}
-                      onChange={(e) => setFormData({...formData, category: e.target.value, subcategory: ''})}
+                      onChange={(e) => setFormData({...formData, category: e.target.value.toLowerCase(), subcategory: ''})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">Select Category</option>
@@ -262,7 +262,7 @@ export default function ListBusinessPage({
                       type="text"
                       required
                       value={formData.city}
-                      onChange={(e) => setFormData({...formData, city: e.target.value})}
+                      onChange={(e) => setFormData({...formData, city: e.target.value.toLowerCase()})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="City Name"
                     />

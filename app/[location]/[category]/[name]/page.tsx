@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Phone, 
   MapPin, 
@@ -22,9 +22,9 @@ import {
   Navigation
 } from 'lucide-react';
 import Link from 'next/link';
-import { businesses } from '../../../../data/mockData';
+// import { businesses } from '../../../../data/mockData';
 import { Business } from '../../../../types';
-
+import axios from 'axios';
 const similarBusinesses = [
   {
     id: '4',
@@ -163,24 +163,41 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [showImageModal, setShowImageModal] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const [business, setBusiness] = useState<Business | null>(null);
 
   const decodedLocation = decodeURIComponent(params.location);
   const decodedCategory = decodeURIComponent(params.category);
   const decodedName = decodeURIComponent(params.name);
 
-  const business = businesses.find(b => {
-    const businessLocation = b.city.toLowerCase().replace(/\s+/g, '-');
-    const businessCategory = b.category.toLowerCase().replace(/\s+/g, '-');
-    const businessName = b.name.toLowerCase().replace(/\s+/g, '-').replace(/-+/g, '-');
+  useEffect(() => {
+    const getBusinessByName = async () => {
+      try{
+        const response = await axios.get(`http://localhost:5001/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}/name/${decodedName}`, {withCredentials: true});
+        if(response.status == 200){
+          setBusiness(response.data.business);
+        }
+
+      }catch(error){
+        console.log('Error fetching business: ', error);
+      }
+    }
+    getBusinessByName();
+  }, [decodedName])
+  
+
+  // const business = businesses.find(b => {
+  //   const businessLocation = b.city.toLowerCase().replace(/\s+/g, '-');
+  //   const businessCategory = b.category.toLowerCase().replace(/\s+/g, '-');
+  //   const businessName = b.name.toLowerCase().replace(/\s+/g, '-').replace(/-+/g, '-');
     
-    const matches = businessLocation === decodedLocation.toLowerCase() &&
-           businessCategory === decodedCategory.toLowerCase() &&
-           businessName === decodedName.toLowerCase();
+  //   const matches = businessLocation === decodedLocation.toLowerCase() &&
+  //          businessCategory === decodedCategory.toLowerCase() &&
+  //          businessName === decodedName.toLowerCase();
     
 
     
-    return matches;
-  });
+  //   return matches;
+  // });
 
   if (!business) {
     return (

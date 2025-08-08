@@ -5,6 +5,7 @@ const {
   createBusiness,
   getBusinesses,
   getBusiness,
+  getBusinessByName,
   updateBusiness,
   deleteBusiness,
   getFeaturedBusinesses,
@@ -18,6 +19,7 @@ router.route('/').get(getBusinesses);
 router.route('/featured').get(getFeaturedBusinesses);
 router.route('/location/:location/category/:category').get(getBusinessesByCategoryAndLocation);
 router.route('/:id').get(getBusiness);
+router.route('/location/:location/category/:category/name/:name').get(getBusinessByName);
 
 // Protected routes
 router.route('/new').post(isAuthenticated, createBusiness);
