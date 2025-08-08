@@ -144,7 +144,7 @@ export default function LocationBasedResults({
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredAndSortedBusinesses.map((business) => (
               <div
-                key={business.id}
+                key={business.email}
                 onClick={() => onBusinessClick(business)}
                 className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow cursor-pointer border border-gray-100 overflow-hidden"
               >

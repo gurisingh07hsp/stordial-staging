@@ -13,6 +13,7 @@ interface UseAutoLocationReturn {
   isLoading: boolean;
   error: string | null;
   refetch: () => void;
+  setLocation: React.Dispatch<React.SetStateAction<LocationData | null>>;
 }
 
 export function useAutoLocation(): UseAutoLocationReturn {
@@ -60,6 +61,7 @@ export function useAutoLocation(): UseAutoLocationReturn {
     location,
     isLoading,
     error,
-    refetch
+    refetch,
+    setLocation
   };
 } 

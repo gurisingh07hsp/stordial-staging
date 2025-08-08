@@ -62,8 +62,8 @@ export default function HeroSection({ onSearch, onBrowseCategories }: HeroSectio
     setCategory(selectedCategory);
     
     // If location is detected and a specific category is selected, navigate to category page
-    if (userLocation && !locationLoading && selectedCategory !== 'All Categories') {
-      const locationPath = userLocation.city.toLowerCase().replace(/\s+/g, '-');
+    if (location && !locationLoading && selectedCategory !== 'All Categories') {
+      const locationPath = location.toLowerCase().replace(/\s+/g, '-');
       const categoryPath = selectedCategory.toLowerCase().replace(/\s+/g, '-');
       window.location.href = `/${locationPath}/${categoryPath}`;
     }
