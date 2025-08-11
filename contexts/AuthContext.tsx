@@ -31,29 +31,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsMounted(true);
   }, []);
 
-  useEffect(()=>{
-    const getProfile = async ()=>{
-      try{
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/me`,{withCredentials: true});
-  
-        if(response.data.success)
-        {
-          setUser(response.data.user);
-        }
-      }catch(error){
-      if (axios.isAxiosError(error)) {
-    const message = error.response?.data?.message || 'Failed to login';
-    // alert(message);
-      setUser(null);
-        router.push('/');
-  } else {
-    alert('An unexpected error occurred');
-  }
-    }
+  useEffect(() => {
+  const getProfile = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/me`,
+        { withCredentials: true }
+      );
 
+      if (response.data.success) {
+        setUser(response.data.user);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        const message = error.response?.data?.message;
+
+        if (status === 401) {
+          // If there is *no token*, it means first-time visitor — no redirect.
+          if (message === 'Please login to access this resource') {
+            // Check if user was already logged in before
+            if (user) {
+              // User existed → this is a logout or expired session
+              setUser(null);
+              router.push('/');
+            } else {
+              // First-time visitor → silently ignore
+              setUser(null);
+            }
+          }
+        } else {
+          console.error('Profile fetch failed:', message);
+        }
+      } else {
+        console.error('Unexpected error:', error);
+      }
     }
-    getProfile();
-  },[]);
+  };
+
+  getProfile();
+}, []);
 
 
   const login = async(email: string, password: string) => {
