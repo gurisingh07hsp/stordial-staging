@@ -8,6 +8,7 @@ exports.createBusiness = async (req, res, next) => {
 
   const business = await Business.create(req.body);
 
+
   // Update user to business owner
   await User.findByIdAndUpdate(req.user.id, {
     businessOwner: true,

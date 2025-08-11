@@ -7,7 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 
 export default function AuthModal() {
-  const { showAuthModal, closeAuthModal, login, signup } = useAuth();
+  const { showAuthModal, closeAuthModal, login, signup, message } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,6 +21,10 @@ export default function AuthModal() {
     } else {
       signup({ name, email, phone, password });
     }
+    setEmail('');
+    setPassword('');
+    setName('');
+    setPhone('');
   };
 
   if (!showAuthModal) {
@@ -145,6 +149,10 @@ export default function AuthModal() {
                 {isLogin ? 'Sign In' : 'Create Account'}
               </button>
             </form>
+
+            {message && <p className='text-center mt-3 text-red-500'>
+              {message}
+            </p>}
 
             <div className="mt-6 pt-6 border-t border-gray-100">
               <div className="text-center">
