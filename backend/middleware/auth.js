@@ -9,10 +9,12 @@ const isAuthenticated = async (req, res, next) => {
       next();
       
     }
+    else{
       return res.status(401).json({
         success: false,
         message: 'Please login to access this resource'
       });
+    }
 };
 
 const authorizeRoles = (...roles) => {

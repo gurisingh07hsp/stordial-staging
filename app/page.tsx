@@ -40,7 +40,6 @@ export default function HomePage() {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${location}/category/${category}`, {withCredentials: true});
         if(response.status == 200){
           setSearchResults(response.data.businesses);
-          console.log(response.data);
           setIsSearching(false);
         }
       }catch(error){
@@ -68,7 +67,6 @@ export default function HomePage() {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/featured`, {withCredentials: true});
       if(response.status == 200){
         setFeaturedBusinesses(response.data.businesses);
-        console.log('Featured businesses : ', response.data.businesses);
       }
     }
     getFeaturedBusinesses();
