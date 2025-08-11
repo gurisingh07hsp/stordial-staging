@@ -31,6 +31,7 @@ export default function ClientHeader() {
       <Header 
         user={null}
         onMenuToggle={handleMenuToggle}
+        showMobileMenu={showMobileMenu}
         onAuthClick={handleAuthClick}
         onLogout={handleLogout}
       />
@@ -41,6 +42,7 @@ export default function ClientHeader() {
     <Header 
       user={user}
       onMenuToggle={handleMenuToggle}
+      showMobileMenu={showMobileMenu}
       onAuthClick={handleAuthClick}
       onLogout={handleLogout}
     />

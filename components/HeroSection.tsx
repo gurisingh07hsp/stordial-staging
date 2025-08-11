@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, MapPin, Filter, ArrowRight, ChevronDown } from 'lucide-react';
 import { popularCities } from '../data/mockData';
 import { useAutoLocation } from '../hooks/useAutoLocation';
+import axios from 'axios';
 
 interface HeroSectionProps {
   onSearch: (query: string, location: string, category: string) => void;
@@ -83,6 +84,33 @@ export default function HeroSection({ onSearch, onBrowseCategories }: HeroSectio
     setShowLocationDropdown(true);
   };
 
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
+
+  const handleSearchQueryChange = (value: string) => {
+    setSearchQuery(value);
+    setShowSearchSuggestions(false);
+  }
+
+  
+  const fetchSuggestions = async (value: string) => {
+    try{
+      setSearchQuery(value);
+      setShowSearchSuggestions(true);
+      const response = await axios.get(`https://api.datamuse.com/sug?s=${value}`);
+      if(value !== '')
+        {
+          setSuggestions(response.data.map((item: any) => item.word));
+        }
+        else{
+        setShowSearchSuggestions(false);
+        setSuggestions([]);
+      }
+    }catch(error){
+      console.error(error);
+    }
+  }
+
   return (
     <section className="relative py-8 bg-white">
       <div className="container mx-auto px-4">
@@ -107,9 +135,31 @@ export default function HeroSection({ onSearch, onBrowseCategories }: HeroSectio
                 type="text"
                 placeholder="What are you looking for?"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => fetchSuggestions(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
               />
+
+              {showSearchSuggestions && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+                  {suggestions.length > 0 ? (
+                    suggestions.map((item, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSearchQueryChange(item)}
+                        className="w-full px-4 py-3 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none border-b border-gray-100 last:border-b-0"
+                      >
+                        <div className="flex items-center">
+                          <span className="text-gray-800">{item}</span>
+                        </div>
+                      </button>
+                    ))
+                  ) : (
+                    <div className="px-4 py-3 text-gray-500 text-sm">
+                      No item found
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Location Input with Autocomplete */}

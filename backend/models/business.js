@@ -15,19 +15,19 @@ const businessSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please enter business category'],
     enum: [
-      'Restaurants',
-      'Retail',
-      'Services',
-      'Healthcare',
-      'Entertainment',
-      'Beauty',
-      'Fitness',
-      'Education',
-      'Hotels',
-      'Automotive',
-      'Real Estate',
-      'Technology',
-      'Other'
+      'restaurants',
+      'retail',
+      'services',
+      'healthcare',
+      'entertainment',
+      'beauty',
+      'fitness',
+      'education',
+      'hotels',
+      'automotive',
+      'real estate',
+      'technology',
+      'other'
     ]
   },
   subcategory: {

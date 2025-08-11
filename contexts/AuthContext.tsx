@@ -13,6 +13,7 @@ interface AuthContextType {
   logout: () => void;
   openAuthModal: () => void;
   closeAuthModal: () => void;
+  message: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,6 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [message, setMessage] = useState('');
 
   const router = useRouter();
 
@@ -33,7 +35,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const getProfile = async ()=>{
       try{
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/me`,{withCredentials: true});
-        console.log("Profile response: ", response.data);
   
         if(response.data.success)
         {
@@ -58,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async(email: string, password: string) => {
     // Simple validation
     if (!email || !password) {
-      alert('Please enter both email and password');
+      setMessage('Please enter both email and password');
       return;
     }
 
@@ -70,16 +71,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login`, data, {withCredentials: true});
     console.log("Login response : ", response.data);
       if(response.data.success){
-    setUser(response.data.user);
-    alert('Successfully signed in!');
-    setShowAuthModal(false);
+        setUser(response.data.user);
+        setMessage('');
+        setShowAuthModal(false);
       }
     }catch(error){
       if (axios.isAxiosError(error)) {
-    const message = error.response?.data?.message || 'Failed to login';
-    alert(message);
+    const err = error.response?.data?.message || 'Failed to login';
+    setMessage(err);
   } else {
-    alert('An unexpected error occurred');
+    setMessage('An unexpected error occurred');
   }
     }
   };
@@ -87,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = async(userData: { name: string; email: string; phone: string; password: string }) => {
     // Simple validation
     if (!userData.name || !userData.email || !userData.password) {
-      alert('Please fill in all required fields');
+      setMessage('Please fill in all required fields');
       return;
     }
 
@@ -100,23 +101,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/register`, newUser,{withCredentials: true});
-    console.log('User registered: ', response.data);
 
     try{
       if(response.data.success) {
         setUser(response.data.user);
-        alert('Account created successfully!');
+        setMessage('');
         setShowAuthModal(false);
       }
     }catch(error){
-      alert(response.data.message || 'Failed to register user');
+      setMessage(response.data.message || 'Failed to register user');
     }
   };
 
   const logout = async() => {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/logout`, {withCredentials: true});
     if(response.status == 200){
-      alert(`${response.data.message}`);
       setUser(null);
       router.push('/');
     }
@@ -138,7 +137,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signup,
     logout,
     openAuthModal,
-    closeAuthModal
+    closeAuthModal,
+    message,
   };
 
   return (
