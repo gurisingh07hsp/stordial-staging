@@ -11,6 +11,11 @@ interface HeroSectionProps {
   onBrowseCategories: () => void;
 }
 
+interface Suggestion {
+  word: string;
+  score: number;
+}
+
 export default function HeroSection({ onSearch, onBrowseCategories }: HeroSectionProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
@@ -91,16 +96,18 @@ export default function HeroSection({ onSearch, onBrowseCategories }: HeroSectio
     setSearchQuery(value);
     setShowSearchSuggestions(false);
   }
+  
 
   
   const fetchSuggestions = async (value: string) => {
     try{
       setSearchQuery(value);
       setShowSearchSuggestions(true);
-      const response = await axios.get(`https://api.datamuse.com/sug?s=${value}`);
+      const response = await axios.get<Suggestion[]>(`https://api.datamuse.com/sug?s=${value}`);
       if(value !== '')
         {
-          setSuggestions(response.data.map((item: any) => item.word));
+          setSuggestions(response.data.map((item) => item.word));
+          console.log(response.data.map((item) => item.word));
         }
         else{
         setShowSearchSuggestions(false);
