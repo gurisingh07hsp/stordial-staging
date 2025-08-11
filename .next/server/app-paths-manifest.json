@@ -1,8 +1,4 @@
 {
-  "/about/page": "app/about/page.js",
-  "/advertise/page": "app/advertise/page.js",
-  "/list-business/page": "app/list-business/page.js",
-  "/admin/page": "app/admin/page.js",
   "/page": "app/page.js",
-  "/[location]/[category]/[name]/page": "app/[location]/[category]/[name]/page.js"
+  "/list-business/page": "app/list-business/page.js"
 }
