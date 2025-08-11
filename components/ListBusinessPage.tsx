@@ -53,6 +53,7 @@ export default function ListBusinessPage({
 
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -77,11 +78,10 @@ export default function ListBusinessPage({
         }
       }catch(error){
       if (axios.isAxiosError(error)) {
-    // const message = error.response?.data?.message || 'Failed to login';
     setIsSubmitting(false);
-    alert('You must be logged in to submit a business listing');
+    setMessage('You must be logged in to submit a business listing')
   } else {
-    alert('An unexpected error occurred');
+    setMessage('An unexpected error occurred');
   }
     }
   };
@@ -388,6 +388,8 @@ export default function ListBusinessPage({
                   </div>
                 )}
               </div>
+
+              {message && <p className='text-red-500 text-center font-bold'>{message}</p>}
 
               {/* Submit Button */}
               <div className="flex justify-center pt-4">
