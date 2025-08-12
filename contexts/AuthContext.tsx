@@ -89,8 +89,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     console.log("Login response : ", response.data);
       if(response.data.success){
         setUser(response.data.user);
-        setMessage('');
-        setShowAuthModal(false);
+        setMessage('✅ Login successful!');
+        setTimeout(()=>{
+          setShowAuthModal(false);
+        },1000);
       }
     }catch(error){
       if (axios.isAxiosError(error)) {
@@ -122,8 +124,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try{
       if(response.data.success) {
         setUser(response.data.user);
-        setMessage('');
-        setShowAuthModal(false);
+        setMessage('✅ Account Created successful!');
+        setTimeout(()=>{
+          setShowAuthModal(false);
+        },1000);
       }
     }catch(error){
       setMessage(response.data.message || 'Failed to register user');

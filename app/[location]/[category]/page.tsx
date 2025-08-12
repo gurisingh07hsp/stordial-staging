@@ -14,12 +14,14 @@ interface CategoryPageProps {
 
 export default function CategoryPage({ params }: CategoryPageProps) {
   const decodedLocation = decodeURIComponent(params.location);
-  const decodedCategory = decodeURIComponent(params.category);
+  const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
 
   const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
 
   useEffect(() => {
     const getBusinessesByCategotyAndLocation = async () => {
+      console.log("decodedcategory: ", decodedCategory);
+      console.log("decodedLocation: ", decodedLocation);
       try{
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}`, {withCredentials: true});
         if(response.status == 200){
@@ -144,7 +146,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-lg lg:text-3xl font-bold text-gray-900">
                 {decodedCategory.charAt(0).toUpperCase() + decodedCategory.slice(1)} in {decodedLocation.charAt(0).toUpperCase() + decodedLocation.slice(1)}
               </h1>
               <p className="text-gray-600 mt-2">
@@ -153,7 +155,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
             </div>
             <Link 
               href="/"
-              className="text-blue-600 hover:text-blue-800 font-medium"
+              className="text-[12px] lg:text-lg text-blue-600 hover:text-blue-800 font-medium"
             >
               ← Back to Home
             </Link>
@@ -162,7 +164,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-8">
+        <div className="lg:flex gap-8">
           {/* Main Content */}
           <div className="flex-1">
             {/* Premium Advertisement Carousel */}
@@ -368,7 +370,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           </div>
 
           {/* Advertisement Sidebar */}
-          <div className="w-80 flex-shrink-0">
+          <div className="w-80 mx-auto mt-5 lg:mt-0 flex-shrink-0">
             <div className="sticky top-8">
               {/* Featured Advertisement */}
               <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">

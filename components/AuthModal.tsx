@@ -21,10 +21,13 @@ export default function AuthModal() {
     } else {
       signup({ name, email, phone, password });
     }
-    setEmail('');
-    setPassword('');
-    setName('');
-    setPhone('');
+    if(message == '✅ Account Created successful!' || message == '✅ Login successful!')
+    {
+      setEmail('');
+      setPassword('');
+      setName('');
+      setPhone('');
+    }
   };
 
   if (!showAuthModal) {
@@ -150,7 +153,7 @@ export default function AuthModal() {
               </button>
             </form>
 
-            {message && <p className='text-center mt-3 text-red-500'>
+            {message && <p className={`text-center mt-3 font-bold ${message == '✅ Login successful!' ? 'text-green-500' : 'text-red-500'}`}>
               {message}
             </p>}
 
