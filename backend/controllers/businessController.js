@@ -1,3 +1,4 @@
+const { console } = require('inspector');
 const Business = require('../models/business');
 const User = require('../models/user');
 
@@ -225,9 +226,11 @@ exports.getFeaturedBusinesses = async (req, res, next) => {
 // Get businesses by category and location
 exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
   try {
+    
     let { location, category } = req.params;
-
     location = location.toLowerCase();
+    category = category.toLowerCase();
+
     
     let query = {};
 

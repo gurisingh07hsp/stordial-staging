@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { BusinessFormData, Business, User } from '../types';
 import { ArrowLeft, Upload, Clock, MapPin, Phone, Image as ImageIcon, X } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import Select from "react-select";
 
 interface ListBusinessPageProps {
   onBack: () => void;
@@ -55,6 +57,8 @@ export default function ListBusinessPage({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
 
+   const { user} = useAuth();
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     setUploadedImages(prev => [...prev, ...files]);
@@ -73,8 +77,10 @@ export default function ListBusinessPage({
         console.log(response.data);
         if(response.status == 201){
           setIsSubmitting(false);
-          alert('Business listing submitted successfully');
-          onBack();
+          setMessage('Business listing submitted successfully');
+          setTimeout(()=>{
+            onBack();
+        },1000);
         }
       }catch(error){
       if (axios.isAxiosError(error)) {
@@ -86,21 +92,134 @@ export default function ListBusinessPage({
     }
   };
 
-  const categories = [
-    'Restaurants', 'Retail', 'Services', 'Healthcare', 
-    'Entertainment', 'Beauty', 'Fitness', 'Education'
+  const categories: string[] = ['Restaurants','Hotels','Hospitals','Schools','Shopping','Automotive','Beauty','Spa',
+    'Fitness','Dentists','Lawyers','Real Estate','Banks','Pharmacies','Petrol Pumps','Pet Services','Home Services',
+    'Coaching Centres','Tuition Classes','Colleges','Universities','Government Offices','Travel Agencies',
+    'Tour Operators','Courier Services','Logistics Services','Event Management','Party Services','Wedding Services',
+    'Banquet Halls','Caterers','Photographers','Doctors','Clinics','Diagnostic Centres','Labs','Repair Services',
+    'Maintenance Services','Grocery Stores','Supermarkets','Sweet Shops','Bakeries','Clothing Stores',
+    'Apparel Stores','Mobile Stores','Electronics Stores','Cyber Cafes','Printing Services','Temples','Gurudwaras',
+    'Churches','Mosques','NGOs','Charitable Organizations','Public Transport Services','Bus Services','Taxi Services',
+    'Auto Services','Metro Services','Driving Schools','Car Rentals','Bike Rentals','Agricultural Services',
+    'Equipment Dealers','Hardware Stores','Building Material Suppliers','Cement Dealers','AC Dealers',
+    'AC Repair Services','AC Installation Services','General Physician','Pediatrician','Cardiologist',
+    'Dermatologist','Gynecologist Obstetrician','Orthopedic Doctor','ENT Specialist Ear Nose Throat',
+    'Ophthalmologist Eye Specialist','Dentist','Neurologist','Psychiatrist','Urologist','Nephrologist',
+    'Gastroenterologist','Pulmonologist Chest Specialist','Oncologist Cancer Specialist','Endocrinologist',
+    'Rheumatologist','Surgeon General','Plastic Surgeon','Physiotherapist','Homeopathy Doctor','Ayurvedic Doctor',
+    'Unani Doctor','Sexologist','Immunologist','Geriatric Specialist Elderly Care','Occupational Therapist',
+    'Speech Therapist','Dietitian Nutritionist',
   ];
 
-  const subcategories = {
-    'Restaurants': ['Coffee Shop', 'Fine Dining', 'Fast Food', 'Cafe', 'Bar', 'Pizza', 'Asian', 'Mexican', 'Italian', 'American'],
-    'Retail': ['Clothing', 'Electronics', 'Home & Garden', 'Sports', 'Books', 'Jewelry', 'Shoes', 'Accessories', 'Grocery', 'Hardware'],
-    'Services': ['Repair', 'Cleaning', 'Consulting', 'Transportation', 'Legal', 'Accounting', 'Insurance', 'Real Estate', 'Photography', 'Design'],
-    'Healthcare': ['Medical Clinic', 'Dental', 'Pharmacy', 'Wellness', 'Therapy', 'Optometry', 'Veterinary', 'Chiropractic', 'Massage', 'Nutrition'],
-    'Entertainment': ['Movie Theater', 'Gaming', 'Sports', 'Music', 'Art', 'Bowling', 'Arcade', 'Karaoke', 'Comedy Club', 'Escape Room'],
-    'Beauty': ['Hair Salon', 'Spa', 'Nail Salon', 'Barber Shop', 'Makeup', 'Tanning', 'Tattoo', 'Piercing', 'Esthetics', 'Barber'],
-    'Fitness': ['Gym', 'Yoga Studio', 'Personal Training', 'Swimming', 'Dance', 'Martial Arts', 'Pilates', 'CrossFit', 'Boxing', 'Tennis'],
-    'Education': ['School', 'Tutoring', 'Language', 'Music', 'Art Classes', 'Driving School', 'Cooking Classes', 'Computer Training', 'Test Prep', 'Preschool']
-  };
+
+  
+const subcategories = {
+  'Restaurants': ['Coffee Shop', 'Fine Dining', 'Fast Food', 'Cafe', 'Bar', 'Pizza', 'Asian', 'Mexican', 'Italian', 'American', 'Other'],
+  'Hotels': ['Resort', 'Motel', 'Hostel', 'Luxury Hotel', 'Boutique Hotel', 'Guest House', 'Bed & Breakfast', 'Lodge', 'Capsule Hotel', 'Other'],
+  'Hospitals': ['General Hospital', 'Specialty Hospital', 'Children’s Hospital', 'Teaching Hospital', 'Private Hospital', 'Public Hospital', 'Other'],
+  'Schools': ['Primary School', 'Secondary School', 'High School', 'International School', 'Boarding School', 'Montessori', 'Special Needs School', 'Other'],
+  'Shopping': ['Malls', 'Department Stores', 'Boutiques', 'Street Markets', 'Online Stores', 'Other'],
+  'Automotive': ['Car Showroom', 'Bike Showroom', 'Car Wash', 'Tire Shop', 'Auto Repair', 'Spare Parts Store', 'Other'],
+  'Beauty': ['Hair Salon', 'Spa', 'Nail Salon', 'Barber Shop', 'Makeup Artist', 'Tanning', 'Tattoo', 'Piercing', 'Other'],
+  'Spa': ['Day Spa', 'Medical Spa', 'Luxury Spa', 'Ayurvedic Spa', 'Thermal Spa', 'Other'],
+  'Fitness': ['Gym', 'Yoga Studio', 'Personal Training', 'Swimming Pool', 'Dance Studio', 'Martial Arts', 'Pilates', 'CrossFit', 'Boxing', 'Other'],
+  'Dentists': ['Orthodontist', 'Pediatric Dentist', 'Cosmetic Dentist', 'Oral Surgeon', 'Endodontist', 'Periodontist', 'Other'],
+  'Lawyers': ['Criminal Lawyer', 'Corporate Lawyer', 'Family Lawyer', 'Immigration Lawyer', 'Tax Lawyer', 'Intellectual Property Lawyer', 'Other'],
+  'Real Estate': ['Residential Sales', 'Commercial Sales', 'Property Management', 'Real Estate Investment', 'Rental Agency', 'Other'],
+  'Banks': ['Commercial Bank', 'Investment Bank', 'Cooperative Bank', 'Credit Union', 'Online Bank', 'Other'],
+  'Pharmacies': ['Retail Pharmacy', 'Hospital Pharmacy', 'Compounding Pharmacy', 'Online Pharmacy', 'Other'],
+  'Petrol Pumps': ['Petrol Station', 'Diesel Station', 'CNG Station', 'EV Charging Station', 'Other'],
+  'Pet Services': ['Pet Grooming', 'Pet Boarding', 'Pet Training', 'Pet Sitting', 'Veterinary Clinic', 'Other'],
+  'Home Services': ['Plumbing', 'Electrical', 'Cleaning', 'Painting', 'Pest Control', 'Home Renovation', 'Landscaping', 'Other'],
+  'Coaching Centres': ['Exam Coaching', 'Language Coaching', 'Skill Development', 'Career Counseling', 'Other'],
+  'Tuition Classes': ['Math Tuition', 'Science Tuition', 'Language Tuition', 'Test Preparation', 'Other'],
+  'Colleges': ['Engineering College', 'Medical College', 'Arts College', 'Commerce College', 'Community College', 'Other'],
+  'Universities': ['Public University', 'Private University', 'Technical University', 'Open University', 'Other'],
+  'Government Offices': ['Municipal Office', 'Tax Office', 'Passport Office', 'Labor Office', 'Transport Office', 'Other'],
+  'Travel Agencies': ['Domestic Travel', 'International Travel', 'Cruise Booking', 'Adventure Travel', 'Honeymoon Packages', 'Other'],
+  'Tour Operators': ['Guided Tours', 'Adventure Tours', 'Cultural Tours', 'Wildlife Tours', 'Pilgrimage Tours', 'Other'],
+  'Courier Services': ['Domestic Courier', 'International Courier', 'Same-Day Delivery', 'Logistics Services', 'Other'],
+  'Logistics Services': ['Freight Forwarding', 'Warehousing', 'Transportation', 'Customs Clearance', 'Supply Chain Management', 'Other'],
+  'Event Management': ['Corporate Events', 'Weddings', 'Concerts', 'Festivals', 'Private Parties', 'Other'],
+  'Party Services': ['Party Planning', 'Event Decor', 'Catering', 'Entertainment', 'Photography', 'Other'],
+  'Wedding Services': ['Wedding Planning', 'Bridal Makeup', 'Photography', 'Venue Booking', 'Catering', 'Other'],
+  'Banquet Halls': ['Wedding Halls', 'Conference Halls', 'Party Halls', 'Banquet Facilities', 'Other'],
+  'Caterers': ['Wedding Catering', 'Corporate Catering', 'Buffet Catering', 'Specialty Cuisine Catering', 'Other'],
+  'Photographers': ['Wedding Photographer', 'Event Photographer', 'Portrait Photographer', 'Product Photographer', 'Other'],
+  'Doctors': ['General Physician', 'Specialist', 'Surgeon', 'Family Doctor', 'Other'],
+  'Clinics': ['Medical Clinic', 'Dental Clinic', 'Wellness Clinic', 'Physiotherapy Clinic', 'Other'],
+  'Diagnostic Centres': ['Pathology Lab', 'Radiology Centre', 'Blood Test Centre', 'Health Check-up Centre', 'Other'],
+  'Labs': ['Medical Lab', 'Research Lab', 'Industrial Lab', 'Testing Lab', 'Other'],
+  'Repair Services': ['Appliance Repair', 'Electronics Repair', 'Furniture Repair', 'Watch Repair', 'Other'],
+  'Maintenance Services': ['Building Maintenance', 'Garden Maintenance', 'Equipment Maintenance', 'Other'],
+  'Grocery Stores': ['Supermarket', 'Mini-Mart', 'Organic Store', 'Discount Store', 'Other'],
+  'Supermarkets': ['Hypermarket', 'Neighborhood Store', 'Discount Supermarket', 'Other'],
+  'Sweet Shops': ['Traditional Sweets', 'Chocolate Shops', 'Bakery Sweets', 'Ice Cream Parlors', 'Other'],
+  'Bakeries': ['Cake Shop', 'Pastry Shop', 'Bread Shop', 'Artisan Bakery', 'Other'],
+  'Clothing Stores': ['Men’s Wear', 'Women’s Wear', 'Children’s Wear', 'Ethnic Wear', 'Sportswear', 'Other'],
+  'Apparel Stores': ['Casual Wear', 'Formal Wear', 'Outdoor Wear', 'Undergarments', 'Other'],
+  'Mobile Stores': ['Smartphones', 'Feature Phones', 'Mobile Accessories', 'Repairs', 'Other'],
+  'Electronics Stores': ['TV & Home Appliances', 'Computers', 'Gaming Consoles', 'Audio Equipment', 'Other'],
+  'Cyber Cafes': ['Gaming Cafe', 'Internet Access', 'Printing', 'Scanning', 'Other'],
+  'Printing Services': ['Digital Printing', 'Offset Printing', 'Screen Printing', '3D Printing', 'Other'],
+  'Temples': ['Hindu Temple', 'Jain Temple', 'Buddhist Temple', 'Other'],
+  'Gurudwaras': ['Main Gurudwara', 'Community Gurudwara', 'Other'],
+  'Churches': ['Catholic Church', 'Protestant Church', 'Orthodox Church', 'Other'],
+  'Mosques': ['Sunni Mosque', 'Shia Mosque', 'Community Mosque', 'Other'],
+  'NGOs': ['Educational NGO', 'Healthcare NGO', 'Environmental NGO', 'Animal Welfare NGO', 'Other'],
+  'Charitable Organizations': ['Orphanages', 'Food Banks', 'Shelters', 'Other'],
+  'Public Transport Services': ['Bus Service', 'Metro Service', 'Taxi Service', 'Ride Sharing', 'Other'],
+  'Bus Services': ['Local Bus', 'Intercity Bus', 'Tourist Bus', 'Other'],
+  'Taxi Services': ['City Taxi', 'Outstation Taxi', 'Airport Taxi', 'Other'],
+  'Auto Services': ['Auto Rickshaw', 'E-Rickshaw', 'Shared Auto', 'Other'],
+  'Metro Services': ['City Metro', 'Suburban Metro', 'Other'],
+  'Driving Schools': ['Car Driving', 'Bike Driving', 'Commercial Vehicle Training', 'Other'],
+  'Car Rentals': ['Self-Drive Cars', 'Chauffeur Cars', 'Luxury Car Rentals', 'Other'],
+  'Bike Rentals': ['Scooter Rentals', 'Motorbike Rentals', 'Electric Bike Rentals', 'Other'],
+  'Agricultural Services': ['Farming Equipment', 'Crop Consultancy', 'Seed Supply', 'Other'],
+  'Equipment Dealers': ['Construction Equipment', 'Agricultural Equipment', 'Industrial Equipment', 'Other'],
+  'Hardware Stores': ['Construction Hardware', 'Tools', 'Plumbing Supplies', 'Electrical Supplies', 'Other'],
+  'Building Material Suppliers': ['Cement', 'Steel', 'Bricks', 'Wood', 'Other'],
+  'Cement Dealers': ['Portland Cement', 'White Cement', 'Ready Mix Cement', 'Other'],
+  'AC Dealers': ['Window AC', 'Split AC', 'Portable AC', 'Central AC', 'Other'],
+  'AC Repair Services': ['AC Gas Filling', 'AC Maintenance', 'AC Part Replacement', 'Other'],
+  'AC Installation Services': ['Window AC Installation', 'Split AC Installation', 'Central AC Setup', 'Other'],
+  'General Physician': ['Family Doctor', 'Internal Medicine', 'Preventive Care', 'Other'],
+  'Pediatrician': ['Newborn Care', 'Child Vaccination', 'Child Nutrition', 'Other'],
+  'Cardiologist': ['Heart Surgery', 'Heart Check-up', 'Other'],
+  'Dermatologist': ['Skin Care', 'Cosmetic Dermatology', 'Laser Treatment', 'Other'],
+  'Gynecologist Obstetrician': ['Pregnancy Care', 'Infertility Treatment', 'Gynecological Surgery', 'Other'],
+  'Orthopedic Doctor': ['Joint Replacement', 'Fracture Treatment', 'Sports Injury', 'Other'],
+  'ENT Specialist Ear Nose Throat': ['Hearing Care', 'Sinus Treatment', 'Throat Surgery', 'Other'],
+  'Ophthalmologist Eye Specialist': ['Cataract Surgery', 'Lasik', 'Glaucoma Treatment', 'Other'],
+  'Dentist': ['General Dentistry', 'Orthodontics', 'Cosmetic Dentistry', 'Other'],
+  'Neurologist': ['Brain Surgery', 'Stroke Care', 'Epilepsy Treatment', 'Other'],
+  'Psychiatrist': ['Therapy', 'Medication Management', 'Addiction Treatment', 'Other'],
+  'Urologist': ['Kidney Stone Treatment', 'Urinary Tract Care', 'Other'],
+  'Nephrologist': ['Dialysis', 'Kidney Transplant', 'Other'],
+  'Gastroenterologist': ['Endoscopy', 'Liver Care', 'Digestive Disorder Treatment', 'Other'],
+  'Pulmonologist Chest Specialist': ['Asthma Care', 'COPD Treatment', 'Other'],
+  'Oncologist Cancer Specialist': ['Chemotherapy', 'Radiation Therapy', 'Cancer Surgery', 'Other'],
+  'Endocrinologist': ['Diabetes Care', 'Hormone Therapy', 'Other'],
+  'Rheumatologist': ['Arthritis Treatment', 'Autoimmune Disease Care', 'Other'],
+  'Surgeon General': ['Appendectomy', 'Hernia Repair', 'Other'],
+  'Plastic Surgeon': ['Cosmetic Surgery', 'Reconstructive Surgery', 'Other'],
+  'Physiotherapist': ['Sports Injury Rehab', 'Post-Surgery Rehab', 'Pain Management', 'Other'],
+  'Homeopathy Doctor': ['Classical Homeopathy', 'Acute Illness Care', 'Other'],
+  'Ayurvedic Doctor': ['Panchakarma', 'Herbal Medicine', 'Other'],
+  'Unani Doctor': ['Herbal Treatments', 'Massage Therapy', 'Other'],
+  'Sexologist': ['Male Sexual Health', 'Female Sexual Health', 'Other'],
+  'Immunologist': ['Allergy Testing', 'Immune Disorder Care', 'Other'],
+  'Geriatric Specialist Elderly Care': ['Elderly Rehab', 'Chronic Illness Management', 'Other'],
+  'Occupational Therapist': ['Workplace Injury Care', 'Hand Therapy', 'Other'],
+  'Speech Therapist': ['Speech Delay Therapy', 'Voice Therapy', 'Other'],
+  'Dietitian Nutritionist': ['Weight Loss Programs', 'Clinical Nutrition', 'Sports Nutrition', 'Other']
+};
+
+const categoryOptions = categories.map(cat => ({
+  value: cat,
+  label: cat
+}));
 
   const days = [
     { key: 'monday', label: 'Mon' },
@@ -111,6 +230,14 @@ export default function ListBusinessPage({
     { key: 'saturday', label: 'Sat' },
     { key: 'sunday', label: 'Sun' }
   ];
+
+  if(!user){
+    return(
+      <div className='flex justify-center item-center h-[400px]'>
+        <p className='my-auto text-2xl lg:text-3xl font-bold'>Please Login to List the Business</p>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
@@ -162,22 +289,24 @@ export default function ListBusinessPage({
                     />
                   </div>
 
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Category *
-                    </label>
-                    <select
-                      required
-                      value={formData.category}
-                      onChange={(e) => setFormData({...formData, category: e.target.value, subcategory: ''})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">Select Category</option>
-                      {categories.map(category => (
-                        <option key={category} value={category}>{category}</option>
-                      ))}
-                    </select>
-                  </div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        Category *
+      </label>
+      <Select
+        options={categoryOptions}
+        value={categoryOptions.find(opt => opt.value === formData.category) || null}
+        onChange={(selected) => setFormData({
+          ...formData,
+          category: selected?.value || "",
+        })}
+        placeholder="Select Category"
+        isSearchable
+        menuPlacement="auto" // auto-detects space but prefers bottom
+        className="text-sm"
+      />
+    </div>
 
                   {formData.category && (
                     <div>
@@ -389,7 +518,7 @@ export default function ListBusinessPage({
                 )}
               </div>
 
-              {message && <p className='text-red-500 text-center font-bold'>{message}</p>}
+              {message && <p className={`${message == 'Business listing submitted successfully' ? 'text-green-500' : 'text-red-500'} text-center font-bold`}>{message}</p>}
 
               {/* Submit Button */}
               <div className="flex justify-center pt-4">
