@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, MapPin, Filter, ArrowRight, ChevronDown } from 'lucide-react';
-import { popularCities } from '../data/mockData';
+import { categories, popularCities } from '../data/mockData';
 import { useAutoLocation } from '../hooks/useAutoLocation';
 import axios from 'axios';
 
@@ -61,16 +61,10 @@ export default function HeroSection({ onSearch, onBrowseCategories }: HeroSectio
   }, []);
 
   const handleSearch = () => {
-    onSearch(searchQuery, location, category);
-  };
-
-  const handleCategoryChange = (selectedCategory: string) => {
-    setCategory(selectedCategory);
-    
-    // If location is detected and a specific category is selected, navigate to category page
-    if (location && !locationLoading && selectedCategory !== 'All Categories') {
+    // onSearch(searchQuery, location, category);
+    if (location && !locationLoading && searchQuery !== 'All Categories' && searchQuery !== '') {
       const locationPath = location.toLowerCase().replace(/\s+/g, '-');
-      const categoryPath = selectedCategory.toLowerCase().replace(/\s+/g, '-');
+      const categoryPath = searchQuery.toLowerCase().replace(/\s+/g, '-');
       window.location.href = `/${locationPath}/${categoryPath}`;
     }
   };
@@ -96,18 +90,37 @@ export default function HeroSection({ onSearch, onBrowseCategories }: HeroSectio
     setSearchQuery(value);
     setShowSearchSuggestions(false);
   }
-  
 
+  const Categories: string[] = ['Restaurants','Hotels','Hospitals','Schools','Shopping','Automotive','Beauty','Spa',
+    'Fitness','Dentists','Lawyers','Real Estate','Banks','Pharmacies','Petrol Pumps','Pet Services','Home Services',
+    'Coaching Centres','Tuition Classes','Colleges','Universities','Government Offices','Travel Agencies',
+    'Tour Operators','Courier Services','Logistics Services','Event Management','Party Services','Wedding Services',
+    'Banquet Halls','Caterers','Photographers','Doctors','Clinics','Diagnostic Centres','Labs','Repair Services',
+    'Maintenance Services','Grocery Stores','Supermarkets','Sweet Shops','Bakeries','Clothing Stores',
+    'Apparel Stores','Mobile Stores','Electronics Stores','Cyber Cafes','Printing Services','Temples','Gurudwaras',
+    'Churches','Mosques','NGOs','Charitable Organizations','Public Transport Services','Bus Services','Taxi Services',
+    'Auto Services','Metro Services','Driving Schools','Car Rentals','Bike Rentals','Agricultural Services',
+    'Equipment Dealers','Hardware Stores','Building Material Suppliers','Cement Dealers','AC Dealers',
+    'AC Repair Services','AC Installation Services','General Physician','Pediatrician','Cardiologist',
+    'Dermatologist','Gynecologist Obstetrician','Orthopedic Doctor','ENT Specialist Ear Nose Throat',
+    'Ophthalmologist Eye Specialist','Dentist','Neurologist','Psychiatrist','Urologist','Nephrologist',
+    'Gastroenterologist','Pulmonologist (Chest Specialist)','Oncologist Cancer Specialist','Endocrinologist',
+    'Rheumatologist','Surgeon General','Plastic Surgeon','Physiotherapist','Homeopathy Doctor','Ayurvedic Doctor',
+    'Unani Doctor','Sexologist','Immunologist','Geriatric Specialist Elderly Care','Occupational Therapist',
+    'Speech Therapist','Dietitian Nutritionist',
+  ];
   
-  const fetchSuggestions = async (value: string) => {
+  const fetchSuggestions = (value: string) => {
     try{
       setSearchQuery(value);
       setShowSearchSuggestions(true);
-      const response = await axios.get<Suggestion[]>(`https://api.datamuse.com/sug?s=${value}`);
+
+      const filteredSuggestions = Categories.filter((item) => item.toLowerCase().includes(value.toLowerCase()));
+
+      console.log(filteredSuggestions);
       if(value !== '')
         {
-          setSuggestions(response.data.map((item) => item.word));
-          console.log(response.data.map((item) => item.word));
+          setSuggestions(filteredSuggestions.slice(0.8));
         }
         else{
         setShowSearchSuggestions(false);
@@ -135,39 +148,6 @@ export default function HeroSection({ onSearch, onBrowseCategories }: HeroSectio
         {/* Search Container - Single Line */}
         <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-md border border-gray-200 p-5 mb-6">
           <div className="flex flex-col lg:flex-row gap-4 items-center">
-            {/* Search Input */}
-            <div className="relative flex-1 min-w-0">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="What are you looking for?"
-                value={searchQuery}
-                onChange={(e) => fetchSuggestions(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-              />
-
-              {showSearchSuggestions && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
-                  {suggestions.length > 0 ? (
-                    suggestions.map((item, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleSearchQueryChange(item)}
-                        className="w-full px-4 py-3 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none border-b border-gray-100 last:border-b-0"
-                      >
-                        <div className="flex items-center">
-                          <span className="text-gray-800">{item}</span>
-                        </div>
-                      </button>
-                    ))
-                  ) : (
-                    <div className="px-4 py-3 text-gray-500 text-sm">
-                      No item found
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
 
             {/* Location Input with Autocomplete */}
             <div className="relative flex-1 min-w-0" ref={locationRef}>
@@ -207,24 +187,38 @@ export default function HeroSection({ onSearch, onBrowseCategories }: HeroSectio
               )}
             </div>
 
-            {/* Category Filter */}
+            {/* Search Input */}
             <div className="relative flex-1 min-w-0">
-              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <select
-                value={category}
-                onChange={(e) => handleCategoryChange(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base appearance-none bg-white"
-              >
-                <option value="All Categories">All Categories</option>
-                <option value="Restaurants">Restaurants</option>
-                <option value="Retail">Retail</option>
-                <option value="Services">Services</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Entertainment">Entertainment</option>
-                <option value="Beauty">Beauty</option>
-                <option value="Fitness">Fitness</option>
-                <option value="Education">Education</option>
-              </select>
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="What are you looking for?"
+                value={searchQuery}
+                onChange={(e) => fetchSuggestions(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+              />
+
+              {showSearchSuggestions && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+                  {suggestions.length > 0 ? (
+                    suggestions.map((item, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSearchQueryChange(item)}
+                        className="w-full px-4 py-3 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none border-b border-gray-100 last:border-b-0"
+                      >
+                        <div className="flex items-center">
+                          <span className="text-gray-800">{item}</span>
+                        </div>
+                      </button>
+                    ))
+                  ) : (
+                    <div className="px-4 py-3 text-gray-500 text-sm">
+                      No item found
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Search Button */}
