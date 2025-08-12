@@ -1,25 +1,18 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, MapPin, Filter, ArrowRight, ChevronDown } from 'lucide-react';
-import { categories, popularCities } from '../data/mockData';
+import { Search, MapPin, ArrowRight, ChevronDown } from 'lucide-react';
+import { popularCities } from '../data/mockData';
 import { useAutoLocation } from '../hooks/useAutoLocation';
-import axios from 'axios';
 
 interface HeroSectionProps {
   onSearch: (query: string, location: string, category: string) => void;
   onBrowseCategories: () => void;
 }
 
-interface Suggestion {
-  word: string;
-  score: number;
-}
-
 export default function HeroSection({ onSearch, onBrowseCategories }: HeroSectionProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
-  const [category, setCategory] = useState('All Categories');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [filteredCities, setFilteredCities] = useState<string[]>([]);
   const locationRef = useRef<HTMLDivElement>(null);
