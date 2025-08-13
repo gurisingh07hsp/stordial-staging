@@ -255,61 +255,7 @@ export default function BusinessManagement() {
   
     useEffect(()=>{
       setFormData({...formData, hours: openingHours});
-    },[openingHours])
-
-
-
-  // Mock data - in real app this would come from API
-  // const businesses: Business[] = [
-  //   {
-  //     id: '1',
-  //     name: 'Café Central',
-  //     description: 'A cozy café serving fresh coffee and pastries',
-  //     category: 'Restaurants',
-  //     subcategory: 'Coffee Shop',
-  //     services: ['Coffee', 'Pastries', 'Breakfast'],
-  //     city: 'New York',
-  //     rating: 4.5,
-  //     reviews: 128,
-  //     image: '/api/placeholder/300/200',
-  //     phone: '+1 (555) 123-4567',
-  //     email: 'info@cafecentral.com',
-  //     website: 'https://cafecentral.com',
-  //     address: '123 Main St, New York, NY 10001'
-  //   },
-  //   {
-  //     id: '2',
-  //     name: 'Tech Solutions Inc',
-  //     description: 'Professional IT services and consulting',
-  //     category: 'Services',
-  //     subcategory: 'Consulting',
-  //     services: ['IT Consulting', 'Web Development', 'System Administration'],
-  //     city: 'San Francisco',
-  //     rating: 4.8,
-  //     reviews: 95,
-  //     image: '/api/placeholder/300/200',
-  //     phone: '+1 (555) 987-6543',
-  //     email: 'contact@techsolutions.com',
-  //     website: 'https://techsolutions.com',
-  //     address: '456 Tech Ave, San Francisco, CA 94102'
-  //   },
-  //   {
-  //     id: '3',
-  //     name: 'Green Gardens',
-  //     description: 'Landscaping and garden maintenance services',
-  //     category: 'Services',
-  //     subcategory: 'Cleaning',
-  //     services: ['Landscaping', 'Garden Maintenance', 'Tree Trimming'],
-  //     city: 'Los Angeles',
-  //     rating: 4.2,
-  //     reviews: 67,
-  //     image: '/api/placeholder/300/200',
-  //     phone: '+1 (555) 456-7890',
-  //     email: 'hello@greengardens.com',
-  //     website: 'https://greengardens.com',
-  //     address: '789 Garden Blvd, Los Angeles, CA 90210'
-  //   },
-  // ];
+    },[openingHours]);
 
   const statuses = ['All', 'Active', 'Pending', 'Suspended', 'Featured', 'Not Featured'];
 
@@ -920,7 +866,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
                                         <input
                                           type="checkbox"
                                           checked={openingHours[key].closed}
-                                          onChange={()=> {setIs24x7(!is24x7), setOpeningHours({
+                                          onChange={()=> {setIs24x7(!is24x7); setOpeningHours({
                                             ...openingHours,
                                             [key]: { ...openingHours[key], closed: !is24x7 }
                                           })}}

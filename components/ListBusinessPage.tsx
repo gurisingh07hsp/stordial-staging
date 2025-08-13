@@ -451,7 +451,7 @@ const categoryOptions = categories.map(cat => ({
                                         <input
                                           type="checkbox"
                                           checked={openingHours[key].closed}
-                                          onChange={()=> {setIs24x7(!is24x7), setOpeningHours({
+                                          onChange={()=> {setIs24x7(!is24x7); setOpeningHours({
                                             ...openingHours,
                                             [key]: { ...openingHours[key], closed: !is24x7 }
                                           })}}
