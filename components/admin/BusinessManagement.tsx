@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Search, 
   Filter, 
@@ -19,7 +19,9 @@ import {
   FileSpreadsheet,
   Download
 } from 'lucide-react';
-import { Business } from '../../types';
+import { Business, BusinessFormData,} from '../../types';
+import axios from 'axios';
+import Select from "react-select";
 
 interface OpeningHours {
   [key: string]: {
@@ -31,7 +33,7 @@ interface OpeningHours {
 
 export default function BusinessManagement() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [selectedStatus, setSelectedStatus] = useState('All');
   const [selectedBusinesses, setSelectedBusinesses] = useState<string[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -53,118 +55,265 @@ export default function BusinessManagement() {
   }>>([]);
   const [isImporting, setIsImporting] = useState(false);
   const [featuredBusinesses, setFeaturedBusinesses] = useState<string[]>([]);
+    const [is24x7, setIs24x7] = useState(false);
+    const [message, setMessage] = useState('');
 
-  // Form data for new business
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    category: '',
-    subcategory: '',
-    services: [] as string[],
-    phone: '',
-    email: '',
-    address: '',
-    city: '',
-    website: ''
-  });
+    const [businesses, setBusinesses] = useState<Business[]>([]);
 
-  const [openingHours, setOpeningHours] = useState<OpeningHours>({
-    monday: { open: '09:00', close: '17:00', closed: false },
-    tuesday: { open: '09:00', close: '17:00', closed: false },
-    wednesday: { open: '09:00', close: '17:00', closed: false },
-    thursday: { open: '09:00', close: '17:00', closed: false },
-    friday: { open: '09:00', close: '17:00', closed: false },
-    saturday: { open: '10:00', close: '15:00', closed: false },
-    sunday: { open: '10:00', close: '15:00', closed: true }
-  });
 
-  // Mock data - in real app this would come from API
-  const businesses: Business[] = [
-    {
-      id: '1',
-      name: 'Café Central',
-      description: 'A cozy café serving fresh coffee and pastries',
-      category: 'Restaurants',
-      subcategory: 'Coffee Shop',
-      services: ['Coffee', 'Pastries', 'Breakfast'],
-      city: 'New York',
-      rating: 4.5,
-      reviews: 128,
-      image: '/api/placeholder/300/200',
-      phone: '+1 (555) 123-4567',
-      email: 'info@cafecentral.com',
-      website: 'https://cafecentral.com',
-      address: '123 Main St, New York, NY 10001'
-    },
-    {
-      id: '2',
-      name: 'Tech Solutions Inc',
-      description: 'Professional IT services and consulting',
-      category: 'Services',
-      subcategory: 'Consulting',
-      services: ['IT Consulting', 'Web Development', 'System Administration'],
-      city: 'San Francisco',
-      rating: 4.8,
-      reviews: 95,
-      image: '/api/placeholder/300/200',
-      phone: '+1 (555) 987-6543',
-      email: 'contact@techsolutions.com',
-      website: 'https://techsolutions.com',
-      address: '456 Tech Ave, San Francisco, CA 94102'
-    },
-    {
-      id: '3',
-      name: 'Green Gardens',
-      description: 'Landscaping and garden maintenance services',
-      category: 'Services',
-      subcategory: 'Cleaning',
-      services: ['Landscaping', 'Garden Maintenance', 'Tree Trimming'],
-      city: 'Los Angeles',
-      rating: 4.2,
-      reviews: 67,
-      image: '/api/placeholder/300/200',
-      phone: '+1 (555) 456-7890',
-      email: 'hello@greengardens.com',
-      website: 'https://greengardens.com',
-      address: '789 Garden Blvd, Los Angeles, CA 90210'
+      const [openingHours, setOpeningHours] = useState<OpeningHours>({
+      monday: { open: '09:00', close: '17:00', closed: false },
+      tuesday: { open: '09:00', close: '17:00', closed: false },
+      wednesday: { open: '09:00', close: '17:00', closed: false },
+      thursday: { open: '09:00', close: '17:00', closed: false },
+      friday: { open: '09:00', close: '17:00', closed: false },
+      saturday: { open: '10:00', close: '15:00', closed: false },
+      sunday: { open: '10:00', close: '15:00', closed: false },
+      "24x7": { open: '10:00', close: '15:00', closed: false },
+    });
+  
+  
+    const [formData, setFormData] = useState<BusinessFormData>({
+      name: '',
+      description: '',
+      category: '',
+      subcategory: '',
+      services: [],
+      phone: '',
+      email: '',
+      address: '',
+      city: '',
+      website: '',
+      hours: openingHours
+    });
+
+    const handleSubmit = async(e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+      formData.city = formData.city.toLowerCase();
+      formData.category = formData.category.toLowerCase();
+      console.log("Form Data : ", formData);
+      try{
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, formData,{withCredentials: true});
+        console.log(response.data);
+        if(response.status == 201){
+          setIsSubmitting(false);
+          setMessage('Business listing submitted successfully');
+          setTimeout(() => {
+            setShowAddModal(false);
+          }, 1000);
+        }
+      }catch(error){
+      if (axios.isAxiosError(error)) {
+    setIsSubmitting(false);
+    setMessage('You must be logged in to submit a business listing')
+  } else {
+    setMessage('An unexpected error occurred');
+  }
     }
-  ];
-
-  const categories = ['All', 'Restaurants', 'Services', 'Healthcare', 'Retail', 'Entertainment'];
-  const statuses = ['All', 'Active', 'Pending', 'Suspended', 'Featured', 'Not Featured'];
-
-  const subcategories = {
-    'Restaurants': ['Coffee Shop', 'Fine Dining', 'Fast Food', 'Cafe', 'Bar', 'Pizza', 'Asian', 'Mexican', 'Italian', 'American'],
-    'Retail': ['Clothing', 'Electronics', 'Home & Garden', 'Sports', 'Books', 'Jewelry', 'Shoes', 'Accessories', 'Grocery', 'Hardware'],
-    'Services': ['Repair', 'Cleaning', 'Consulting', 'Transportation', 'Legal', 'Accounting', 'Insurance', 'Real Estate', 'Photography', 'Design'],
-    'Healthcare': ['Medical Clinic', 'Dental', 'Pharmacy', 'Wellness', 'Therapy', 'Optometry', 'Veterinary', 'Chiropractic', 'Massage', 'Nutrition'],
-    'Entertainment': ['Movie Theater', 'Gaming', 'Sports', 'Music', 'Art', 'Bowling', 'Arcade', 'Karaoke', 'Comedy Club', 'Escape Room'],
-    'Beauty': ['Hair Salon', 'Spa', 'Nail Salon', 'Barber Shop', 'Makeup', 'Tanning', 'Tattoo', 'Piercing', 'Esthetics', 'Barber'],
-    'Fitness': ['Gym', 'Yoga Studio', 'Personal Training', 'Swimming', 'Dance', 'Martial Arts', 'Pilates', 'CrossFit', 'Boxing', 'Tennis'],
-    'Education': ['School', 'Tutoring', 'Language', 'Music', 'Art Classes', 'Driving School', 'Cooking Classes', 'Computer Training', 'Test Prep', 'Preschool']
   };
 
-  const days = [
-    { key: 'monday', label: 'Mon' },
-    { key: 'tuesday', label: 'Tue' },
-    { key: 'wednesday', label: 'Wed' },
-    { key: 'thursday', label: 'Thu' },
-    { key: 'friday', label: 'Fri' },
-    { key: 'saturday', label: 'Sat' },
-    { key: 'sunday', label: 'Sun' }
-  ];
+    const categories: string[] = ['Restaurants','Hotels','Hospitals','Schools','Shopping','Automotive','Beauty','Spa',
+      'Fitness','Dentists','Lawyers','Real Estate','Banks','Pharmacies','Petrol Pumps','Pet Services','Home Services',
+      'Coaching Centres','Tuition Classes','Colleges','Universities','Government Offices','Travel Agencies',
+      'Tour Operators','Courier Services','Logistics Services','Event Management','Party Services','Wedding Services',
+      'Banquet Halls','Caterers','Photographers','Doctors','Clinics','Diagnostic Centres','Labs','Repair Services',
+      'Maintenance Services','Grocery Stores','Supermarkets','Sweet Shops','Bakeries','Clothing Stores',
+      'Apparel Stores','Mobile Stores','Electronics Stores','Cyber Cafes','Printing Services','Temples','Gurudwaras',
+      'Churches','Mosques','NGOs','Charitable Organizations','Public Transport Services','Bus Services','Taxi Services',
+      'Auto Services','Metro Services','Driving Schools','Car Rentals','Bike Rentals','Agricultural Services',
+      'Equipment Dealers','Hardware Stores','Building Material Suppliers','Cement Dealers','AC Dealers',
+      'AC Repair Services','AC Installation Services','General Physician','Pediatrician','Cardiologist',
+      'Dermatologist','Gynecologist Obstetrician','Orthopedic Doctor','ENT Specialist Ear Nose Throat',
+      'Ophthalmologist Eye Specialist','Dentist','Neurologist','Psychiatrist','Urologist','Nephrologist',
+      'Gastroenterologist','Pulmonologist Chest Specialist','Oncologist Cancer Specialist','Endocrinologist',
+      'Rheumatologist','Surgeon General','Plastic Surgeon','Physiotherapist','Homeopathy Doctor','Ayurvedic Doctor',
+      'Unani Doctor','Sexologist','Immunologist','Geriatric Specialist Elderly Care','Occupational Therapist',
+      'Speech Therapist','Dietitian Nutritionist',
+    ];
+  
+  
+    
+  const subcategories = {
+    'Restaurants': ['Coffee Shop', 'Fine Dining', 'Fast Food', 'Cafe', 'Bar', 'Pizza', 'Asian', 'Mexican', 'Italian', 'American', 'Other'],
+    'Hotels': ['Resort', 'Motel', 'Hostel', 'Luxury Hotel', 'Boutique Hotel', 'Guest House', 'Bed & Breakfast', 'Lodge', 'Capsule Hotel', 'Other'],
+    'Hospitals': ['General Hospital', 'Specialty Hospital', 'Children’s Hospital', 'Teaching Hospital', 'Private Hospital', 'Public Hospital', 'Other'],
+    'Schools': ['Primary School', 'Secondary School', 'High School', 'International School', 'Boarding School', 'Montessori', 'Special Needs School', 'Other'],
+    'Shopping': ['Malls', 'Department Stores', 'Boutiques', 'Street Markets', 'Online Stores', 'Other'],
+    'Automotive': ['Car Showroom', 'Bike Showroom', 'Car Wash', 'Tire Shop', 'Auto Repair', 'Spare Parts Store', 'Other'],
+    'Beauty': ['Hair Salon', 'Spa', 'Nail Salon', 'Barber Shop', 'Makeup Artist', 'Tanning', 'Tattoo', 'Piercing', 'Other'],
+    'Spa': ['Day Spa', 'Medical Spa', 'Luxury Spa', 'Ayurvedic Spa', 'Thermal Spa', 'Other'],
+    'Fitness': ['Gym', 'Yoga Studio', 'Personal Training', 'Swimming Pool', 'Dance Studio', 'Martial Arts', 'Pilates', 'CrossFit', 'Boxing', 'Other'],
+    'Dentists': ['Orthodontist', 'Pediatric Dentist', 'Cosmetic Dentist', 'Oral Surgeon', 'Endodontist', 'Periodontist', 'Other'],
+    'Lawyers': ['Criminal Lawyer', 'Corporate Lawyer', 'Family Lawyer', 'Immigration Lawyer', 'Tax Lawyer', 'Intellectual Property Lawyer', 'Other'],
+    'Real Estate': ['Residential Sales', 'Commercial Sales', 'Property Management', 'Real Estate Investment', 'Rental Agency', 'Other'],
+    'Banks': ['Commercial Bank', 'Investment Bank', 'Cooperative Bank', 'Credit Union', 'Online Bank', 'Other'],
+    'Pharmacies': ['Retail Pharmacy', 'Hospital Pharmacy', 'Compounding Pharmacy', 'Online Pharmacy', 'Other'],
+    'Petrol Pumps': ['Petrol Station', 'Diesel Station', 'CNG Station', 'EV Charging Station', 'Other'],
+    'Pet Services': ['Pet Grooming', 'Pet Boarding', 'Pet Training', 'Pet Sitting', 'Veterinary Clinic', 'Other'],
+    'Home Services': ['Plumbing', 'Electrical', 'Cleaning', 'Painting', 'Pest Control', 'Home Renovation', 'Landscaping', 'Other'],
+    'Coaching Centres': ['Exam Coaching', 'Language Coaching', 'Skill Development', 'Career Counseling', 'Other'],
+    'Tuition Classes': ['Math Tuition', 'Science Tuition', 'Language Tuition', 'Test Preparation', 'Other'],
+    'Colleges': ['Engineering College', 'Medical College', 'Arts College', 'Commerce College', 'Community College', 'Other'],
+    'Universities': ['Public University', 'Private University', 'Technical University', 'Open University', 'Other'],
+    'Government Offices': ['Municipal Office', 'Tax Office', 'Passport Office', 'Labor Office', 'Transport Office', 'Other'],
+    'Travel Agencies': ['Domestic Travel', 'International Travel', 'Cruise Booking', 'Adventure Travel', 'Honeymoon Packages', 'Other'],
+    'Tour Operators': ['Guided Tours', 'Adventure Tours', 'Cultural Tours', 'Wildlife Tours', 'Pilgrimage Tours', 'Other'],
+    'Courier Services': ['Domestic Courier', 'International Courier', 'Same-Day Delivery', 'Logistics Services', 'Other'],
+    'Logistics Services': ['Freight Forwarding', 'Warehousing', 'Transportation', 'Customs Clearance', 'Supply Chain Management', 'Other'],
+    'Event Management': ['Corporate Events', 'Weddings', 'Concerts', 'Festivals', 'Private Parties', 'Other'],
+    'Party Services': ['Party Planning', 'Event Decor', 'Catering', 'Entertainment', 'Photography', 'Other'],
+    'Wedding Services': ['Wedding Planning', 'Bridal Makeup', 'Photography', 'Venue Booking', 'Catering', 'Other'],
+    'Banquet Halls': ['Wedding Halls', 'Conference Halls', 'Party Halls', 'Banquet Facilities', 'Other'],
+    'Caterers': ['Wedding Catering', 'Corporate Catering', 'Buffet Catering', 'Specialty Cuisine Catering', 'Other'],
+    'Photographers': ['Wedding Photographer', 'Event Photographer', 'Portrait Photographer', 'Product Photographer', 'Other'],
+    'Doctors': ['General Physician', 'Specialist', 'Surgeon', 'Family Doctor', 'Other'],
+    'Clinics': ['Medical Clinic', 'Dental Clinic', 'Wellness Clinic', 'Physiotherapy Clinic', 'Other'],
+    'Diagnostic Centres': ['Pathology Lab', 'Radiology Centre', 'Blood Test Centre', 'Health Check-up Centre', 'Other'],
+    'Labs': ['Medical Lab', 'Research Lab', 'Industrial Lab', 'Testing Lab', 'Other'],
+    'Repair Services': ['Appliance Repair', 'Electronics Repair', 'Furniture Repair', 'Watch Repair', 'Other'],
+    'Maintenance Services': ['Building Maintenance', 'Garden Maintenance', 'Equipment Maintenance', 'Other'],
+    'Grocery Stores': ['Supermarket', 'Mini-Mart', 'Organic Store', 'Discount Store', 'Other'],
+    'Supermarkets': ['Hypermarket', 'Neighborhood Store', 'Discount Supermarket', 'Other'],
+    'Sweet Shops': ['Traditional Sweets', 'Chocolate Shops', 'Bakery Sweets', 'Ice Cream Parlors', 'Other'],
+    'Bakeries': ['Cake Shop', 'Pastry Shop', 'Bread Shop', 'Artisan Bakery', 'Other'],
+    'Clothing Stores': ['Men’s Wear', 'Women’s Wear', 'Children’s Wear', 'Ethnic Wear', 'Sportswear', 'Other'],
+    'Apparel Stores': ['Casual Wear', 'Formal Wear', 'Outdoor Wear', 'Undergarments', 'Other'],
+    'Mobile Stores': ['Smartphones', 'Feature Phones', 'Mobile Accessories', 'Repairs', 'Other'],
+    'Electronics Stores': ['TV & Home Appliances', 'Computers', 'Gaming Consoles', 'Audio Equipment', 'Other'],
+    'Cyber Cafes': ['Gaming Cafe', 'Internet Access', 'Printing', 'Scanning', 'Other'],
+    'Printing Services': ['Digital Printing', 'Offset Printing', 'Screen Printing', '3D Printing', 'Other'],
+    'Temples': ['Hindu Temple', 'Jain Temple', 'Buddhist Temple', 'Other'],
+    'Gurudwaras': ['Main Gurudwara', 'Community Gurudwara', 'Other'],
+    'Churches': ['Catholic Church', 'Protestant Church', 'Orthodox Church', 'Other'],
+    'Mosques': ['Sunni Mosque', 'Shia Mosque', 'Community Mosque', 'Other'],
+    'NGOs': ['Educational NGO', 'Healthcare NGO', 'Environmental NGO', 'Animal Welfare NGO', 'Other'],
+    'Charitable Organizations': ['Orphanages', 'Food Banks', 'Shelters', 'Other'],
+    'Public Transport Services': ['Bus Service', 'Metro Service', 'Taxi Service', 'Ride Sharing', 'Other'],
+    'Bus Services': ['Local Bus', 'Intercity Bus', 'Tourist Bus', 'Other'],
+    'Taxi Services': ['City Taxi', 'Outstation Taxi', 'Airport Taxi', 'Other'],
+    'Auto Services': ['Auto Rickshaw', 'E-Rickshaw', 'Shared Auto', 'Other'],
+    'Metro Services': ['City Metro', 'Suburban Metro', 'Other'],
+    'Driving Schools': ['Car Driving', 'Bike Driving', 'Commercial Vehicle Training', 'Other'],
+    'Car Rentals': ['Self-Drive Cars', 'Chauffeur Cars', 'Luxury Car Rentals', 'Other'],
+    'Bike Rentals': ['Scooter Rentals', 'Motorbike Rentals', 'Electric Bike Rentals', 'Other'],
+    'Agricultural Services': ['Farming Equipment', 'Crop Consultancy', 'Seed Supply', 'Other'],
+    'Equipment Dealers': ['Construction Equipment', 'Agricultural Equipment', 'Industrial Equipment', 'Other'],
+    'Hardware Stores': ['Construction Hardware', 'Tools', 'Plumbing Supplies', 'Electrical Supplies', 'Other'],
+    'Building Material Suppliers': ['Cement', 'Steel', 'Bricks', 'Wood', 'Other'],
+    'Cement Dealers': ['Portland Cement', 'White Cement', 'Ready Mix Cement', 'Other'],
+    'AC Dealers': ['Window AC', 'Split AC', 'Portable AC', 'Central AC', 'Other'],
+    'AC Repair Services': ['AC Gas Filling', 'AC Maintenance', 'AC Part Replacement', 'Other'],
+    'AC Installation Services': ['Window AC Installation', 'Split AC Installation', 'Central AC Setup', 'Other'],
+    'General Physician': ['Family Doctor', 'Internal Medicine', 'Preventive Care', 'Other'],
+    'Pediatrician': ['Newborn Care', 'Child Vaccination', 'Child Nutrition', 'Other'],
+    'Cardiologist': ['Heart Surgery', 'Heart Check-up', 'Other'],
+    'Dermatologist': ['Skin Care', 'Cosmetic Dermatology', 'Laser Treatment', 'Other'],
+    'Gynecologist Obstetrician': ['Pregnancy Care', 'Infertility Treatment', 'Gynecological Surgery', 'Other'],
+    'Orthopedic Doctor': ['Joint Replacement', 'Fracture Treatment', 'Sports Injury', 'Other'],
+    'ENT Specialist Ear Nose Throat': ['Hearing Care', 'Sinus Treatment', 'Throat Surgery', 'Other'],
+    'Ophthalmologist Eye Specialist': ['Cataract Surgery', 'Lasik', 'Glaucoma Treatment', 'Other'],
+    'Dentist': ['General Dentistry', 'Orthodontics', 'Cosmetic Dentistry', 'Other'],
+    'Neurologist': ['Brain Surgery', 'Stroke Care', 'Epilepsy Treatment', 'Other'],
+    'Psychiatrist': ['Therapy', 'Medication Management', 'Addiction Treatment', 'Other'],
+    'Urologist': ['Kidney Stone Treatment', 'Urinary Tract Care', 'Other'],
+    'Nephrologist': ['Dialysis', 'Kidney Transplant', 'Other'],
+    'Gastroenterologist': ['Endoscopy', 'Liver Care', 'Digestive Disorder Treatment', 'Other'],
+    'Pulmonologist Chest Specialist': ['Asthma Care', 'COPD Treatment', 'Other'],
+    'Oncologist Cancer Specialist': ['Chemotherapy', 'Radiation Therapy', 'Cancer Surgery', 'Other'],
+    'Endocrinologist': ['Diabetes Care', 'Hormone Therapy', 'Other'],
+    'Rheumatologist': ['Arthritis Treatment', 'Autoimmune Disease Care', 'Other'],
+    'Surgeon General': ['Appendectomy', 'Hernia Repair', 'Other'],
+    'Plastic Surgeon': ['Cosmetic Surgery', 'Reconstructive Surgery', 'Other'],
+    'Physiotherapist': ['Sports Injury Rehab', 'Post-Surgery Rehab', 'Pain Management', 'Other'],
+    'Homeopathy Doctor': ['Classical Homeopathy', 'Acute Illness Care', 'Other'],
+    'Ayurvedic Doctor': ['Panchakarma', 'Herbal Medicine', 'Other'],
+    'Unani Doctor': ['Herbal Treatments', 'Massage Therapy', 'Other'],
+    'Sexologist': ['Male Sexual Health', 'Female Sexual Health', 'Other'],
+    'Immunologist': ['Allergy Testing', 'Immune Disorder Care', 'Other'],
+    'Geriatric Specialist Elderly Care': ['Elderly Rehab', 'Chronic Illness Management', 'Other'],
+    'Occupational Therapist': ['Workplace Injury Care', 'Hand Therapy', 'Other'],
+    'Speech Therapist': ['Speech Delay Therapy', 'Voice Therapy', 'Other'],
+    'Dietitian Nutritionist': ['Weight Loss Programs', 'Clinical Nutrition', 'Sports Nutrition', 'Other']
+  };
+  
+  const categoryOptions = categories.map(cat => ({
+    value: cat,
+    label: cat
+  }));
+  
+    const days = [
+      { key: 'monday', label: 'Mon' },
+      { key: 'tuesday', label: 'Tue' },
+      { key: 'wednesday', label: 'Wed' },
+      { key: 'thursday', label: 'Thu' },
+      { key: 'friday', label: 'Fri' },
+      { key: 'saturday', label: 'Sat' },
+      { key: 'sunday', label: 'Sun' },
+      { key: '24x7', label: 'Open 24x7' }
+    ];
+  
+    useEffect(()=>{
+      setFormData({...formData, hours: openingHours});
+    },[openingHours])
 
-  const filteredBusinesses = businesses.filter(business => {
-    const matchesSearch = business.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         business.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || business.category === selectedCategory;
-    const matchesStatus = selectedStatus === 'All' || 
-                         (selectedStatus === 'Featured' && (business.featured || featuredBusinesses.includes(business.id))) ||
-                         (selectedStatus === 'Not Featured' && !business.featured && !featuredBusinesses.includes(business.id)) ||
-                         (selectedStatus === 'Active' && business.isClaimed) ||
-                         (selectedStatus === 'Pending' && !business.isClaimed);
-    return matchesSearch && matchesCategory && matchesStatus;
-  });
+
+
+  // Mock data - in real app this would come from API
+  // const businesses: Business[] = [
+  //   {
+  //     id: '1',
+  //     name: 'Café Central',
+  //     description: 'A cozy café serving fresh coffee and pastries',
+  //     category: 'Restaurants',
+  //     subcategory: 'Coffee Shop',
+  //     services: ['Coffee', 'Pastries', 'Breakfast'],
+  //     city: 'New York',
+  //     rating: 4.5,
+  //     reviews: 128,
+  //     image: '/api/placeholder/300/200',
+  //     phone: '+1 (555) 123-4567',
+  //     email: 'info@cafecentral.com',
+  //     website: 'https://cafecentral.com',
+  //     address: '123 Main St, New York, NY 10001'
+  //   },
+  //   {
+  //     id: '2',
+  //     name: 'Tech Solutions Inc',
+  //     description: 'Professional IT services and consulting',
+  //     category: 'Services',
+  //     subcategory: 'Consulting',
+  //     services: ['IT Consulting', 'Web Development', 'System Administration'],
+  //     city: 'San Francisco',
+  //     rating: 4.8,
+  //     reviews: 95,
+  //     image: '/api/placeholder/300/200',
+  //     phone: '+1 (555) 987-6543',
+  //     email: 'contact@techsolutions.com',
+  //     website: 'https://techsolutions.com',
+  //     address: '456 Tech Ave, San Francisco, CA 94102'
+  //   },
+  //   {
+  //     id: '3',
+  //     name: 'Green Gardens',
+  //     description: 'Landscaping and garden maintenance services',
+  //     category: 'Services',
+  //     subcategory: 'Cleaning',
+  //     services: ['Landscaping', 'Garden Maintenance', 'Tree Trimming'],
+  //     city: 'Los Angeles',
+  //     rating: 4.2,
+  //     reviews: 67,
+  //     image: '/api/placeholder/300/200',
+  //     phone: '+1 (555) 456-7890',
+  //     email: 'hello@greengardens.com',
+  //     website: 'https://greengardens.com',
+  //     address: '789 Garden Blvd, Los Angeles, CA 90210'
+  //   },
+  // ];
+
+  const statuses = ['All', 'Active', 'Pending', 'Suspended', 'Featured', 'Not Featured'];
+
+const filteredBusinesses = businesses;
 
   const handleSelectAll = () => {
     if (selectedBusinesses.length === filteredBusinesses.length) {
@@ -193,47 +342,16 @@ export default function BusinessManagement() {
     console.log('Edit business:', business);
   };
 
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     setUploadedImages(prev => [...prev, ...files]);
   };
-
   const removeImage = (index: number) => {
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert('Business added successfully!');
-      setShowAddModal(false);
-      // Reset form
-      setFormData({
-        name: '',
-        description: '',
-        category: '',
-        subcategory: '',
-        services: [],
-        phone: '',
-        email: '',
-        address: '',
-        city: '',
-        website: ''
-      });
-      setUploadedImages([]);
-      setOpeningHours({
-        monday: { open: '09:00', close: '17:00', closed: false },
-        tuesday: { open: '09:00', close: '17:00', closed: false },
-        wednesday: { open: '09:00', close: '17:00', closed: false },
-        thursday: { open: '09:00', close: '17:00', closed: false },
-        friday: { open: '09:00', close: '17:00', closed: false },
-        saturday: { open: '10:00', close: '15:00', closed: false },
-        sunday: { open: '10:00', close: '15:00', closed: true }
-      });
-    }, 2000);
-  };
+
 
   const handleBulkImportFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -307,13 +425,38 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
     window.URL.revokeObjectURL(url);
   };
 
-  const handleToggleFeatured = (businessId: string) => {
+  const handleToggleFeatured = async(businessId: string) => {
+
+      console.log("businessname : ", businessId);
+      const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/admin/featured/${businessId}`, {}, {withCredentials: true} );
+        console.log(response.data);
+
+
     setFeaturedBusinesses(prev => 
       prev.includes(businessId) 
         ? prev.filter(id => id !== businessId)
         : [...prev, businessId]
     );
   };
+
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(10);
+
+
+    const fetchBusinesses = async () => {
+      // console.log(searchQuery, selectedCategory, selectedStatus);
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/?page=${page}
+        &limit=5&search=${searchQuery}&category=${selectedCategory}`, {withCredentials: true});
+      // 
+      console.log(response.data);
+      setBusinesses(response.data.businesses);
+       setTotalPages(response.data.totalPages);
+    // setTotalPages(data.totalPages);
+  };
+
+  useEffect(() => {
+    fetchBusinesses();
+  }, [page, selectedCategory, searchQuery]);
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -352,7 +495,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
             <input
               type="text"
               placeholder="Search businesses..."
-              value={searchQuery}
+              value={searchQuery }
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             />
@@ -366,6 +509,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white text-sm"
             >
+              <option>All Categories</option>
               {categories.map(category => (
                 <option key={category} value={category}>{category}</option>
               ))}
@@ -474,12 +618,12 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredBusinesses.map((business) => (
-                <tr key={business.id} className="hover:bg-gray-50">
+                <tr key={business.name} className="hover:bg-gray-50">
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                     <input
                       type="checkbox"
-                      checked={selectedBusinesses.includes(business.id)}
-                      onChange={() => handleSelectBusiness(business.id)}
+                      checked={selectedBusinesses.includes(business.name)}
+                      onChange={() => handleSelectBusiness(business.name)}
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
                   </td>
@@ -494,7 +638,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
                       </div>
                       <div className="ml-3 sm:ml-4 min-w-0">
                         <div className="text-sm font-medium text-gray-900 truncate">{business.name}</div>
-                        <div className="text-xs sm:text-sm text-gray-500 truncate">{business.description}</div>
+                        <div className="text-xs sm:text-sm text-gray-500 truncate">{`${business.description.slice(0,25)}...`}</div>
                         <div className="sm:hidden text-xs text-gray-500">
                           {business.category} • {business.city}
                         </div>
@@ -525,16 +669,16 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
                     <button
-                      onClick={() => handleToggleFeatured(business.id)}
+                      onClick={() => handleToggleFeatured(business.name)}
                       className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium transition-colors ${
-                        featuredBusinesses.includes(business.id) || business.featured
+                        featuredBusinesses.includes(business.name) || business.featured
                           ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                       }`}
-                      title={featuredBusinesses.includes(business.id) || business.featured ? 'Remove from Featured' : 'Add to Featured'}
+                      title={featuredBusinesses.includes(business.name) || business.featured ? 'Remove from Featured' : 'Add to Featured'}
                     >
-                      <Star className={`w-3 h-3 mr-1 ${featuredBusinesses.includes(business.id) || business.featured ? 'fill-current' : ''}`} />
-                      {featuredBusinesses.includes(business.id) || business.featured ? 'Featured' : 'Not Featured'}
+                      <Star className={`w-3 h-3 mr-1 ${featuredBusinesses.includes(business.name) || business.featured ? 'fill-current' : ''}`} />
+                      {featuredBusinesses.includes(business.name) || business.featured ? 'Featured' : 'Not Featured'}
                     </button>
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -565,17 +709,23 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
       <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 py-3 border border-gray-200">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="text-xs sm:text-sm text-gray-700">
-            Showing <span className="font-medium">1</span> to <span className="font-medium">{filteredBusinesses.length}</span> of{' '}
+            Showing <span className="font-medium">{page}</span> to <span className="font-medium">{filteredBusinesses.length}</span> of{' '}
             <span className="font-medium">{businesses.length}</span> results
           </div>
           <div className="flex space-x-1 sm:space-x-2">
-            <button className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-gray-500 bg-gray-100 rounded-md hover:bg-gray-200">
+            <button
+            onClick={() => setPage((prev) => Math.max(prev - 1, 1))} 
+            disabled={page === 1}
+            className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-gray-500 bg-gray-100 rounded-md hover:bg-gray-200">
               Previous
             </button>
             <button className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-white bg-blue-600 rounded-md">
-              1
+              {page}
             </button>
-            <button className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-gray-500 bg-gray-100 rounded-md hover:bg-gray-200">
+            <button
+            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))} 
+            disabled={page === totalPages}
+            className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-gray-500 bg-gray-100 rounded-md hover:bg-gray-200">
               Next
             </button>
           </div>
@@ -598,283 +748,298 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Business Information */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-800 flex items-center">
-                    <MapPin className="w-4 h-4 mr-2 text-blue-600" />
-                    Business Details
-                  </h4>
-                  
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Business Name *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        placeholder="Enter business name"
-                      />
-                    </div>
+              {/* Business Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                  <MapPin className="w-4 h-4 mr-2 text-blue-600" />
+                  Business Details
+                </h3>
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Business Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter business name"
+                    />
+                  </div>
 
+
+                  <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        Category *
+      </label>
+      <Select
+        options={categoryOptions}
+        required
+        value={categoryOptions.find(opt => opt.value === formData.category) || null}
+        onChange={(selected) => setFormData({
+          ...formData,
+          category: selected?.value || "",
+        })}
+        placeholder="Select Category"
+        isSearchable
+        menuPlacement="auto" // auto-detects space but prefers bottom
+        className="text-sm"
+      />
+    </div>
+
+                  {formData.category && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Category *
+                        Subcategory
                       </label>
                       <select
+                        value={formData.subcategory}
                         required
-                        value={formData.category}
-                        onChange={(e) => setFormData({...formData, category: e.target.value, subcategory: ''})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        onChange={(e) => setFormData({...formData, subcategory: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
-                        <option value="">Select Category</option>
-                        {categories.filter(c => c !== 'All').map(category => (
-                          <option key={category} value={category}>{category}</option>
+                        <option value="">Select Subcategory</option>
+                        {subcategories[formData.category as keyof typeof subcategories]?.map(sub => (
+                          <option key={sub} value={sub}>{sub}</option>
                         ))}
                       </select>
                     </div>
-
-                    {formData.category && (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Subcategory
-                        </label>
-                        <select
-                          value={formData.subcategory}
-                          onChange={(e) => setFormData({...formData, subcategory: e.target.value})}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        >
-                          <option value="">Select Subcategory</option>
-                          {subcategories[formData.category as keyof typeof subcategories]?.map(sub => (
-                            <option key={sub} value={sub}>{sub}</option>
-                          ))}
-                        </select>
-                      </div>
-                    )}
-
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Description *
-                      </label>
-                      <textarea
-                        required
-                        rows={3}
-                        value={formData.description}
-                        onChange={(e) => setFormData({...formData, description: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        placeholder="Brief description of your business..."
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Contact Information */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-800 flex items-center">
-                    <Phone className="w-4 h-4 mr-2 text-blue-600" />
-                    Contact Information
-                  </h4>
-                  
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Phone Number *
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        placeholder="+1 (555) 123-4567"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Email Address *
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        placeholder="business@example.com"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Website
-                      </label>
-                      <input
-                        type="url"
-                        value={formData.website}
-                        onChange={(e) => setFormData({...formData, website: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        placeholder="https://www.example.com"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        City *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.city}
-                        onChange={(e) => setFormData({...formData, city: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        placeholder="Enter city"
-                      />
-                    </div>
-
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Address *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.address}
-                        onChange={(e) => setFormData({...formData, address: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        placeholder="Enter full address"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Media Upload */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-800 flex items-center">
-                    <ImageIcon className="w-4 h-4 mr-2 text-blue-600" />
-                    Business Images
-                  </h4>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Upload Business Photos
-                    </label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                      <div className="mt-4">
-                        <label htmlFor="image-upload" className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
-                          Choose Files
-                        </label>
-                        <input
-                          id="image-upload"
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className="hidden"
-                        />
-                      </div>
-                      <p className="mt-2 text-xs text-gray-500">
-                        Upload up to 5 images (PNG, JPG, GIF up to 10MB each)
-                      </p>
-                    </div>
-                  </div>
-
-                  {uploadedImages.length > 0 && (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                      {uploadedImages.map((file, index) => (
-                        <div key={index} className="relative">
-                          <img
-                            src={URL.createObjectURL(file)}
-                            alt={`Upload ${index + 1}`}
-                            className="w-full h-24 object-cover rounded-lg"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index)}
-                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
                   )}
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Description *
+                    </label>
+                    <textarea
+                      required
+                      rows={3}
+                      value={formData.description}
+                      onChange={(e) => setFormData({...formData, description: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Brief description of your business..."
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                  <Phone className="w-4 h-4 mr-2 text-blue-600" />
+                  Contact Info
+                </h3>
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Phone *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={formData.phone}
+                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="+1 (555) 123-4567"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email (Optional)
+                    </label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="business@example.com"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Address *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.address}
+                      onChange={(e) => setFormData({...formData, address: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="123 Business Street"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      City *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.city}
+                      onChange={(e) => setFormData({...formData, city: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="City Name"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Website (Optional)
+                    </label>
+                    <input
+                      type="url"
+                      value={formData.website}
+                      onChange={(e) => setFormData({...formData, website: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="https://www.yourbusiness.com"
+                    />
+                  </div>
+                </div>
+              </div>
+                              {/* Opening Hours */}
+                              <div className="space-y-4">
+                                <h4 className="text-lg font-semibold text-gray-800 flex items-center">
+                                  <Clock className="w-4 h-4 mr-2 text-blue-600" />
+                                  Opening Hours
+                                </h4>
+                                
+                                <div className="grid gap-3">
+                                  {days.map(({ key, label }) => (
+                                    <div key={key} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
+                                      <div className="w-10 lg:w-16 text-sm font-medium text-gray-700">
+                                        {label}
+                                      </div>
+                                      {key == "24x7" ? (
+                                        <label className="flex items-center space-x-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={openingHours[key].closed}
+                                          onChange={()=> {setIs24x7(!is24x7), setOpeningHours({
+                                            ...openingHours,
+                                            [key]: { ...openingHours[key], closed: !is24x7 }
+                                          })}}
+                                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                        />
+                                        {/* <span className="text-sm text-gray-700">Open 24X7</span> */}
+                                      </label>
+                                      ):(
+                                        <>
+                                        <div className="flex flex-col lg:flex-row items-center space-x-2">
+                                        <input
+                                          type="time"
+                                          value={openingHours[key].open}
+                                          onChange={(e) => setOpeningHours({
+                                            ...openingHours,
+                                            [key]: { ...openingHours[key], open: e.target.value, }
+                                          })}
+                                          disabled={openingHours[key].closed}
+                                          className="px-2 py-1 border border-gray-300 rounded text-sm disabled:bg-gray-200"
+                                        />
+                                        <div>
+                                          <span className="text-gray-500">to</span>
+                                        </div>
+                                        <input
+                                          type="time"
+                                          value={openingHours[key].close}
+                                          onChange={(e) => setOpeningHours({
+                                            ...openingHours,
+                                            [key]: { ...openingHours[key], close: e.target.value }
+                                          })}
+                                          disabled={openingHours[key].closed}
+                                          className="px-2 py-1 border border-gray-300 rounded text-sm disabled:bg-gray-200"
+                                        />
+                                      </div>
+                                      {!is24x7 &&
+                                      <label className="flex items-center space-x-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={openingHours[key].closed}
+                                          onChange={(e) =>
+          setOpeningHours((prev) => ({
+            ...prev,
+            [key]: { ...prev[key],closed: e.target.checked }
+          }))
+        }
+                                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                        />
+                                        <span className="text-sm text-gray-700">Closed</span>
+                                      </label>}
+                                      </>
+                                      )}
+                                      
+
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+              {/* Media Upload - Compact */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                  <ImageIcon className="w-4 h-4 mr-2 text-blue-600" />
+                  Images
+                </h3>
+                
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors">
+                  <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                  <label className="cursor-pointer">
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                    <div className="text-sm font-medium text-gray-700 mb-1">
+                      Upload Business Images
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      Click to browse or drag images here
+                    </div>
+                  </label>
                 </div>
 
-                {/* Opening Hours */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-800 flex items-center">
-                    <Clock className="w-4 h-4 mr-2 text-blue-600" />
-                    Opening Hours
-                  </h4>
-                  
-                  <div className="grid gap-3">
-                    {days.map(({ key, label }) => (
-                      <div key={key} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
-                        <div className="w-16 text-sm font-medium text-gray-700">
-                          {label}
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <input
-                            type="time"
-                            value={openingHours[key].open}
-                            onChange={(e) => setOpeningHours({
-                              ...openingHours,
-                              [key]: { ...openingHours[key], open: e.target.value }
-                            })}
-                            disabled={openingHours[key].closed}
-                            className="px-2 py-1 border border-gray-300 rounded text-sm disabled:bg-gray-200"
-                          />
-                          <span className="text-gray-500">to</span>
-                          <input
-                            type="time"
-                            value={openingHours[key].close}
-                            onChange={(e) => setOpeningHours({
-                              ...openingHours,
-                              [key]: { ...openingHours[key], close: e.target.value }
-                            })}
-                            disabled={openingHours[key].closed}
-                            className="px-2 py-1 border border-gray-300 rounded text-sm disabled:bg-gray-200"
-                          />
-                        </div>
-                        <label className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            checked={openingHours[key].closed}
-                            onChange={(e) => setOpeningHours({
-                              ...openingHours,
-                              [key]: { ...openingHours[key], closed: e.target.checked }
-                            })}
-                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                          />
-                          <span className="text-sm text-gray-700">Closed</span>
-                        </label>
+                {uploadedImages.length > 0 && (
+                  <div className="grid grid-cols-4 gap-2">
+                    {uploadedImages.map((file, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`Upload ${index + 1}`}
+                          className="w-full h-16 object-cover rounded"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 transition-colors"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
                       </div>
                     ))}
                   </div>
-                </div>
+                )}
+              </div>
 
-                {/* Submit Button */}
-                <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-                  <button
-                    type="button"
-                    onClick={() => setShowAddModal(false)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSubmitting ? 'Adding Business...' : 'Add Business'}
-                  </button>
-                </div>
-              </form>
+              {message && <p className={`${message == 'Business listing submitted successfully' ? 'text-green-500' : 'text-red-500'} text-center font-bold`}>{message}</p>}
+
+              {/* Submit Button */}
+              <div className="flex justify-center py-4 ">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? 'Submitting...' : 'Submit Business Listing'}
+                </button>
+              </div>
+            </form> 
             </div>
           </div>
         </div>

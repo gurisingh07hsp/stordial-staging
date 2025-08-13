@@ -48,7 +48,6 @@ const businessSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'Please enter business email']
   },
   website: {
     type: String
@@ -168,6 +167,14 @@ const businessSchema = new mongoose.Schema({
       closed: {
         type: Boolean,
         default: true
+      }
+    },
+    "24x7": {
+      open: String,
+      close: String,
+      closed: {
+        type: Boolean,
+        default: false
       }
     }
   },

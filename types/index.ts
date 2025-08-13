@@ -72,4 +72,5 @@ export interface BusinessFormData {
   address: string;
   city: string;
   website: string;
+  hours: object;
 } 

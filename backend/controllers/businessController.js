@@ -1,4 +1,3 @@
-const { console } = require('inspector');
 const Business = require('../models/business');
 const User = require('../models/user');
 
@@ -6,15 +5,18 @@ const User = require('../models/user');
 exports.createBusiness = async (req, res, next) => {
   try {
     req.body.owner = req.user.id;
-
   const business = await Business.create(req.body);
 
 
   // Update user to business owner
+const user = await User.findById(req.user.id);
+
+if (user.role !== 'admin') {
   await User.findByIdAndUpdate(req.user.id, {
     businessOwner: true,
     role: 'business_owner'
   });
+}
 
   res.status(201).json({
     success: true,
@@ -28,7 +30,12 @@ exports.createBusiness = async (req, res, next) => {
 // Get all businesses
 exports.getBusinesses = async (req, res, next) => {
   try {
-    const { location, category, search, featured, verified } = req.query;
+    let { location, category, search, featured, verified, page = 1, limit = 5 } = req.query;
+
+    category = category.toLowerCase();
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+
     
     let query = {};
 
@@ -38,7 +45,7 @@ exports.getBusinesses = async (req, res, next) => {
     }
 
     // Filter by category
-    if (category && category !== 'All Categories') {
+    if (category && category !== 'all categories') {
       query.category = category;
     }
 
@@ -61,14 +68,22 @@ exports.getBusinesses = async (req, res, next) => {
       query.verified = verified === 'true';
     }
 
+    const total = await Business.find(query).countDocuments();
+
     const businesses = await Business.find(query)
       .populate('owner', 'name email')
-      .sort({ rating: -1, reviews: -1 });
+      .sort({ rating: -1, reviews: -1 })
+      .skip((pageNum - 1) * limitNum)
+      .limit(limitNum);
+
 
     res.status(200).json({
       success: true,
       count: businesses.length,
-      businesses
+      businesses,
+      total,
+      totalPages: Math.ceil(total / limitNum),
+      currentPage: pageNum
     });
   } catch (error) {
     next(error);
@@ -260,7 +275,8 @@ exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
 // Toggle featured status (admin only)
 exports.toggleFeatured = async (req, res, next) => {
   try {
-    const business = await Business.findById(req.params.id);
+    const name = req.params.id;
+    const business = await Business.findOne({name: name});
 
     if (!business) {
       return res.status(404).json({
