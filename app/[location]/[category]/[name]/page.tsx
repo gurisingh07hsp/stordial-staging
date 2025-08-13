@@ -166,8 +166,8 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   const [business, setBusiness] = useState<Business | null>(null);
 
   const decodedLocation = decodeURIComponent(params.location);
-  const decodedCategory = decodeURIComponent(params.category);
-  const decodedName = decodeURIComponent(params.name);
+  const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
+  const decodedName = decodeURIComponent(params.name.replace(/-/g, ' '));
 
   useEffect(() => {
     const getBusinessByName = async () => {

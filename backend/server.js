@@ -15,7 +15,6 @@ const app = express();
 connectDB();
 
 // Middleware
-// app.use(cors());
 app.use(cors({
   origin: 'https://stordial-staging.vercel.app',
   credentials: true,

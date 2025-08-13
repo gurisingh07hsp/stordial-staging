@@ -70,16 +70,7 @@ export default function HomePage() {
       }
     }
     getFeaturedBusinesses();
-  }, [])
-  
-
-  const handleBrowseCategories = () => {
-    // Scroll to category section
-    const categorySection = document.getElementById('categories');
-    if (categorySection) {
-      categorySection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  }, []);
 
   const handleCategoryClick = (categoryName: string) => {
     const categoryBusinesses = businesses.filter(business => 
@@ -104,7 +95,6 @@ export default function HomePage() {
       <div id='search'></div>
       <HeroSection 
         onSearch={handleSearch}
-        onBrowseCategories={handleBrowseCategories}
       />
 
       {isSearching && (
