@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BusinessFormData, Business, User } from '../types';
 import { ArrowLeft, Upload, Clock, MapPin, Phone, Image as ImageIcon, X } from 'lucide-react';
@@ -30,6 +30,19 @@ interface OpeningHours {
 export default function ListBusinessPage({
   onBack
 }: ListBusinessPageProps) {
+
+    const [openingHours, setOpeningHours] = useState<OpeningHours>({
+    monday: { open: '09:00', close: '17:00', closed: false },
+    tuesday: { open: '09:00', close: '17:00', closed: false },
+    wednesday: { open: '09:00', close: '17:00', closed: false },
+    thursday: { open: '09:00', close: '17:00', closed: false },
+    friday: { open: '09:00', close: '17:00', closed: false },
+    saturday: { open: '10:00', close: '15:00', closed: false },
+    sunday: { open: '10:00', close: '15:00', closed: false },
+    "24x7": { open: '10:00', close: '15:00', closed: false },
+  });
+
+
   const [formData, setFormData] = useState<BusinessFormData>({
     name: '',
     description: '',
@@ -40,22 +53,15 @@ export default function ListBusinessPage({
     email: '',
     address: '',
     city: '',
-    website: ''
+    website: '',
+    hours: openingHours
   });
 
-  const [openingHours, setOpeningHours] = useState<OpeningHours>({
-    monday: { open: '09:00', close: '17:00', closed: false },
-    tuesday: { open: '09:00', close: '17:00', closed: false },
-    wednesday: { open: '09:00', close: '17:00', closed: false },
-    thursday: { open: '09:00', close: '17:00', closed: false },
-    friday: { open: '09:00', close: '17:00', closed: false },
-    saturday: { open: '10:00', close: '15:00', closed: false },
-    sunday: { open: '10:00', close: '15:00', closed: true }
-  });
 
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
+  const [is24x7, setIs24x7] = useState(false);
 
    const { user} = useAuth();
 
@@ -72,6 +78,7 @@ export default function ListBusinessPage({
     setIsSubmitting(true);
       formData.city = formData.city.toLowerCase();
       formData.category = formData.category.toLowerCase();
+      console.log("Form Data : ", formData);
       try{
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, formData,{withCredentials: true});
         console.log(response.data);
@@ -228,8 +235,13 @@ const categoryOptions = categories.map(cat => ({
     { key: 'thursday', label: 'Thu' },
     { key: 'friday', label: 'Fri' },
     { key: 'saturday', label: 'Sat' },
-    { key: 'sunday', label: 'Sun' }
+    { key: 'sunday', label: 'Sun' },
+    { key: '24x7', label: 'Open 24x7' }
   ];
+
+  useEffect(()=>{
+    setFormData({...formData, hours: openingHours});
+  },[openingHours])
 
   if(!user){
     return(
@@ -296,6 +308,7 @@ const categoryOptions = categories.map(cat => ({
       </label>
       <Select
         options={categoryOptions}
+        required
         value={categoryOptions.find(opt => opt.value === formData.category) || null}
         onChange={(selected) => setFormData({
           ...formData,
@@ -315,6 +328,7 @@ const categoryOptions = categories.map(cat => ({
                       </label>
                       <select
                         value={formData.subcategory}
+                        required
                         onChange={(e) => setFormData({...formData, subcategory: e.target.value})}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
@@ -366,11 +380,10 @@ const categoryOptions = categories.map(cat => ({
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email *
+                      Email (Optional)
                     </label>
                     <input
                       type="email"
-                      required
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -420,55 +433,82 @@ const categoryOptions = categories.map(cat => ({
                   </div>
                 </div>
               </div>
+                              {/* Opening Hours */}
+                              <div className="space-y-4">
+                                <h4 className="text-lg font-semibold text-gray-800 flex items-center">
+                                  <Clock className="w-4 h-4 mr-2 text-blue-600" />
+                                  Opening Hours
+                                </h4>
+                                
+                                <div className="grid gap-3">
+                                  {days.map(({ key, label }) => (
+                                    <div key={key} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
+                                      <div className="w-10 lg:w-16 text-sm font-medium text-gray-700">
+                                        {label}
+                                      </div>
+                                      {key == "24x7" ? (
+                                        <label className="flex items-center space-x-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={openingHours[key].closed}
+                                          onChange={()=> {setIs24x7(!is24x7), setOpeningHours({
+                                            ...openingHours,
+                                            [key]: { ...openingHours[key], closed: !is24x7 }
+                                          })}}
+                                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                        />
+                                        {/* <span className="text-sm text-gray-700">Open 24X7</span> */}
+                                      </label>
+                                      ):(
+                                        <>
+                                        <div className="flex flex-col lg:flex-row items-center space-x-2">
+                                        <input
+                                          type="time"
+                                          value={openingHours[key].open}
+                                          onChange={(e) => setOpeningHours({
+                                            ...openingHours,
+                                            [key]: { ...openingHours[key], open: e.target.value, }
+                                          })}
+                                          disabled={openingHours[key].closed}
+                                          className="px-2 py-1 border border-gray-300 rounded text-sm disabled:bg-gray-200"
+                                        />
+                                        <div>
+                                          <span className="text-gray-500">to</span>
+                                        </div>
+                                        <input
+                                          type="time"
+                                          value={openingHours[key].close}
+                                          onChange={(e) => setOpeningHours({
+                                            ...openingHours,
+                                            [key]: { ...openingHours[key], close: e.target.value }
+                                          })}
+                                          disabled={openingHours[key].closed}
+                                          className="px-2 py-1 border border-gray-300 rounded text-sm disabled:bg-gray-200"
+                                        />
+                                      </div>
+                                      {!is24x7 &&
+                                      <label className="flex items-center space-x-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={openingHours[key].closed}
+                                          onChange={(e) =>
+          setOpeningHours((prev) => ({
+            ...prev,
+            [key]: { ...prev[key],closed: e.target.checked }
+          }))
+        }
+                                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                        />
+                                        <span className="text-sm text-gray-700">Closed</span>
+                                      </label>}
+                                      </>
+                                      )}
+                                      
 
-              {/* Opening Hours - Compact */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-800 flex items-center">
-                  <Clock className="w-4 h-4 mr-2 text-blue-600" />
-                  Hours
-                </h3>
-                
-                <div className="grid grid-cols-7 gap-2">
-                  {days.map(({ key, label }) => (
-                    <div key={key} className="text-center">
-                      <div className="text-xs font-medium text-gray-700 mb-1">{label}</div>
-                      <div className="space-y-1">
-                        <input
-                          type="checkbox"
-                          checked={!openingHours[key].closed}
-                          onChange={(e) => setOpeningHours(prev => ({
-                            ...prev,
-                            [key]: { ...prev[key], closed: !e.target.checked }
-                          }))}
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        {!openingHours[key].closed && (
-                          <div className="space-y-1">
-                            <input
-                              type="time"
-                              value={openingHours[key].open}
-                              onChange={(e) => setOpeningHours(prev => ({
-                                ...prev,
-                                [key]: { ...prev[key], open: e.target.value }
-                              }))}
-                              className="w-full px-1 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-                            />
-                            <input
-                              type="time"
-                              value={openingHours[key].close}
-                              onChange={(e) => setOpeningHours(prev => ({
-                                ...prev,
-                                [key]: { ...prev[key], close: e.target.value }
-                              }))}
-                              className="w-full px-1 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
 
               {/* Media Upload - Compact */}
               <div className="space-y-4">

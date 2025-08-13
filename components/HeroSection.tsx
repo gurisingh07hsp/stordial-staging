@@ -7,10 +7,9 @@ import { useAutoLocation } from '../hooks/useAutoLocation';
 
 interface HeroSectionProps {
   onSearch: (query: string, location: string, category: string) => void;
-  onBrowseCategories: () => void;
 }
 
-export default function HeroSection({ onSearch, onBrowseCategories }: HeroSectionProps) {
+export default function HeroSection({ onSearch }: HeroSectionProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
@@ -221,14 +220,6 @@ export default function HeroSection({ onSearch, onBrowseCategories }: HeroSectio
             >
               Search
               <ArrowRight className="w-5 h-5" />
-            </button>
-
-            {/* Browse Categories Button */}
-            <button
-              onClick={onBrowseCategories}
-              className="bg-white text-gray-700 py-3 px-6 rounded-lg font-medium text-base border border-gray-300 hover:bg-gray-50 transition-all duration-200 whitespace-nowrap"
-            >
-              Browse
             </button>
           </div>
         </div>

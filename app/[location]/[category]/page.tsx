@@ -126,7 +126,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const handleBusinessClick = (business: Business) => {
     const locationPath = business.city.toLowerCase().replace(/\s+/g, '-');
     const categoryPath = business.category.toLowerCase().replace(/\s+/g, '-');
-    const namePath = business.name.toLowerCase().replace(/\s+/g, '-').replace(/-+/g, '-');
+    const namePath = business.name.replace(/\s+/g, '-').replace(/-+/g, '-');
     const url = `/${locationPath}/${categoryPath}/${namePath}`;
     window.location.href = url;
   };
@@ -295,7 +295,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               <div className="space-y-4">
                 {sortedBusinesses.map((business) => (
                   <div key={business.id} className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow">
-                    <div className="flex items-start justify-between">
+                    <div className="flex lg:flex-row flex-col items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
                           <h3 className="text-lg font-semibold text-gray-900">{business.name}</h3>
@@ -306,7 +306,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                           )}
                         </div>
                         
-                        <div className="flex items-center space-x-4 mb-3">
+                        <div className="flex lg:flex-row flex-col lg:items-center space-y-2 space-x-4 mb-3">
                           <div className="flex items-center space-x-1">
                             <Star className="w-4 h-4 text-yellow-400 fill-current" />
                             <span className="font-medium">{business.rating}</span>
@@ -318,7 +318,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                           </div>
                         </div>
 
-                        <p className="text-gray-600 mb-3">{business.description}</p>
+                        <p className="text-gray-600 hidden lg:block mb-3">{`${business.description.slice(0,15)}...`}</p>
 
                         <div className="flex flex-wrap gap-2 mb-4">
                           {business.services.slice(0, 5).map((service, index) => (
@@ -342,7 +342,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                         )}
                       </div>
 
-                      <div className="flex flex-col space-y-2 ml-4">
+                      <div className="flex lg:flex-col flex-row justify-center items-center space-x-2 lg:space-y-2 ml-4">
                         <button
                           onClick={() => handleCall(business.phone)}
                           className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
