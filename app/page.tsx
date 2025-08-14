@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import HeroSection from '../components/HeroSection';
 import CategoryGrid from '../components/CategoryGrid';
@@ -45,21 +44,6 @@ export default function HomePage() {
       }catch(error){
         console.error('Error fetching businesses: ', error);
       }
-    // setTimeout(() => {
-    //   const results = businesses.filter(business => {
-    //     const matchesQuery = query === '' || 
-    //       business.name.toLowerCase().includes(query.toLowerCase()) || 
-    //       business.description.toLowerCase().includes(query.toLowerCase()) ||
-    //       business.services.some(service => service.toLowerCase().includes(query.toLowerCase()));
-    //     const matchesLocation = location === '' || 
-    //       business.city.toLowerCase().includes(location.toLowerCase()) ||
-    //       business.address.toLowerCase().includes(location.toLowerCase());
-    //     const matchesCategory = category === 'All Categories' || business.category === category;
-    //     return matchesQuery && matchesLocation && matchesCategory;
-    //   });
-    //   setSearchResults(results);
-    //   setIsSearching(false);
-    // }, 1000);
   };
 
   useEffect(() => {
