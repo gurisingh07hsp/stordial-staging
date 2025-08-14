@@ -333,6 +333,7 @@ const filteredBusinesses = businesses;
       fetchBusinesses();
 
     }catch(error){
+      console.log(error);
       toast.error('Failed to delete business. Please try again.');
     }
   }
@@ -430,6 +431,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
 
   const handleToggleFeatured = async(businessId: string) => {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/admin/featured/${businessId}`, {}, {withCredentials: true} );
+      console.log(response.data);
 
     setFeaturedBusinesses(prev => 
       prev.includes(businessId) 
@@ -463,6 +465,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
       toast.success(`${selectedBusinesses.length} Businesses Deleted Successfully` || response.data.message) // ✅ Last one
     }
   } catch (error) {
+    console.log(error);
      toast.error('Failed to delete businesses. Please try again.');
   }
 }
