@@ -40,41 +40,43 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
 
   // Premium advertisement data
-  const premiumAds = [
-    {
-      id: 1,
-      businessName: "Hotel Grand Plaza",
-      tagline: "Premium Accommodation in Jalandhar",
-      description: "Experience luxury with rooftop dining and spa services",
-      image: "/hotel-premium-1",
-      rating: 4.5,
-      reviews: 567,
-      cta: "Book Now",
-      link: "/jalandhar/hotels/hotel-grand-plaza"
-    },
-    {
-      id: 2,
-      businessName: "Hotel Royal Palace",
-      tagline: "Royal Experience Awaits",
-      description: "Perfect for special occasions and business events",
-      image: "/hotel-premium-2",
-      rating: 4.3,
-      reviews: 345,
-      cta: "Learn More",
-      link: "/jalandhar/hotels/hotel-royal-palace"
-    },
-    {
-      id: 3,
-      businessName: "Hotel Rigal Blu",
-      tagline: "3-Star Luxury in Model Town",
-      description: "Swimming pool, spa, and conference facilities",
-      image: "/hotel-premium-3",
-      rating: 4.2,
-      reviews: 234,
-      cta: "View Details",
-      link: "/jalandhar/hotels/hotel-rigal-blu"
-    }
-  ];
+  // const premiumAds = [
+  //   {
+  //     id: 1,
+  //     businessName: "Hotel Grand Plaza",
+  //     tagline: "Premium Accommodation in Jalandhar",
+  //     description: "Experience luxury with rooftop dining and spa services",
+  //     image: "/hotel-premium-1",
+  //     rating: 4.5,
+  //     reviews: 567,
+  //     cta: "Book Now",
+  //     link: "/jalandhar/hotels/hotel-grand-plaza"
+  //   },
+  //   {
+  //     id: 2,
+  //     businessName: "Hotel Royal Palace",
+  //     tagline: "Royal Experience Awaits",
+  //     description: "Perfect for special occasions and business events",
+  //     image: "/hotel-premium-2",
+  //     rating: 4.3,
+  //     reviews: 345,
+  //     cta: "Learn More",
+  //     link: "/jalandhar/hotels/hotel-royal-palace"
+  //   },
+  //   {
+  //     id: 3,
+  //     businessName: "Hotel Rigal Blu",
+  //     tagline: "3-Star Luxury in Model Town",
+  //     description: "Swimming pool, spa, and conference facilities",
+  //     image: "/hotel-premium-3",
+  //     rating: 4.2,
+  //     reviews: 234,
+  //     cta: "View Details",
+  //     link: "/jalandhar/hotels/hotel-rigal-blu"
+  //   }
+  // ];
+
+  const premiumAds = filteredBusinesses.filter((business)=> business.featured == true).slice(0,4);
 
   const sortedBusinesses = useMemo(() => {
     let sorted = [...filteredBusinesses];
@@ -168,7 +170,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           {/* Main Content */}
           <div className="flex-1">
             {/* Premium Advertisement Carousel */}
-            <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+            {premiumAds.length > 0 && <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">Featured Businesses</h2>
                 <div className="flex space-x-2">
@@ -189,25 +191,19 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               
               <div className="relative">
                 <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
-                  <div className="flex items-center justify-between">
+                  <div onClick={()=>handleBusinessClick(premiumAds[currentAdIndex])} className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
                         <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">PREMIUM</span>
                         <div className="flex items-center space-x-1">
                           <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                          <span className="font-medium">{premiumAds[currentAdIndex].rating}</span>
-                          <span className="text-gray-500">({premiumAds[currentAdIndex].reviews} reviews)</span>
+                          <span className="font-medium">{premiumAds[currentAdIndex]?.rating}</span>
+                          <span className="text-gray-500">({premiumAds[currentAdIndex]?.reviews} reviews)</span>
                         </div>
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{premiumAds[currentAdIndex].businessName}</h3>
-                      <p className="text-lg font-medium text-blue-600 mb-2">{premiumAds[currentAdIndex].tagline}</p>
-                      <p className="text-gray-600 mb-4">{premiumAds[currentAdIndex].description}</p>
-                      <Link
-                        href={premiumAds[currentAdIndex].link}
-                        className="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        {premiumAds[currentAdIndex].cta}
-                      </Link>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{premiumAds[currentAdIndex]?.name}</h3>
+                      {/* <p className="text-lg font-medium text-blue-600 mb-2">{premiumAds[currentAdIndex].}</p> */}
+                      <p className="text-gray-600 mb-4">{premiumAds[currentAdIndex]?.address}</p>
                     </div>
                     <div className="w-32 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
                       <span className="text-2xl">🏨</span>
@@ -228,7 +224,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                   ))}
                 </div>
               </div>
-            </div>
+            </div>}
 
             {/* Breadcrumbs */}
             <nav className="text-sm text-gray-500 mb-6">
@@ -294,7 +290,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
             {sortedBusinesses.length > 0 ? (
               <div className="space-y-4">
                 {sortedBusinesses.map((business) => (
-                  <div key={business.id} className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow">
+                  <div key={business._id} className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow">
                     <div className="flex lg:flex-row flex-col items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
@@ -312,13 +308,11 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                             <span className="font-medium">{business.rating}</span>
                             <span className="text-gray-500">({business.reviews} reviews)</span>
                           </div>
+                        </div>
                           <div className="flex items-center space-x-1 text-gray-500">
                             <MapPin className="w-4 h-4" />
                             <span className="text-sm">{business.address}</span>
                           </div>
-                        </div>
-
-                        <p className="text-gray-600 hidden lg:block mb-3">{`${business.description.slice(0,15)}...`}</p>
 
                         <div className="flex flex-wrap gap-2 mb-4">
                           {business.services.slice(0, 5).map((service, index) => (

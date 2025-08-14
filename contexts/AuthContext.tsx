@@ -86,12 +86,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     try{
     const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login`, data, {withCredentials: true});
-    console.log("Login response : ", response.data);
       if(response.data.success){
         setUser(response.data.user);
         setMessage('✅ Login successful!');
         setTimeout(()=>{
-          setShowAuthModal(false);
+          router.push('/');
         },1000);
       }
     }catch(error){
@@ -126,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(response.data.user);
         setMessage('✅ Account Created successful!');
         setTimeout(()=>{
-          setShowAuthModal(false);
+          router.push('/');
         },1000);
       }
     }catch(error){
