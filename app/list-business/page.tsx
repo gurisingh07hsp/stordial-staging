@@ -32,7 +32,7 @@ export default function ListBusinessPageComponent() {
   };
 
   const handleBusinessClick = (business: Business) => {
-    window.location.href = `/business/${business.id}`;
+    window.location.href = `/business/${business._id}`;
   };
 
   return (
