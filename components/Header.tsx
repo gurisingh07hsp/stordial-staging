@@ -1,5 +1,4 @@
 'use client';
-
 import React from 'react';
 import Link from 'next/link';
 import { Megaphone, FileText, User, Menu, Home, LogOut, ShieldCheck, Info} from 'lucide-react';
@@ -16,7 +15,6 @@ interface HeaderProps {
 export default function Header({ 
   onMenuToggle,
   showMobileMenu, 
-  onAuthClick, 
   user, 
   onLogout
 }: HeaderProps) {
@@ -38,41 +36,51 @@ export default function Header({
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-3 lg:me-5">
+          <div className={`hidden lg:flex items-center divide-x ${user ? user.email == 'admin@stordial.com' ? 'ms-28' : 'ms-20' : ''}`}>
             <Link 
               href="/about"
-              className="hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group px-4 py-2 rounded-lg hover:bg-gray-100"
+              // className="hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group px-4 py-2 rounded-lg hover:bg-gray-100"
+              className="me-2 hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group"
             >
               <span className="font-medium">About Us</span>
             </Link>
             
             <Link 
               href="/advertise"
-              className="hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group px-4 py-2 rounded-lg hover:bg-gray-100"
+              // className="hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group px-4 py-2 rounded-lg hover:bg-gray-100"
+              className="me-2 hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group"
             >
-              <Megaphone className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
+              <Megaphone className="ms-2 w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
               <span className="font-medium">Advertise</span>
             </Link>
             
             <Link 
               href="/list-business"
-              className="hidden lg:flex items-center bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-2 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold group"
+              // className="hidden lg:flex items-center bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-2 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold group"
+              className="hidden lg:flex items-cente text-gray-600 hover:text-blue-600 transition-all duration-200 font-semibold group"
             >
-              <FileText className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
-              <span>List Business</span>
+              <FileText className="ms-2 w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
+              <span className='me-2'>List Business</span>
             </Link>
-            
+
+            {user && user.email === 'admin@stordial.com' && (
+                    <Link 
+                      href="/admin"
+                      className="text-blue-600 hover:text-blue-700 transition-colors"
+                    >
+                      <div className='ms-2'>
+                      Admin Panel
+                      </div>
+                    </Link>
+                  )}
+
+          </div>
+      
+          <div>
             {user ? (
-              <div className="flex items-center space-x-4">
-                {/* <button className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors">
-                  <Bell className="w-5 h-5" />
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    3
-                  </span>
-                </button> */}
-                
+              <div className="hidden lg:flex items-center space-x-4">              
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-3 border border-zinc-300 p-2 rounded-lg">
+                  <div className="flex items-center space-x-3 cursor-pointer">
                     <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-md">
                       <User className="w-4 h-4 text-white" />
                     </div>
@@ -81,15 +89,6 @@ export default function Header({
                       <p className="text-xs text-gray-500">{user.email}</p>
                     </div>
                   </div>
-                  
-                  {user.email === 'admin@stordial.com' && (
-                    <Link 
-                      href="/admin"
-                      className="text-sm text-blue-600 hover:text-blue-700 p-2 transition-colors font-medium bg-blue-50 rounded-lg hover:bg-blue-100"
-                    >
-                      Admin Panel
-                    </Link>
-                  )}
                   
                   <button 
                     onClick={onLogout}
@@ -102,14 +101,13 @@ export default function Header({
               </div>
             ) : (
               <button
-                onClick={onAuthClick}
-                className="flex items-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold group"
+                onClick={()=>window.location.href = "/login"}
+                className="hidden lg:flex items-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-md hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold group"
               >
                 <User className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
                 <span>Sign In</span>
               </button>
             )}
-
           </div>
             {/* Mobile Menu Button */}
             <button
@@ -121,7 +119,9 @@ export default function Header({
         </div>
       </div>
 
-      {showMobileMenu && <div className={`lg:hidden h-[1000px] w-[83%] absolute top-0 right-0 bg-white transform transition-transform duration-300 ease-in-out ${showMobileMenu ? 'translate-x-0' : 'translate-x-full'}`}>
+      {showMobileMenu && 
+        <div className={`lg:hidden h-[1000px] w-[100%] absolute top-0 right-0 bg-[rgba(0,0,0,0.59)] transform transition-transform duration-300 ease-in-out ${showMobileMenu ? 'translate-x-0' : 'translate-x-full'}`}>
+          <div className={`lg:hidden h-[1000px] w-[83%] absolute top-0 right-0 bg-white`}>
             <button onClick={onMenuToggle} className='text-gray-600 py-4 mt-1 ms-4 text-left w-full text-xl'>x</button>
             <hr></hr>
 
@@ -150,7 +150,7 @@ export default function Header({
 
               <li className='mb-2' onClick={onMenuToggle}>
                 {!user &&
-                  <button onClick={onAuthClick}
+                  <button onClick={()=> window.location.href = '/login'}
                   className="flex items-center text-gray-600 hover:text-blue-600 transition-colors group px-4 py-2 rounded-lg hover:bg-gray-100"
                   >
                     <User className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
@@ -211,7 +211,9 @@ export default function Header({
 
               </li>
             </ul>
-      </div> }
+      </div> 
+    </div>
+      }
     </header>
   );
 }

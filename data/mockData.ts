@@ -202,7 +202,7 @@ export const popularCities = [
 export const businesses: Business[] = [
   // Mumbai Businesses
   {
-    id: '1',
+    _id: '1',
     name: 'Cafe Coffee Day - Marine Drive',
     description: 'Premium coffee shop with stunning sea views. Serving authentic Indian coffee and international beverages with fresh snacks.',
     category: 'Restaurants',
@@ -233,7 +233,7 @@ export const businesses: Business[] = [
     }
   },
   {
-    id: '2',
+    _id: '2',
     name: 'Apollo Dental Care - Bandra',
     description: 'Modern dental clinic offering comprehensive oral care with state-of-the-art technology and comfortable treatment.',
     category: 'Healthcare',
@@ -263,7 +263,7 @@ export const businesses: Business[] = [
     }
   },
   {
-    id: '3',
+    _id: '3',
     name: 'Gold\'s Gym - Andheri',
     description: '24/7 gym with modern equipment, group classes, and personal training. Welcoming environment for all fitness levels.',
     category: 'Fitness',
@@ -280,7 +280,7 @@ export const businesses: Business[] = [
 
   // Delhi Businesses
   {
-    id: '4',
+    _id: '4',
     name: 'Khan Market Electronics',
     description: 'Premium electronics store offering latest gadgets, smartphones, and home appliances with expert consultation.',
     category: 'Retail',
@@ -295,7 +295,7 @@ export const businesses: Business[] = [
     website: 'https://khanmarket.com',
   },
   {
-    id: '5',
+    _id: '5',
     name: 'Lakme Salon - Connaught Place',
     description: 'Premier beauty salon offering haircuts, styling, coloring, and spa treatments in a luxurious setting.',
     category: 'Beauty',
@@ -310,7 +310,7 @@ export const businesses: Business[] = [
     website: 'https://lakmesalon.com',
   },
   {
-    id: '6',
+    _id: '6',
     name: 'PVR Cinemas - Saket',
     description: 'Modern multiplex with latest movies, comfortable seating, and food court for entertainment.',
     category: 'Entertainment',
@@ -327,7 +327,7 @@ export const businesses: Business[] = [
 
   // Bangalore Businesses
   {
-    id: '7',
+    _id: '7',
     name: 'Tech Solutions India',
     description: 'Professional computer and electronics repair service. Fast turnaround times and competitive pricing.',
     category: 'Services',
@@ -342,7 +342,7 @@ export const businesses: Business[] = [
     website: 'https://techsolutions.com',
   },
   {
-    id: '8',
+    _id: '8',
     name: 'Domino\'s Pizza - Indiranagar',
     description: 'Authentic Italian pizza and fast food delivery. Fresh ingredients and quick service.',
     category: 'Restaurants',
@@ -356,7 +356,7 @@ export const businesses: Business[] = [
     reviews: 234,
   },
   {
-    id: '9',
+    _id: '9',
     name: 'FIITJEE - HSR Layout',
     description: 'Educational center offering IIT-JEE coaching, test preparation, and skill development courses.',
     category: 'Education',
@@ -372,7 +372,7 @@ export const businesses: Business[] = [
 
   // Hyderabad Businesses
   {
-    id: '10',
+    _id: '10',
     name: 'Apollo Hospitals - Banjara Hills',
     description: 'Comprehensive healthcare services including primary care, urgent care, and preventive medicine.',
     category: 'Healthcare',
@@ -386,7 +386,7 @@ export const businesses: Business[] = [
     reviews: 189,
   },
   {
-    id: '11',
+    _id: '11',
     name: 'Paradise Biryani - Secunderabad',
     description: 'Authentic Hyderabadi biryani and traditional Indian cuisine in a family-friendly atmosphere.',
     category: 'Restaurants',
@@ -402,7 +402,7 @@ export const businesses: Business[] = [
 
   // Chennai Businesses
   {
-    id: '12',
+    _id: '12',
     name: 'Cult Fitness - T Nagar',
     description: 'Modern fitness center with state-of-the-art equipment, group classes, and personal training.',
     category: 'Fitness',
@@ -416,7 +416,7 @@ export const businesses: Business[] = [
     reviews: 167,
   },
   {
-    id: '13',
+    _id: '13',
     name: 'Saravana Stores - Anna Nagar',
     description: 'Traditional Indian clothing store offering ethnic wear, sarees, and traditional accessories.',
     category: 'Retail',
@@ -432,7 +432,7 @@ export const businesses: Business[] = [
 
   // Kolkata Businesses
   {
-    id: '14',
+    _id: '14',
     name: 'Kolkata Biryani House',
     description: 'Authentic Kolkata biryani and Bengali cuisine in a traditional atmosphere.',
     category: 'Restaurants',
@@ -446,7 +446,7 @@ export const businesses: Business[] = [
     reviews: 189,
   },
   {
-    id: '15',
+    _id: '15',
     name: 'L\'Oreal Salon - Salt Lake',
     description: 'Full-service beauty salon offering modern styling, coloring, and spa treatments.',
     category: 'Beauty',
@@ -462,7 +462,7 @@ export const businesses: Business[] = [
 
   // Pune Businesses
   {
-    id: '16',
+    _id: '16',
     name: 'Maruti Suzuki Service Center',
     description: 'Professional automotive repair and maintenance service with certified technicians.',
     category: 'Services',
@@ -476,7 +476,7 @@ export const businesses: Business[] = [
     reviews: 167,
   },
   {
-    id: '17',
+    _id: '17',
     name: 'IIT Academy - Kalyani Nagar',
     description: 'Educational center offering IIT-JEE coaching, test preparation, and academic support for students.',
     category: 'Education',
@@ -492,7 +492,7 @@ export const businesses: Business[] = [
 
   // Ahmedabad Businesses
   {
-    id: '18',
+    _id: '18',
     name: 'Zydus Hospitals - Satellite',
     description: 'Comprehensive medical services with a focus on preventive care and patient wellness.',
     category: 'Healthcare',
@@ -506,7 +506,7 @@ export const businesses: Business[] = [
     reviews: 198,
   },
   {
-    id: '19',
+    _id: '19',
     name: 'Fitness First - Vastrapur',
     description: 'Fitness center with modern equipment, group classes, and specialized training programs.',
     category: 'Fitness',
@@ -522,9 +522,9 @@ export const businesses: Business[] = [
 
   // Jaipur Businesses
   {
-    id: '20',
+    _id: '20',
     name: 'Jaipur Tech Solutions',
-    description: 'Technology consulting and IT services for businesses and individuals in the Jaipur area.',
+    description: 'Technology consulting and IT services for businesses and indiv_iduals in the Jaipur area.',
     category: 'Services',
     subcategory: 'IT Consulting',
     services: ['IT Consulting', 'Computer Repair', 'Network Setup', 'Cloud Services'],
@@ -536,9 +536,9 @@ export const businesses: Business[] = [
     reviews: 167,
   },
   {
-    id: '21',
+    _id: '21',
     name: 'Texas Steakhouse',
-    description: 'Premium steakhouse serving prime cuts, traditional sides, and fine dining experience.',
+    description: 'Premium steakhouse serving prime cuts, traditional s_ides, and fine dining experience.',
     category: 'Restaurants',
     subcategory: 'Steakhouse',
     services: ['Prime Steaks', 'Fine Dining', 'Private Events', 'Catering'],
@@ -552,7 +552,7 @@ export const businesses: Business[] = [
 
   // San Jose Businesses
   {
-    id: '22',
+    _id: '22',
     name: 'Silicon Valley Tech Solutions',
     description: 'Advanced technology consulting and IT services for businesses in the Silicon Valley area.',
     category: 'Services',
@@ -566,7 +566,7 @@ export const businesses: Business[] = [
     reviews: 312,
   },
   {
-    id: '23',
+    _id: '23',
     name: 'Bay Area Learning Center',
     description: 'Educational center offering advanced tutoring, test preparation, and skill development.',
     category: 'Education',
@@ -582,7 +582,7 @@ export const businesses: Business[] = [
 
   // Austin Businesses
   {
-    id: '24',
+    _id: '24',
     name: 'Austin Music Academy',
     description: 'Music education center offering lessons, instrument sales, and performance opportunities.',
     category: 'Education',
@@ -596,7 +596,7 @@ export const businesses: Business[] = [
     reviews: 198,
   },
   {
-    id: '25',
+    _id: '25',
     name: 'Keep Austin Weird Cafe',
     description: 'Unique cafe serving local favorites, craft coffee, and supporting local artists and musicians.',
     category: 'Restaurants',
@@ -612,7 +612,7 @@ export const businesses: Business[] = [
 
   // Jacksonville Businesses
   {
-    id: '26',
+    _id: '26',
     name: 'Jacksonville Auto Care',
     description: 'Professional automotive service and repair with certified technicians and quality parts.',
     category: 'Services',
@@ -626,14 +626,14 @@ export const businesses: Business[] = [
     reviews: 167,
   },
   {
-    id: '27',
-    name: 'Florida Fitness Center',
+    _id: '27',
+    name: 'Flor_ida Fitness Center',
     description: 'Modern fitness facility with state-of-the-art equipment and personalized training programs.',
     category: 'Fitness',
     subcategory: 'Gym',
     services: ['Fitness Equipment', 'Personal Training', 'Group Classes', 'Locker Rooms'],
     phone: '+1 (555) 789-0123',
-    email: 'membership@floridafitness.com',
+    email: 'membership@flor_idafitness.com',
     address: '789 Fitness Avenue',
     city: 'Jacksonville',
     rating: 4.4,
@@ -642,12 +642,12 @@ export const businesses: Business[] = [
 
   // Fort Worth Businesses
   {
-    id: '28',
+    _id: '28',
     name: 'Fort Worth BBQ & Grill',
-    description: 'Authentic Texas barbecue with slow-smoked meats and traditional Southern sides.',
+    description: 'Authentic Texas barbecue with slow-smoked meats and traditional Southern s_ides.',
     category: 'Restaurants',
     subcategory: 'BBQ Restaurant',
-    services: ['BBQ Meats', 'Traditional Sides', 'Catering', 'Private Events'],
+    services: ['BBQ Meats', 'Traditional S_ides', 'Catering', 'Private Events'],
     phone: '+1 (555) 890-1234',
     email: 'info@fortworthbbq.com',
     address: '321 BBQ Lane',
@@ -656,7 +656,7 @@ export const businesses: Business[] = [
     reviews: 189,
   },
   {
-    id: '29',
+    _id: '29',
     name: 'Cowtown Medical Clinic',
     description: 'Comprehensive healthcare services with a focus on family medicine and preventive care.',
     category: 'Healthcare',
@@ -672,7 +672,7 @@ export const businesses: Business[] = [
 
   // Columbus Businesses
   {
-    id: '30',
+    _id: '30',
     name: 'Columbus Learning Center',
     description: 'Educational center offering comprehensive tutoring, test preparation, and academic support.',
     category: 'Education',
@@ -686,7 +686,7 @@ export const businesses: Business[] = [
     reviews: 134,
   },
   {
-    id: '31',
+    _id: '31',
     name: 'Ohio State Beauty Salon',
     description: 'Full-service beauty salon offering modern styling, coloring, and spa treatments.',
     category: 'Beauty',
@@ -702,7 +702,7 @@ export const businesses: Business[] = [
 
   // Charlotte Businesses
   {
-    id: '32',
+    _id: '32',
     name: 'Queen City Tech Solutions',
     description: 'Technology consulting and IT services for businesses in the Charlotte metropolitan area.',
     category: 'Services',
@@ -716,7 +716,7 @@ export const businesses: Business[] = [
     reviews: 189,
   },
   {
-    id: '33',
+    _id: '33',
     name: 'Charlotte Fitness Club',
     description: 'Premium fitness center with modern equipment, group classes, and personal training.',
     category: 'Fitness',
@@ -732,7 +732,7 @@ export const businesses: Business[] = [
 
   // San Francisco Businesses
   {
-    id: '34',
+    _id: '34',
     name: 'Bay Area Medical Group',
     description: 'Comprehensive healthcare services with a focus on preventive medicine and patient wellness.',
     category: 'Healthcare',
@@ -746,7 +746,7 @@ export const businesses: Business[] = [
     reviews: 223,
   },
   {
-    id: '35',
+    _id: '35',
     name: 'Golden Gate Entertainment',
     description: 'Modern entertainment venue with arcade games, bowling, and dining options.',
     category: 'Entertainment',
@@ -762,7 +762,7 @@ export const businesses: Business[] = [
 
   // Indianapolis Businesses
   {
-    id: '36',
+    _id: '36',
     name: 'Indy Auto Service',
     description: 'Professional automotive repair and maintenance service with certified technicians.',
     category: 'Services',
@@ -776,7 +776,7 @@ export const businesses: Business[] = [
     reviews: 178,
   },
   {
-    id: '37',
+    _id: '37',
     name: 'Indiana Learning Academy',
     description: 'Educational center offering tutoring, test preparation, and academic support.',
     category: 'Education',
@@ -792,7 +792,7 @@ export const businesses: Business[] = [
 
   // Seattle Businesses
   {
-    id: '38',
+    _id: '38',
     name: 'Emerald City Tech',
     description: 'Technology consulting and IT services for businesses in the Seattle area.',
     category: 'Services',
@@ -806,7 +806,7 @@ export const businesses: Business[] = [
     reviews: 198,
   },
   {
-    id: '39',
+    _id: '39',
     name: 'Seattle Coffee Roasters',
     description: 'Artisanal coffee shop serving locally roasted beans and fresh pastries.',
     category: 'Restaurants',
@@ -822,7 +822,7 @@ export const businesses: Business[] = [
 
   // Denver Businesses
   {
-    id: '40',
+    _id: '40',
     name: 'Mile High Fitness',
     description: 'Modern fitness center with mountain views, specialized training programs, and wellness services.',
     category: 'Fitness',
@@ -836,7 +836,7 @@ export const businesses: Business[] = [
     reviews: 189,
   },
   {
-    id: '41',
+    _id: '41',
     name: 'Denver Dental Care',
     description: 'Modern dental clinic offering comprehensive oral care with state-of-the-art technology.',
     category: 'Healthcare',
@@ -852,7 +852,7 @@ export const businesses: Business[] = [
 
   // Washington DC Businesses
   {
-    id: '42',
+    _id: '42',
     name: 'Capital Tech Solutions',
     description: 'Technology consulting and IT services for government and private sector clients.',
     category: 'Services',
@@ -866,7 +866,7 @@ export const businesses: Business[] = [
     reviews: 245,
   },
   {
-    id: '43',
+    _id: '43',
     name: 'DC Medical Center',
     description: 'Comprehensive healthcare services with specialized medical care and preventive medicine.',
     category: 'Healthcare',
@@ -882,7 +882,7 @@ export const businesses: Business[] = [
 
   // Boston Businesses
   {
-    id: '44',
+    _id: '44',
     name: 'Boston Learning Institute',
     description: 'Educational center offering advanced tutoring, test preparation, and academic excellence programs.',
     category: 'Education',
@@ -896,7 +896,7 @@ export const businesses: Business[] = [
     reviews: 223,
   },
   {
-    id: '45',
+    _id: '45',
     name: 'Beantown Beauty Salon',
     description: 'Full-service beauty salon offering modern styling, coloring, and luxury spa treatments.',
     category: 'Beauty',
@@ -912,7 +912,7 @@ export const businesses: Business[] = [
 
   // El Paso Businesses
   {
-    id: '46',
+    _id: '46',
     name: 'El Paso Auto Care',
     description: 'Professional automotive service and repair with bilingual staff and quality parts.',
     category: 'Services',
@@ -926,7 +926,7 @@ export const businesses: Business[] = [
     reviews: 156,
   },
   {
-    id: '47',
+    _id: '47',
     name: 'Border Town Restaurant',
     description: 'Authentic Mexican cuisine and Tex-Mex favorites in a family-friendly atmosphere.',
     category: 'Restaurants',
@@ -942,7 +942,7 @@ export const businesses: Business[] = [
 
   // Nashville Businesses
   {
-    id: '48',
+    _id: '48',
     name: 'Music City Entertainment',
     description: 'Entertainment venue featuring live music, dining, and private events in the heart of Nashville.',
     category: 'Entertainment',
@@ -956,7 +956,7 @@ export const businesses: Business[] = [
     reviews: 289,
   },
   {
-    id: '49',
+    _id: '49',
     name: 'Nashville Fitness Club',
     description: 'Modern fitness center with specialized training programs and wellness services.',
     category: 'Fitness',
@@ -972,7 +972,7 @@ export const businesses: Business[] = [
 
   // Detroit Businesses
   {
-    id: '50',
+    _id: '50',
     name: 'Motor City Auto Service',
     description: 'Professional automotive repair and maintenance service with certified technicians.',
     category: 'Services',
@@ -986,7 +986,7 @@ export const businesses: Business[] = [
     reviews: 189,
   },
   {
-    id: '51',
+    _id: '51',
     name: 'Detroit Medical Group',
     description: 'Comprehensive healthcare services with a focus on family medicine and preventive care.',
     category: 'Healthcare',
@@ -1000,7 +1000,7 @@ export const businesses: Business[] = [
     reviews: 145,
   },
   {
-    id: '52',
+    _id: '52',
     name: 'Motor City Pizza',
     description: 'Authentic Detroit-style pizza with thick crust and premium toppings.',
     category: 'Restaurants',
@@ -1014,7 +1014,7 @@ export const businesses: Business[] = [
     reviews: 234,
   },
   {
-    id: '53',
+    _id: '53',
     name: 'Miami Beach Fitness',
     description: 'Beachfront fitness center with ocean views and specialized training programs.',
     category: 'Fitness',
@@ -1028,7 +1028,7 @@ export const businesses: Business[] = [
     reviews: 189,
   },
   {
-    id: '54',
+    _id: '54',
     name: 'Miami Tech Solutions',
     description: 'Technology consulting and IT services for businesses in the Miami area.',
     category: 'Services',
@@ -1042,7 +1042,7 @@ export const businesses: Business[] = [
     reviews: 167,
   },
   {
-    id: '55',
+    _id: '55',
     name: 'Portland Coffee Roasters',
     description: 'Artisanal coffee shop serving locally roasted beans and organic pastries.',
     category: 'Restaurants',
@@ -1056,7 +1056,7 @@ export const businesses: Business[] = [
     reviews: 198,
   },
   {
-    id: '56',
+    _id: '56',
     name: 'Portland Tech Hub',
     description: 'Technology consulting and software development services in Portland.',
     category: 'Services',
@@ -1070,7 +1070,7 @@ export const businesses: Business[] = [
     reviews: 223,
   },
   {
-    id: '57',
+    _id: '57',
     name: 'Las Vegas Entertainment',
     description: 'Premier entertainment venue with live shows, dining, and gaming options.',
     category: 'Entertainment',
@@ -1084,7 +1084,7 @@ export const businesses: Business[] = [
     reviews: 456,
   },
   {
-    id: '58',
+    _id: '58',
     name: 'Vegas Beauty Salon',
     description: 'Luxury beauty salon offering premium styling, coloring, and spa treatments.',
     category: 'Beauty',
@@ -1098,12 +1098,12 @@ export const businesses: Business[] = [
     reviews: 234,
   },
   {
-    id: '59',
+    _id: '59',
     name: 'Memphis BBQ House',
-    description: 'Authentic Memphis-style barbecue with slow-smoked meats and traditional sides.',
+    description: 'Authentic Memphis-style barbecue with slow-smoked meats and traditional s_ides.',
     category: 'Restaurants',
     subcategory: 'BBQ Restaurant',
-    services: ['Memphis BBQ', 'Traditional Sides', 'Catering', 'Private Events'],
+    services: ['Memphis BBQ', 'Traditional S_ides', 'Catering', 'Private Events'],
     phone: '+1 (555) 901-2345',
     email: 'info@memphisbbq.com',
     address: '789 BBQ Lane',
@@ -1112,7 +1112,7 @@ export const businesses: Business[] = [
     reviews: 345,
   },
   {
-    id: '60',
+    _id: '60',
     name: 'Memphis Medical Center',
     description: 'Comprehensive healthcare services with specialized medical care.',
     category: 'Healthcare',
@@ -1126,7 +1126,7 @@ export const businesses: Business[] = [
     reviews: 178,
   },
   {
-    id: '8',
+    _id: '8',
     name: 'Hotel City Lite',
     description: 'Modern hotel with comfortable rooms and excellent amenities. Perfect for business and leisure travelers with 24/7 room service.',
     category: 'Hotels',
@@ -1150,15 +1150,15 @@ export const businesses: Business[] = [
       tuesday: { open: '00:00', close: '23:59', closed: false },
       wednesday: { open: '00:00', close: '23:59', closed: false },
       thursday: { open: '00:00', close: '23:59', closed: false },
-      friday: { open: '00:00', close: '23:59', closed: false },
+      fr_iday: { open: '00:00', close: '23:59', closed: false },
       saturday: { open: '00:00', close: '23:59', closed: false },
       sunday: { open: '00:00', close: '23:59', closed: false }
     }
   },
   {
-    id: '9',
+    _id: '9',
     name: 'Hotel K Homes',
-    description: '2-star hotel offering clean and comfortable accommodations. Ideal for budget-conscious travelers with essential amenities.',
+    description: '2-star hotel offering clean and comfortable accommodations. _ideal for budget-conscious travelers with essential amenities.',
     category: 'Hotels',
     subcategory: 'Hotel',
     services: ['Air Conditioned', 'WiFi', 'Parking', '24/7 Front Desk'],
@@ -1180,13 +1180,13 @@ export const businesses: Business[] = [
       tuesday: { open: '00:00', close: '23:59', closed: false },
       wednesday: { open: '00:00', close: '23:59', closed: false },
       thursday: { open: '00:00', close: '23:59', closed: false },
-      friday: { open: '00:00', close: '23:59', closed: false },
+      fr_iday: { open: '00:00', close: '23:59', closed: false },
       saturday: { open: '00:00', close: '23:59', closed: false },
       sunday: { open: '00:00', close: '23:59', closed: false }
     }
   },
   {
-    id: '10',
+    _id: '10',
     name: 'Hotel Rigal Blu',
     description: '3-star luxury hotel with premium amenities and excellent service. Perfect for business meetings and family gatherings.',
     category: 'Hotels',
@@ -1210,13 +1210,13 @@ export const businesses: Business[] = [
       tuesday: { open: '00:00', close: '23:59', closed: false },
       wednesday: { open: '00:00', close: '23:59', closed: false },
       thursday: { open: '00:00', close: '23:59', closed: false },
-      friday: { open: '00:00', close: '23:59', closed: false },
+      fr_iday: { open: '00:00', close: '23:59', closed: false },
       saturday: { open: '00:00', close: '23:59', closed: false },
       sunday: { open: '00:00', close: '23:59', closed: false }
     }
   },
   {
-    id: '11',
+    _id: '11',
     name: 'Hotel Grand Plaza',
     description: 'Premium hotel with modern amenities and elegant rooms. Features rooftop restaurant with city views and spa services.',
     category: 'Hotels',
@@ -1241,13 +1241,13 @@ export const businesses: Business[] = [
       tuesday: { open: '00:00', close: '23:59', closed: false },
       wednesday: { open: '00:00', close: '23:59', closed: false },
       thursday: { open: '00:00', close: '23:59', closed: false },
-      friday: { open: '00:00', close: '23:59', closed: false },
+      fr_iday: { open: '00:00', close: '23:59', closed: false },
       saturday: { open: '00:00', close: '23:59', closed: false },
       sunday: { open: '00:00', close: '23:59', closed: false }
     }
   },
   {
-    id: '12',
+    _id: '12',
     name: 'Hotel Comfort Inn',
     description: 'Comfortable hotel with clean rooms and friendly staff. Great value for money with essential amenities for travelers.',
     category: 'Hotels',
@@ -1271,13 +1271,13 @@ export const businesses: Business[] = [
       tuesday: { open: '00:00', close: '23:59', closed: false },
       wednesday: { open: '00:00', close: '23:59', closed: false },
       thursday: { open: '00:00', close: '23:59', closed: false },
-      friday: { open: '00:00', close: '23:59', closed: false },
+      fr_iday: { open: '00:00', close: '23:59', closed: false },
       saturday: { open: '00:00', close: '23:59', closed: false },
       sunday: { open: '00:00', close: '23:59', closed: false }
     }
   },
   {
-    id: '13',
+    _id: '13',
     name: 'Hotel Royal Palace',
     description: 'Luxury hotel with royal ambiance and top-notch facilities. Perfect for special occasions and business events.',
     category: 'Hotels',
@@ -1302,13 +1302,13 @@ export const businesses: Business[] = [
       tuesday: { open: '00:00', close: '23:59', closed: false },
       wednesday: { open: '00:00', close: '23:59', closed: false },
       thursday: { open: '00:00', close: '23:59', closed: false },
-      friday: { open: '00:00', close: '23:59', closed: false },
+      fr_iday: { open: '00:00', close: '23:59', closed: false },
       saturday: { open: '00:00', close: '23:59', closed: false },
       sunday: { open: '00:00', close: '23:59', closed: false }
     }
   },
   {
-    id: '14',
+    _id: '14',
     name: 'Dr. Sharma Dental Clinic',
     description: 'Modern dental clinic offering comprehensive oral care with state-of-the-art equipment and experienced dentists.',
     category: 'Dentists',
@@ -1332,13 +1332,13 @@ export const businesses: Business[] = [
       tuesday: { open: '09:00', close: '18:00', closed: false },
       wednesday: { open: '09:00', close: '18:00', closed: false },
       thursday: { open: '09:00', close: '18:00', closed: false },
-      friday: { open: '09:00', close: '18:00', closed: false },
+      fr_iday: { open: '09:00', close: '18:00', closed: false },
       saturday: { open: '09:00', close: '15:00', closed: false },
       sunday: { open: '00:00', close: '00:00', closed: true }
     }
   },
   {
-    id: '15',
+    _id: '15',
     name: 'Advocate Singh & Associates',
     description: 'Experienced legal firm specializing in civil, criminal, and corporate law with a track record of successful cases.',
     category: 'Lawyers',
@@ -1362,13 +1362,13 @@ export const businesses: Business[] = [
       tuesday: { open: '09:00', close: '17:00', closed: false },
       wednesday: { open: '09:00', close: '17:00', closed: false },
       thursday: { open: '09:00', close: '17:00', closed: false },
-      friday: { open: '09:00', close: '17:00', closed: false },
+      fr_iday: { open: '09:00', close: '17:00', closed: false },
       saturday: { open: '09:00', close: '13:00', closed: false },
       sunday: { open: '00:00', close: '00:00', closed: true }
     }
   },
   {
-    id: '16',
+    _id: '16',
     name: 'Jalandhar Real Estate',
     description: 'Trusted real estate agency helping clients find their perfect homes and investment properties in Jalandhar.',
     category: 'Real Estate',
@@ -1384,7 +1384,7 @@ export const businesses: Business[] = [
     images: ['/realestate1', '/realestate2', '/realestate3', '/realestate4'],
     yearsInBusiness: 10,
     isClaimed: true,
-    specialties: ['Residential Properties', 'Commercial Properties', 'Land Development'],
+    specialties: ['Res_idential Properties', 'Commercial Properties', 'Land Development'],
     teamSize: 20,
     awards: ['Best Real Estate Agency 2023'],
     hours: {
@@ -1392,13 +1392,13 @@ export const businesses: Business[] = [
       tuesday: { open: '10:00', close: '19:00', closed: false },
       wednesday: { open: '10:00', close: '19:00', closed: false },
       thursday: { open: '10:00', close: '19:00', closed: false },
-      friday: { open: '10:00', close: '19:00', closed: false },
+      fr_iday: { open: '10:00', close: '19:00', closed: false },
       saturday: { open: '10:00', close: '16:00', closed: false },
       sunday: { open: '10:00', close: '14:00', closed: false }
     }
   },
   {
-    id: '17',
+    _id: '17',
     name: 'State Bank of India - Jalandhar Branch',
     description: 'Premier banking institution offering comprehensive financial services including loans, investments, and digital banking.',
     category: 'Banks',
@@ -1422,15 +1422,15 @@ export const businesses: Business[] = [
       tuesday: { open: '10:00', close: '16:00', closed: false },
       wednesday: { open: '10:00', close: '16:00', closed: false },
       thursday: { open: '10:00', close: '16:00', closed: false },
-      friday: { open: '10:00', close: '16:00', closed: false },
+      fr_iday: { open: '10:00', close: '16:00', closed: false },
       saturday: { open: '10:00', close: '14:00', closed: false },
       sunday: { open: '00:00', close: '00:00', closed: true }
     }
   },
   {
-    id: '18',
+    _id: '18',
     name: 'MedPlus Pharmacy',
-    description: 'Full-service pharmacy providing prescription medications, health products, and professional pharmaceutical advice.',
+    description: 'Full-service pharmacy prov_iding prescription medications, health products, and professional pharmaceutical advice.',
     category: 'Pharmacies',
     subcategory: 'Pharmacy',
     services: ['Prescription Drugs', 'Over-the-Counter Medicine', 'Health Supplements', 'Medical Devices', 'Consultation'],
@@ -1452,13 +1452,13 @@ export const businesses: Business[] = [
       tuesday: { open: '08:00', close: '22:00', closed: false },
       wednesday: { open: '08:00', close: '22:00', closed: false },
       thursday: { open: '08:00', close: '22:00', closed: false },
-      friday: { open: '08:00', close: '22:00', closed: false },
+      fr_iday: { open: '08:00', close: '22:00', closed: false },
       saturday: { open: '08:00', close: '22:00', closed: false },
       sunday: { open: '08:00', close: '22:00', closed: false }
     }
   },
   {
-    id: '19',
+    _id: '19',
     name: 'HP Petrol Pump',
     description: 'Reliable fuel station offering quality petrol, diesel, and convenience store items with 24/7 service.',
     category: 'Gas Stations',
@@ -1482,13 +1482,13 @@ export const businesses: Business[] = [
       tuesday: { open: '00:00', close: '23:59', closed: false },
       wednesday: { open: '00:00', close: '23:59', closed: false },
       thursday: { open: '00:00', close: '23:59', closed: false },
-      friday: { open: '00:00', close: '23:59', closed: false },
+      fr_iday: { open: '00:00', close: '23:59', closed: false },
       saturday: { open: '00:00', close: '23:59', closed: false },
       sunday: { open: '00:00', close: '23:59', closed: false }
     }
   },
   {
-    id: '20',
+    _id: '20',
     name: 'PetCare Veterinary Clinic',
     description: 'Comprehensive veterinary care for all types of pets with experienced veterinarians and modern facilities.',
     category: 'Pet Services',
@@ -1512,13 +1512,13 @@ export const businesses: Business[] = [
       tuesday: { open: '09:00', close: '18:00', closed: false },
       wednesday: { open: '09:00', close: '18:00', closed: false },
       thursday: { open: '09:00', close: '18:00', closed: false },
-      friday: { open: '09:00', close: '18:00', closed: false },
+      fr_iday: { open: '09:00', close: '18:00', closed: false },
       saturday: { open: '09:00', close: '15:00', closed: false },
       sunday: { open: '09:00', close: '12:00', closed: false }
     }
   },
   {
-    id: '21',
+    _id: '21',
     name: 'QuickFix Home Services',
     description: 'Professional home repair and maintenance services including plumbing, electrical, and general repairs.',
     category: 'Home Services',
@@ -1542,7 +1542,7 @@ export const businesses: Business[] = [
       tuesday: { open: '08:00', close: '20:00', closed: false },
       wednesday: { open: '08:00', close: '20:00', closed: false },
       thursday: { open: '08:00', close: '20:00', closed: false },
-      friday: { open: '08:00', close: '20:00', closed: false },
+      fr_iday: { open: '08:00', close: '20:00', closed: false },
       saturday: { open: '08:00', close: '18:00', closed: false },
       sunday: { open: '09:00', close: '16:00', closed: false }
     }

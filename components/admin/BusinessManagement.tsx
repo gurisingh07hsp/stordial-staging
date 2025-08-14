@@ -22,6 +22,8 @@ import {
 import { Business, BusinessFormData,} from '../../types';
 import axios from 'axios';
 import Select from "react-select";
+import { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 interface OpeningHours {
   [key: string]: {
@@ -87,20 +89,24 @@ export default function BusinessManagement() {
       hours: openingHours
     });
 
+    const [id,setId] = useState('');
+
     const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
       formData.city = formData.city.toLowerCase();
       formData.category = formData.category.toLowerCase();
-      console.log("Form Data : ", formData);
+      if(isEditing){
       try{
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, formData,{withCredentials: true});
-        console.log(response.data);
-        if(response.status == 201){
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/${id}`, formData,{withCredentials: true});
+        if(response.status == 200){
           setIsSubmitting(false);
-          setMessage('Business listing submitted successfully');
+          setMessage('Business Edited successfully');
           setTimeout(() => {
             setShowAddModal(false);
+            setIsEditing(false);
+            setMessage('');
+            setId('');
           }, 1000);
         }
       }catch(error){
@@ -111,7 +117,49 @@ export default function BusinessManagement() {
     setMessage('An unexpected error occurred');
   }
     }
+      }
+      else{
+      try{
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, formData,{withCredentials: true});
+        if(response.status == 201){
+          setIsSubmitting(false);
+          setMessage('Business listing submitted successfully');
+          setTimeout(() => {
+            setShowAddModal(false);
+            setMessage('');
+          }, 1000);
+        }
+      }catch(error){
+      if (axios.isAxiosError(error)) {
+    setIsSubmitting(false);
+    setMessage('You must be logged in to submit a business listing')
+  } else {
+    setMessage('An unexpected error occurred');
+  }
+    }
+    
+      }
+
   };
+
+  useEffect(()=>{
+    if(!showAddModal){
+      setFormData({
+      name: '',
+      description: '',
+      category: '',
+      subcategory: '',
+      services: [],
+      phone: '',
+      email: '',
+      address: '',
+      city: '',
+      website: '',
+      hours: openingHours // or empty if you want {}
+    });
+    setId('');
+    }
+  },[showAddModal])
 
     const categories: string[] = ['Restaurants','Hotels','Hospitals','Schools','Shopping','Automotive','Beauty','Spa',
       'Fitness','Dentists','Lawyers','Real Estate','Banks','Pharmacies','Petrol Pumps','Pet Services','Home Services',
@@ -265,7 +313,7 @@ const filteredBusinesses = businesses;
     if (selectedBusinesses.length === filteredBusinesses.length) {
       setSelectedBusinesses([]);
     } else {
-      setSelectedBusinesses(filteredBusinesses.map(b => b.id));
+      setSelectedBusinesses(filteredBusinesses.map(b => b._id));
     }
   };
 
@@ -277,15 +325,24 @@ const filteredBusinesses = businesses;
     );
   };
 
-  const handleDeleteSelected = () => {
-    // In real app, this would call API to delete businesses
-    alert(`Delete ${selectedBusinesses.length} businesses?`);
-    setSelectedBusinesses([]);
-  };
 
+  const handleDelete = async(business: Business) => {
+    try{
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/${business._id}`, {withCredentials: true});
+      toast.success(response.data.message || 'Business deleted successfully!')
+      fetchBusinesses();
+
+    }catch(error){
+      toast.error('Failed to delete business. Please try again.');
+    }
+  }
+
+  const [isEditing, setIsEditing] = useState(false);
   const handleEditBusiness = (business: Business) => {
-    // TODO: Implement edit functionality
-    console.log('Edit business:', business);
+    setFormData({...formData, ...business});
+    setIsEditing(true);
+    setShowAddModal(true);
+
   };
 
 
@@ -372,11 +429,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
   };
 
   const handleToggleFeatured = async(businessId: string) => {
-
-      console.log("businessname : ", businessId);
       const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/admin/featured/${businessId}`, {}, {withCredentials: true} );
-        console.log(response.data);
-
 
     setFeaturedBusinesses(prev => 
       prev.includes(businessId) 
@@ -390,14 +443,31 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
 
 
     const fetchBusinesses = async () => {
-      // console.log(searchQuery, selectedCategory, selectedStatus);
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/?page=${page}
-        &limit=5&search=${searchQuery}&category=${selectedCategory}`, {withCredentials: true});
-      // 
-      console.log(response.data);
+        &limit=5&search=${searchQuery}&category=${selectedCategory}`);
       setBusinesses(response.data.businesses);
        setTotalPages(response.data.totalPages);
     // setTotalPages(data.totalPages);
+  };
+
+    const handleDeleteSelected = async() => {
+    for (let i = 0; i < selectedBusinesses.length; i++) {
+  try {
+    const id = selectedBusinesses[i];
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/${id}`,
+      { withCredentials: true }
+    );
+
+    if (i === selectedBusinesses.length - 1) {
+      toast.success(`${selectedBusinesses.length} Businesses Deleted Successfully` || response.data.message) // ✅ Last one
+    }
+  } catch (error) {
+     toast.error('Failed to delete businesses. Please try again.');
+  }
+}
+    setSelectedBusinesses([]);
+    fetchBusinesses();
   };
 
   useEffect(() => {
@@ -406,6 +476,28 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      <Toaster
+  position="top-right"
+  reverseOrder={false}
+  toastOptions={{
+    duration: 4000, // auto-close after 4s
+    style: {
+      borderRadius: '8px',
+      background: '#333',
+      color: '#fff',
+    },
+    success: {
+      style: {
+        background: 'green',
+      },
+    },
+    error: {
+      style: {
+        background: 'red',
+      },
+    },
+  }}
+/>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -564,12 +656,12 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredBusinesses.map((business) => (
-                <tr key={business.name} className="hover:bg-gray-50">
+                <tr key={business._id} className="hover:bg-gray-50">
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                     <input
                       type="checkbox"
-                      checked={selectedBusinesses.includes(business.name)}
-                      onChange={() => handleSelectBusiness(business.name)}
+                      checked={selectedBusinesses.includes(business._id)}
+                      onChange={() => handleSelectBusiness(business._id)}
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
                   </td>
@@ -615,22 +707,22 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
                     <button
-                      onClick={() => handleToggleFeatured(business.name)}
+                      onClick={() => handleToggleFeatured(business._id)}
                       className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium transition-colors ${
-                        featuredBusinesses.includes(business.name) || business.featured
+                        featuredBusinesses.includes(business._id) || business.featured
                           ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                       }`}
-                      title={featuredBusinesses.includes(business.name) || business.featured ? 'Remove from Featured' : 'Add to Featured'}
+                      title={featuredBusinesses.includes(business._id) || business.featured ? 'Remove from Featured' : 'Add to Featured'}
                     >
-                      <Star className={`w-3 h-3 mr-1 ${featuredBusinesses.includes(business.name) || business.featured ? 'fill-current' : ''}`} />
-                      {featuredBusinesses.includes(business.name) || business.featured ? 'Featured' : 'Not Featured'}
+                      <Star className={`w-3 h-3 mr-1 ${featuredBusinesses.includes(business._id) || business.featured ? 'fill-current' : ''}`} />
+                      {featuredBusinesses.includes(business._id) || business.featured ? 'Featured' : 'Not Featured'}
                     </button>
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-1 sm:space-x-2">
                       <button
-                        onClick={() => handleEditBusiness(business)}
+                        onClick={() => {handleEditBusiness(business); setId(business._id)}}
                         className="text-blue-600 hover:text-blue-900 p-1"
                         title="Edit"
                       >
@@ -639,7 +731,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
                       <button className="text-gray-600 hover:text-gray-900 p-1" title="View">
                         <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
-                      <button className="text-red-600 hover:text-red-900 p-1" title="Delete">
+                      <button onClick={()=>handleDelete(business)} className="text-red-600 hover:text-red-900 p-1" title="Delete">
                         <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
                     </div>
@@ -681,12 +773,12 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
       {/* Comprehensive Add Business Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-4 mx-auto p-4 sm:p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
+          <div className="relative top-2 mx-auto  p-4 sm:p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
             <div className="mt-3">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-medium text-gray-900">Add New Business</h3>
+                <h3 className="text-xl font-medium text-gray-900">{`${isEditing ? "Edit Business" : "Add New Business"}`}</h3>
                 <button
-                  onClick={() => setShowAddModal(false)}
+                  onClick={() => {setShowAddModal(false); setIsEditing(false)}}
                   className="text-gray-400 hover:text-gray-600"
                 >
                   <X className="w-6 h-6" />
@@ -973,7 +1065,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
                 )}
               </div>
 
-              {message && <p className={`${message == 'Business listing submitted successfully' ? 'text-green-500' : 'text-red-500'} text-center font-bold`}>{message}</p>}
+              {message && <p className={`${message == 'Business listing submitted successfully' || message == 'Business Edited successfully' ? 'text-green-500' : 'text-red-500'} text-center font-bold`}>{message}</p>}
 
               {/* Submit Button */}
               <div className="flex justify-center py-4 ">
@@ -982,7 +1074,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
                   disabled={isSubmitting}
                   className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Submitting...' : 'Submit Business Listing'}
+                  {isSubmitting ? isEditing ? 'Editing...' : 'Submitting...' : isEditing ? 'Edit Business' : 'Submit Business'}
                 </button>
               </div>
             </form> 

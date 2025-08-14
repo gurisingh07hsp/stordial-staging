@@ -72,7 +72,6 @@ exports.getBusinesses = async (req, res, next) => {
 
     const businesses = await Business.find(query)
       .populate('owner', 'name email')
-      .sort({ rating: -1, reviews: -1 })
       .skip((pageNum - 1) * limitNum)
       .limit(limitNum);
 
@@ -209,7 +208,7 @@ exports.deleteBusiness = async (req, res, next) => {
       });
     }
 
-    await business.remove();
+    await business.deleteOne();
 
     res.status(200).json({
       success: true,
@@ -275,8 +274,7 @@ exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
 // Toggle featured status (admin only)
 exports.toggleFeatured = async (req, res, next) => {
   try {
-    const name = req.params.id;
-    const business = await Business.findOne({name: name});
+    const business = await Business.findById(req.params.id);
 
     if (!business) {
       return res.status(404).json({

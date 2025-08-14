@@ -22,7 +22,6 @@ import {
   Navigation
 } from 'lucide-react';
 import Link from 'next/link';
-// import { businesses } from '../../../../data/mockData';
 import { Business } from '../../../../types';
 import axios from 'axios';
 const similarBusinesses = [
@@ -55,101 +54,6 @@ const similarBusinesses = [
   }
 ];
 
-// Sample restaurant with menu for testing - keeping for future use
-/*
-const sampleRestaurant: Business = {
-  id: '2',
-  name: 'Spice Garden',
-  description: 'Authentic Indian cuisine with modern twists.',
-  category: 'Restaurants',
-  subcategory: 'Indian',
-  services: ['Dine-in', 'Takeout', 'Delivery', 'Catering'],
-  phone: '+1 (555) 987-6543',
-  email: 'info@spicegarden.com',
-  address: '456 Oak Avenue',
-  city: 'Los Angeles',
-  rating: 4.6,
-  reviews: 89,
-  website: 'https://spicegarden.com',
-  yearsInBusiness: 8,
-  isClaimed: true,
-  images: ['/indian1', '/indian2', '/indian3'],
-  hours: {
-    monday: { open: '11:00', close: '22:00', closed: false },
-    tuesday: { open: '11:00', close: '22:00', closed: false },
-    wednesday: { open: '11:00', close: '22:00', closed: false },
-    thursday: { open: '11:00', close: '22:00', closed: false },
-    friday: { open: '11:00', close: '23:00', closed: false },
-    saturday: { open: '12:00', close: '23:00', closed: false },
-    sunday: { open: '12:00', close: '21:00', closed: false }
-  },
-  specialties: ['Tandoori', 'Curries', 'Biryani'],
-  teamSize: 15,
-  awards: ['Best Indian Restaurant 2023'],
-  menu: {
-    categories: [
-      {
-        name: 'Appetizers',
-        items: [
-          {
-            name: 'Samosa',
-            description: 'Crispy pastry filled with spiced potatoes and peas',
-            price: '$6.50',
-            vegetarian: true,
-            popular: true
-          },
-          {
-            name: 'Chicken Tikka',
-            description: 'Tender chicken marinated in yogurt and spices',
-            price: '$8.50',
-            popular: true
-          }
-        ]
-      },
-      {
-        name: 'Main Course',
-        items: [
-          {
-            name: 'Butter Chicken',
-            description: 'Creamy tomato-based curry with tender chicken',
-            price: '$16.50',
-            popular: true
-          },
-          {
-            name: 'Lamb Vindaloo',
-            description: 'Spicy curry with tender lamb pieces',
-            price: '$18.50',
-            spicy: true
-          },
-          {
-            name: 'Paneer Tikka',
-            description: 'Grilled cottage cheese with aromatic spices',
-            price: '$14.50',
-            vegetarian: true
-          }
-        ]
-      },
-      {
-        name: 'Breads & Rice',
-        items: [
-          {
-            name: 'Naan',
-            description: 'Soft leavened bread baked in tandoor',
-            price: '$3.50',
-            vegetarian: true
-          },
-          {
-            name: 'Biryani',
-            description: 'Fragrant rice with spices and tender meat',
-            price: '$19.50',
-            popular: true
-          }
-        ]
-      }
-    ]
-  }
-};
-*/
 
 interface BusinessPageProps {
   params: {
@@ -164,6 +68,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   const [showImageModal, setShowImageModal] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [business, setBusiness] = useState<Business | null>(null);
+  const [noBusiness, setNoBusiness] = useState(false);
 
   const decodedLocation = decodeURIComponent(params.location);
   const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
@@ -176,31 +81,22 @@ export default function BusinessPage({ params }: BusinessPageProps) {
         if(response.status == 200){
           setBusiness(response.data.business);
         }
+        else{
+          setNoBusiness(true);
+        }
 
       }catch(error){
         console.log('Error fetching business: ', error);
+        setNoBusiness(true);
       }
     }
     getBusinessByName();
   }, [decodedName])
   
-
-  // const business = businesses.find(b => {
-  //   const businessLocation = b.city.toLowerCase().replace(/\s+/g, '-');
-  //   const businessCategory = b.category.toLowerCase().replace(/\s+/g, '-');
-  //   const businessName = b.name.toLowerCase().replace(/\s+/g, '-').replace(/-+/g, '-');
-    
-  //   const matches = businessLocation === decodedLocation.toLowerCase() &&
-  //          businessCategory === decodedCategory.toLowerCase() &&
-  //          businessName === decodedName.toLowerCase();
-    
-
-    
-  //   return matches;
-  // });
-
   if (!business) {
     return (
+      <>
+      {noBusiness ? 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center bg-white rounded-2xl p-8 shadow-xl max-w-md">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">Business Not Found</h1>
@@ -223,6 +119,12 @@ export default function BusinessPage({ params }: BusinessPageProps) {
           </div>
         </div>
       </div>
+  : (
+    <div className='h-[100vh] w-[99vw] flex justify-center items-center'>
+      <p className='text-2xl'>Loding...</p>
+    </div>
+  )}
+      </>
     );
   }
 
@@ -321,7 +223,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                 </div>
               </div>
               <div className="space-y-3">
-                {business.images && business.images.slice(1, 4).map((image, index) => (
+                {business && business.images && business.images.slice(1, 4).map((image, index) => (
                   <div 
                     key={index + 1}
                     className="h-1/3 bg-gradient-to-br from-green-100 to-blue-100 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
@@ -330,7 +232,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                     <div className="text-2xl">☕</div>
                   </div>
                 ))}
-                {business.images && business.images.length > 4 && (
+                {business && business.images && business.images.length > 4 && (
                   <div className="h-1/3 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg">
                     <div className="text-2xl">☕</div>
                   </div>

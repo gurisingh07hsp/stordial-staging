@@ -73,8 +73,6 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
                     <span className="text-sm">{business.category} • {business.subcategory}</span>
                   </div>
                   
-                  <p className="text-gray-600 mb-4 text-sm leading-relaxed">{business.description}</p>
-                  
                   <div className="flex flex-wrap gap-2 mb-4">
                     {business.services.slice(0, 3).map((service, index) => (
                       <span key={index} className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-medium">

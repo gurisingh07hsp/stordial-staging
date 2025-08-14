@@ -5,7 +5,7 @@ import React from 'react';
 import Link from 'next/link';
 
 interface Business {
-  id: string;
+  _id: string;
   name: string;
   category: string;
   city: string;
@@ -39,7 +39,7 @@ export default function TrendingSection({ businesses }: TrendingSectionProps) {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {limitedBusinesses.map((business, index) => (
             <Link
-              key={business.id}
+              key={business._id}
               href={formatBusinessUrl(business)}
               className="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition-shadow duration-200 border border-gray-200 group"
             >
