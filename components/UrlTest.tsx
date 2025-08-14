@@ -19,7 +19,7 @@ export default function UrlTest() {
       <h2 className="text-2xl font-bold mb-4">URL Test for Featured Businesses</h2>
       <div className="space-y-4">
         {testBusinesses.map((business) => (
-          <div key={business.id} className="border p-4 rounded">
+          <div key={business._id} className="border p-4 rounded">
             <h3 className="font-semibold">{business.name}</h3>
             <p>Category: {business.category}</p>
             <p>City: {business.city}</p>
