@@ -14,7 +14,6 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  Bookmark,
   CheckCircle,
   Calendar,
   Users,
