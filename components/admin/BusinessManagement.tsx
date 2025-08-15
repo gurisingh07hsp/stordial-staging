@@ -305,7 +305,7 @@ export default function BusinessManagement() {
       setFormData({...formData, hours: openingHours});
     },[openingHours]);
 
-  const statuses = ['All', 'Active', 'Pending', 'Suspended', 'Featured', 'Not Featured'];
+  const statuses = ['All', 'Featured'];
 
 const filteredBusinesses = businesses;
 
@@ -446,10 +446,9 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
 
     const fetchBusinesses = async () => {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/?page=${page}
-        &limit=5&search=${searchQuery}&category=${selectedCategory}`);
+        &limit=5&search=${searchQuery}&category=${selectedCategory}&${selectedStatus.toLowerCase()}=${true}`);
       setBusinesses(response.data.businesses);
        setTotalPages(response.data.totalPages);
-    // setTotalPages(data.totalPages);
   };
 
     const handleDeleteSelected = async() => {
@@ -475,7 +474,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
 
   useEffect(() => {
     fetchBusinesses();
-  }, [page, selectedCategory, searchQuery]);
+  }, [page, selectedCategory, searchQuery,selectedStatus]);
 
   return (
     <div className="space-y-4 sm:space-y-6">

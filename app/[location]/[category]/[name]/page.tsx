@@ -24,35 +24,35 @@ import {
 import Link from 'next/link';
 import { Business } from '../../../../types';
 import axios from 'axios';
-const similarBusinesses = [
-  {
-    id: '4',
-    name: 'Café Central',
-    category: 'Restaurants',
-    subcategory: 'Coffee Shop',
-    city: 'New York',
-    rating: 4.5,
-    reviews: 98
-  },
-  {
-    id: '5',
-    name: 'Java Junction',
-    category: 'Restaurants',
-    subcategory: 'Coffee Shop',
-    city: 'New York',
-    rating: 4.3,
-    reviews: 76
-  },
-  {
-    id: '6',
-    name: 'Brew & Bean',
-    category: 'Restaurants',
-    subcategory: 'Coffee Shop',
-    city: 'New York',
-    rating: 4.7,
-    reviews: 112
-  }
-];
+// const similarBusinesses = [
+//   {
+//     id: '4',
+//     name: 'Café Central',
+//     category: 'Restaurants',
+//     subcategory: 'Coffee Shop',
+//     city: 'New York',
+//     rating: 4.5,
+//     reviews: 98
+//   },
+//   {
+//     id: '5',
+//     name: 'Java Junction',
+//     category: 'Restaurants',
+//     subcategory: 'Coffee Shop',
+//     city: 'New York',
+//     rating: 4.3,
+//     reviews: 76
+//   },
+//   {
+//     id: '6',
+//     name: 'Brew & Bean',
+//     category: 'Restaurants',
+//     subcategory: 'Coffee Shop',
+//     city: 'New York',
+//     rating: 4.7,
+//     reviews: 112
+//   }
+// ];
 
 
 interface BusinessPageProps {
@@ -69,10 +69,23 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   const [activeTab, setActiveTab] = useState('overview');
   const [business, setBusiness] = useState<Business | null>(null);
   const [noBusiness, setNoBusiness] = useState(false);
+  const [similarBusinesses, setSimilarBusinesses] = useState<Business[]>([]);
 
   const decodedLocation = decodeURIComponent(params.location);
   const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
   const decodedName = decodeURIComponent(params.name.replace(/-/g, ' '));
+
+
+  const getSimilarBusinesses = async() => {
+    try{
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}`, {withCredentials: true});
+        if(response.status == 200){
+          setSimilarBusinesses(response.data.businesses.slice(0,3));
+        }
+      }catch(error){
+        console.error('Error fetching businesses: ', error);
+      }
+  }
 
   useEffect(() => {
     const getBusinessByName = async () => {
@@ -91,6 +104,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
       }
     }
     getBusinessByName();
+    getSimilarBusinesses();
   }, [decodedName])
   
   if (!business) {
@@ -130,6 +144,11 @@ export default function BusinessPage({ params }: BusinessPageProps) {
 
   const formatHours = (hours: { [key: string]: { open: string; close: string; closed: boolean } } | undefined) => {
     if (!hours) return null;
+
+    if(hours['24x7'].closed)
+    {
+      return <div className="flex justify-between py-1"><span>24X7</span><span className="text-green-500">Open</span></div>
+    }
     
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
     return days.map(day => {
@@ -144,10 +163,10 @@ export default function BusinessPage({ params }: BusinessPageProps) {
     }).filter(Boolean);
   };
 
-  const formatBusinessUrl = (business: { id: string; name: string; category: string; city: string }) => {
+  const formatBusinessUrl = (business: { _id: string; name: string; category: string; city: string }) => {
     const location = business.city.toLowerCase().replace(/\s+/g, '-');
     const category = business.category.toLowerCase().replace(/\s+/g, '-');
-    const name = business.name.toLowerCase().replace(/\s+/g, '-');
+    const name = business.name.replace(/\s+/g, '-');
     return `/${location}/${category}/${name}`;
   };
 
@@ -174,12 +193,13 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   };
 
   const shouldShowMenu = (business: Business) => {
-    const foodCategories = ['Restaurants', 'Cafes', 'Bars', 'Hotels', 'Resorts', 'Catering'];
+    console.log("business Category : ", business);
+    const foodCategories = ['restaurants', 'cafes', 'bars', 'hotels', 'resorts', 'catering'];
     const foodSubcategories = ['Coffee Shop', 'Bakery', 'Pizzeria', 'Sushi', 'Italian', 'Mexican', 'Chinese', 'Indian', 'Thai', 'American', 'French', 'Japanese', 'Korean', 'Mediterranean', 'Seafood', 'Steakhouse', 'BBQ', 'Food Truck', 'Deli', 'Ice Cream', 'Dessert'];
     
     return foodCategories.includes(business.category) || 
-           foodSubcategories.includes(business.subcategory) ||
-           business.menu !== undefined;
+           foodSubcategories.includes(business.subcategory);
+          //  business.menu !== undefined;
   };
 
   return (
@@ -213,17 +233,18 @@ export default function BusinessPage({ params }: BusinessPageProps) {
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-8">
           {/* Image Gallery */}
           <div className="relative h-80 lg:h-96 bg-gradient-to-br from-gray-100 to-gray-200">
-            <div className="grid grid-cols-4 gap-3 p-6 h-full">
+            <div className="grid lg:grid-cols-4 gap-3 lg:p-6 p-4 h-full ">
               <div className="col-span-3">
                 <div 
-                  className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
+                  className=" w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
                   onClick={() => openImageModal(0)}
                 >
                   <div className="text-6xl">☕</div>
                 </div>
               </div>
-              <div className="space-y-3">
-                {business && business.images && business.images.slice(1, 4).map((image, index) => (
+              <div className="hidden lg:block space-y-3">
+                {/* {business && business.images && business.images.slice(1, 4).map((image, index) => ( */}
+                {[1,2,3,4].slice(1, 4).map((image, index) => (
                   <div 
                     key={index + 1}
                     className="h-1/3 bg-gradient-to-br from-green-100 to-blue-100 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
@@ -239,7 +260,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                 )}
               </div>
             </div>
-            <button className="absolute bottom-6 right-6 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300">
+            <button className="hidden lg:block absolute bottom-6 right-6 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300">
               <Camera className="w-6 h-6 text-gray-600" />
             </button>
           </div>
@@ -264,10 +285,10 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                     <span className="font-bold text-gray-800">{business.rating}</span>
                     <span className="text-gray-600 ml-1">({business.reviews} reviews)</span>
                   </div>
-                  <div className="flex items-center bg-green-100 text-green-700 px-4 py-2 rounded-full">
+                  {/* <div className="flex items-center bg-green-100 text-green-700 px-4 py-2 rounded-full">
                     <Clock className="w-4 h-4 mr-2" />
                     <span className="text-sm font-medium">Opens in 15 mins</span>
-                  </div>
+                  </div> */}
                   <div className="flex items-center bg-blue-100 text-blue-700 px-4 py-2 rounded-full">
                     <Calendar className="w-4 h-4 mr-2" />
                     <span className="text-sm font-medium">{business.yearsInBusiness} Years</span>
@@ -295,9 +316,9 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                   <button className="bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
                     <Share2 className="w-5 h-5" />
                   </button>
-                  <button className="bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
+                  {/* <button className="bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
                     <Bookmark className="w-5 h-5" />
-                  </button>
+                  </button> */}
                 </div>
 
                 {/* Specialties */}
@@ -341,7 +362,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
             <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
               {/* Tab Navigation */}
               <div className="border-b border-gray-200">
-                <nav className="flex space-x-8 px-8">
+                <nav className="flex space-x-10 px-8 overflow-x-scroll hide-scrollbar">
                   {[
                     { id: 'overview', label: 'Overview', icon: '📋' },
                     ...(shouldShowMenu(business) ? [{ id: 'menu', label: 'Menu', icon: '🍽️' }] : []),
@@ -517,10 +538,11 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                 <h3 className="text-2xl font-semibold text-gray-800 mb-6">Similar Businesses</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {similarBusinesses.map((similarBusiness) => (
+                    <div key={similarBusiness._id} className={`${business._id  == similarBusiness._id ? 'hidden' : 'block'} group`}>
+                    { business._id  !== similarBusiness._id &&
                     <Link 
-                      key={similarBusiness.id}
                       href={formatBusinessUrl(similarBusiness)}
-                      className="block group"
+                      // className="block group"
                     >
                       <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl h-48 mb-4 flex items-center justify-center group-hover:shadow-lg transition-all duration-300">
                         <div className="text-4xl">☕</div>
@@ -534,7 +556,8 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                         <span className="font-medium">{similarBusiness.rating}</span>
                         <span className="text-gray-600 ml-1">({similarBusiness.reviews} reviews)</span>
                       </div>
-                    </Link>
+                    </Link>}
+                    </div>
                   ))}
                 </div>
               </div>
@@ -634,7 +657,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
       {/* Image Modal */}
       {showImageModal && selectedImageIndex !== null && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="relative max-w-5xl max-h-full p-4">
+          <div className="relative w-[70%] max-h-full p-4">
             <button
               onClick={closeImageModal}
               className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 rounded-full p-2"
