@@ -36,51 +36,43 @@ export default function Header({
           </Link>
 
           {/* Desktop Navigation */}
-          <div className={`hidden lg:flex items-center divide-x ${user ? user.email == 'admin@stordial.com' ? 'ms-28' : 'ms-20' : ''}`}>
+          <div className={`hidden lg:flex items-center space-x-2`}>
             <Link 
               href="/about"
-              // className="hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group px-4 py-2 rounded-lg hover:bg-gray-100"
-              className="me-2 hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group"
+              className="hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group px-3 py-2 rounded-lg hover:bg-gray-100"
             >
               <span className="font-medium">About Us</span>
             </Link>
             
             <Link 
               href="/advertise"
-              // className="hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group px-4 py-2 rounded-lg hover:bg-gray-100"
-              className="me-2 hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group"
+              className="hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group px-3 py-2 rounded-lg hover:bg-gray-100"
             >
-              <Megaphone className="ms-2 w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
+              <Megaphone className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
               <span className="font-medium">Advertise</span>
             </Link>
             
             <Link 
               href="/list-business"
-              // className="hidden lg:flex items-center bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-2 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold group"
-              className="hidden lg:flex items-cente text-gray-600 hover:text-blue-600 transition-all duration-200 font-semibold group"
+              className="hidden lg:flex items-center bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-2 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold group"
             >
-              <FileText className="ms-2 w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-              <span className='me-2'>List Business</span>
+              <FileText className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
+              <span>List Business</span>
             </Link>
 
             {user && user.email === 'admin@stordial.com' && (
                     <Link 
                       href="/admin"
-                      className="text-blue-600 hover:text-blue-700 transition-colors"
+                      className="text-blue-600 hover:text-blue-700 transition-colors font-medium bg-blue-50 px-3 py-2 rounded-lg hover:bg-blue-100"
                     >
-                      <div className='ms-2'>
                       Admin Panel
-                      </div>
                     </Link>
                   )}
 
-          </div>
-      
-          <div>
-            {user ? (
+                              {user ? (
               <div className="hidden lg:flex items-center space-x-4">              
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-3 cursor-pointer">
+                  <div className="flex items-center space-x-3 cursor-pointer border py-1 px-1 rounded-lg">
                     <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-md">
                       <User className="w-4 h-4 text-white" />
                     </div>
@@ -108,7 +100,9 @@ export default function Header({
                 <span>Sign In</span>
               </button>
             )}
+
           </div>
+      
             {/* Mobile Menu Button */}
             <button
               onClick={onMenuToggle}

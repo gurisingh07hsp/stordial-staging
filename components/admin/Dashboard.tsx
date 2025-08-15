@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { 
   Users, 
   Building2, 
@@ -10,10 +12,13 @@ import {
 } from 'lucide-react';
 
 export default function Dashboard() {
+  const [totalUser, setTotalUser] = useState('');
+  const [totalBusinesses, setTotalBusinesses] = useState('');
+
   const stats = [
     {
       title: 'Total Users',
-      value: '2,847',
+      value: totalUser,
       change: '+12%',
       changeType: 'positive',
       icon: Users,
@@ -21,7 +26,7 @@ export default function Dashboard() {
     },
     {
       title: 'Active Businesses',
-      value: '1,234',
+      value: totalBusinesses,
       change: '+8%',
       changeType: 'positive',
       icon: Building2,
@@ -44,6 +49,20 @@ export default function Dashboard() {
       color: 'bg-orange-500'
     }
   ];
+
+  useEffect(()=>{
+    const getData = async() => {
+      try{
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/admin/stats`, {withCredentials: true});
+        const data = response.data.stats;
+        setTotalUser(data.totalUsers);
+        setTotalBusinesses(data.totalBusinesses);
+      }catch(error){
+        console.log(error);
+      }
+    }
+    getData();
+  },[])
 
   const recentActivities = [
     {

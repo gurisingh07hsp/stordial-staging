@@ -127,7 +127,7 @@ export default function BlogManagement() {
   return (
     <div className="space-y-3 sm:space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col w-full sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Blog Management</h1>
           <p className="text-sm sm:text-base text-gray-600">Create and manage blog posts and content</p>
@@ -170,7 +170,7 @@ export default function BlogManagement() {
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+      <div className="bg-white rounded-xl w-full shadow-sm p-4 sm:p-6 border border-gray-200">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Search */}
           <div className="relative">
@@ -223,7 +223,7 @@ export default function BlogManagement() {
 
       {/* Bulk Actions */}
       {selectedPosts.length > 0 && (
-        <div className="bg-blue-50 rounded-xl p-3 sm:p-4 border border-blue-200">
+        <div className="bg-blue-50 rounded-xl w-full p-3 sm:p-4 border border-blue-200">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <span className="text-xs sm:text-sm font-medium text-blue-800">
               {selectedPosts.length} posts selected
@@ -244,7 +244,7 @@ export default function BlogManagement() {
 
       {/* Posts List View */}
       {viewMode === 'list' && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white w-full rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -299,7 +299,7 @@ export default function BlogManagement() {
                         </div>
                         <div className="ml-3 sm:ml-4 min-w-0">
                           <div className="text-sm font-medium text-gray-900 truncate">{post.title}</div>
-                          <div className="text-xs sm:text-sm text-gray-500 truncate">{post.excerpt}</div>
+                          <div className="text-xs sm:text-sm text-gray-500 truncate">{post.excerpt.slice(0,10)}</div>
                           <div className="sm:hidden text-xs text-gray-500">
                             {post.author} • {post.category}
                           </div>

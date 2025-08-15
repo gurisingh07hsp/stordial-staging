@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/admin/AdminLayout';
 import Dashboard from '../../components/admin/Dashboard';
@@ -8,9 +8,39 @@ import BusinessManagement from '../../components/admin/BusinessManagement';
 import BlogManagement from '../../components/admin/BlogManagement';
 import SEOManagement from '../../components/admin/SEOManagement';
 import Growth from '../../components/admin/Growth';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const {user} = useAuth();
+
+  // console.log(user);
+
+  const fetchisAdmin = async() => {
+    try{
+
+      const resoponse = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/admin/user/${user?._id}`, {withCredentials: true});
+      if(resoponse.status == 200)
+      {
+        console.log(resoponse);
+        setIsAdmin(true);
+      }
+      else{
+        window.location.href = '/';
+      }
+    }catch(error){
+      console.log(error);
+      window.location.href = '/';
+    }
+  }
+
+  useEffect(()=>{
+    if(user && user._id){
+    fetchisAdmin();
+    }
+  },[user && user._id]);
 
 
   const logout = async() => {
@@ -67,12 +97,18 @@ export default function AdminPanel() {
   };
 
   return (
+    <>
+    { isAdmin ? 
     <AdminLayout
       activeTab={activeTab}
       onTabChange={setActiveTab}
       onLogout={() =>{logout()}}
     >
       {renderContent()}
-    </AdminLayout>
+    </AdminLayout> : (
+      <div className='h-[92vh] w-[99vw] flex justify-center items-center'>
+        <p className='text-2xl font-bold'>Loading...</p>
+      </div>)}
+    </>
   );
 }
