@@ -13,7 +13,7 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
   const formatBusinessUrl = (business: Business) => {
     const location = business.city.toLowerCase().replace(/\s+/g, '-');
     const category = business.category.toLowerCase().replace(/\s+/g, '-');
-    const name = business.name.toLowerCase().replace(/\s+/g, '-').replace(/-+/g, '-');
+    const name = business.name.replace(/\s+/g, '-').replace(/-+/g, '-');
     const url = `/${location}/${category}/${name}`;
     return url;
   };

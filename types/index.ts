@@ -54,7 +54,7 @@ export interface SearchFilters {
 }
 
 export interface User {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   phone: string;
