@@ -146,7 +146,7 @@ export default function BusinessManagement() {
 
   const uploadimages = async() => {
     const formdata = new FormData();
-    uploadedImages.forEach((file, index) => {
+    uploadedImages.forEach((file) => {
       formdata.append("files", file);
     });
     try{
@@ -860,7 +860,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-medium text-gray-900">{`${isEditing ? "Edit Business" : "Add New Business"}`}</h3>
                 <button
-                  onClick={() => {setShowAddModal(false); setIsEditing(false)}}
+                  onClick={() => {setShowAddModal(false); setIsEditing(false); setUploadedImages([]); setImages([])}}
                   className="text-gray-400 hover:text-gray-600"
                 >
                   <X className="w-6 h-6" />
