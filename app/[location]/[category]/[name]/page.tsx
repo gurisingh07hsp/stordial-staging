@@ -10,7 +10,6 @@ import {
   MessageSquare,
   ArrowLeft,
   Share2,
-  // Camera,
   X,
   ChevronLeft,
   ChevronRight,
@@ -224,7 +223,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                     {
                   [1,2,3].map((item,index) => (
                     <div 
-                    key={index + 1}
+                    key={item}
                     className="w-full h-full bg-gradient-to-br from-green-100 to-blue-100 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
                     onClick={() => openImageModal(index + 1)}
                   >
@@ -517,6 +516,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {similarBusinesses.map((similarBusiness) => (
                     <Link 
+                      key={similarBusiness._id}
                       href={formatBusinessUrl(similarBusiness)}
                       className={`block group ${business._id  == similarBusiness._id ? 'hidden' : 'block'}`}
                     >
