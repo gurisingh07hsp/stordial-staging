@@ -16,15 +16,12 @@ export default function AdminPanel() {
 
   const {user} = useAuth();
 
-  // console.log(user);
-
   const fetchisAdmin = async() => {
     try{
 
-      const resoponse = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/admin/user/${user?._id}`, {withCredentials: true});
+      const resoponse = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/admin/isadmin/`, {withCredentials: true});
       if(resoponse.status == 200)
       {
-        console.log(resoponse);
         setIsAdmin(true);
       }
       else{
@@ -37,10 +34,8 @@ export default function AdminPanel() {
   }
 
   useEffect(()=>{
-    if(user && user._id){
     fetchisAdmin();
-    }
-  },[user && user._id]);
+  },[user]);
 
 
   const logout = async() => {

@@ -4,9 +4,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, MapPin, ArrowRight, ChevronDown } from 'lucide-react';
 import { popularCities } from '../data/mockData';
 import { useAutoLocation } from '../hooks/useAutoLocation';
+import axios from 'axios';
 
 interface HeroSectionProps {
   onSearch: (query: string, location: string, category: string) => void;
+}
+
+interface place{
+  description: '',
 }
 
 export default function HeroSection({ onSearch }: HeroSectionProps) {
@@ -18,18 +23,6 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
 
   // Auto-detect user location
   const { location: userLocation, isLoading: locationLoading } = useAutoLocation();
-
-  // Filter cities based on user input
-  useEffect(() => {
-    if (location.trim() === '') {
-      setFilteredCities(popularCities.slice(0, 10)); // Show top 10 cities
-    } else {
-      const filtered = popularCities.filter(city =>
-        city.toLowerCase().includes(location.toLowerCase())
-      );
-      setFilteredCities(filtered.slice(0, 8)); // Limit to 8 suggestions
-    }
-  }, [location]);
 
   // Auto-populate location when detected
   useEffect(() => {
@@ -70,8 +63,10 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
     setShowLocationDropdown(true);
   };
 
-  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLocationChange = async(e: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(e.target.value);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/places?input=${e.target.value}`);
+    setFilteredCities(response.data.predictions.map((place : place) => place.description.split(',')[0]));
     setShowLocationDropdown(true);
   };
 
@@ -108,8 +103,6 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
       setShowSearchSuggestions(true);
 
       const filteredSuggestions = Categories.filter((item) => item.toLowerCase().includes(value.toLowerCase()));
-
-      console.log(filteredSuggestions);
       if(value !== '')
         {
           setSuggestions(filteredSuggestions.slice(0.8));

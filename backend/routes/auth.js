@@ -10,7 +10,8 @@ const {
   allUsers,
   getUserDetails,
   updateUserRole,
-  deleteUser
+  deleteUser,
+  isAdmin
 } = require('../controllers/authController');
 
 // router.route('/register').post(registerUser);
@@ -22,6 +23,7 @@ router.route('/me/update').put(isAuthenticated, updateProfile);
 
 // Admin routes
 router.route('/admin/users').get(isAuthenticated, authorizeRoles('admin'), allUsers);
+router.route('/admin/isadmin').get(isAdmin);
 router.route('/admin/user/:id')
   .get(isAuthenticated, authorizeRoles('admin'), getUserDetails)
   .put(isAuthenticated, authorizeRoles('admin'), updateUserRole)

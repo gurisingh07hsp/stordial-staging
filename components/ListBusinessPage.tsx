@@ -27,6 +27,11 @@ interface OpeningHours {
   };
 }
 
+interface imageData {
+  url: string;
+  public_id: string;
+}
+
 export default function ListBusinessPage({
   onBack
 }: ListBusinessPageProps) {
@@ -42,7 +47,9 @@ export default function ListBusinessPage({
     "24x7": { open: '10:00', close: '15:00', closed: false },
   });
 
-
+  
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [images, setImages] = useState<imageData[]>([]);
   const [formData, setFormData] = useState<BusinessFormData>({
     name: '',
     description: '',
@@ -54,11 +61,11 @@ export default function ListBusinessPage({
     address: '',
     city: '',
     website: '',
+    images: images,
     hours: openingHours
   });
 
 
-  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [is24x7, setIs24x7] = useState(false);
@@ -67,17 +74,30 @@ export default function ListBusinessPage({
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    setUploadedImages(prev => [...prev, ...files]);
+
+    let selectedfiles = files;
+    if(files.length > 4)
+    {
+      selectedfiles = files.slice(0,4);
+    }
+    selectedfiles.forEach((file)=>{
+      setUploadedImages((prev) => {
+        if (prev.length < 4) {
+          return [...prev, file];
+        }
+        return prev; // do not add if already 4
+  });
+    })
   };
   const removeImage = (index: number) => {
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async(e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-      formData.city = formData.city.toLowerCase();
-      formData.category = formData.category.toLowerCase();
+  const submitBusiness = async() => {
+    formData.city = formData.city.toLowerCase();
+    formData.category = formData.category.toLowerCase();
+
+
       try{
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, formData,{withCredentials: true});
         if(response.status == 201){
@@ -95,7 +115,48 @@ export default function ListBusinessPage({
     setMessage('An unexpected error occurred');
   }
     }
+  }
+
+  const handleSubmit = async(e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+      if(uploadedImages.length > 0)
+      {
+        const formdata = new FormData();
+        // Suppose uploadedImages is an array of File objects
+        uploadedImages.forEach((file, index) => {
+          formdata.append("files", file); // all files under "files" field
+        });
+        try{
+        const result = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/uploadimages`, formdata);
+        setImages(result.data.files);
+        }catch(error){
+          console.log(error);
+        }
+      }
+      else{
+        submitBusiness();
+      }
+
   };
+
+
+  useEffect(()=>{
+    if(images.length > 0)
+    {
+      setFormData((prev) => ({
+      ...prev,
+      images: images,
+    }));
+    }
+  },[images])
+
+  useEffect(() => {
+  if (formData.images.length > 0) {
+    submitBusiness();
+  }
+}, [formData]);
 
   const categories: string[] = ['Restaurants','Hotels','Hospitals','Schools','Shopping','Automotive','Beauty','Spa',
     'Fitness','Dentists','Lawyers','Real Estate','Banks','Pharmacies','Petrol Pumps','Pet Services','Home Services',
@@ -239,7 +300,7 @@ const categoryOptions = categories.map(cat => ({
 
   useEffect(()=>{
     setFormData({...formData, hours: openingHours});
-  },[openingHours])
+  },[openingHours]);
 
   if(!user){
     return(
@@ -541,7 +602,7 @@ const categoryOptions = categories.map(cat => ({
                         <img
                           src={URL.createObjectURL(file)}
                           alt={`Upload ${index + 1}`}
-                          className="w-full h-16 object-cover rounded"
+                          className="w-full h-16 object-contain rounded"
                         />
                         <button
                           type="button"

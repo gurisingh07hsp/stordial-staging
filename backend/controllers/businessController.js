@@ -5,6 +5,7 @@ const User = require('../models/user');
 exports.createBusiness = async (req, res, next) => {
   try {
     req.body.owner = req.user.id;
+
   const business = await Business.create(req.body);
 
 
@@ -31,14 +32,6 @@ if (user.role !== 'admin') {
 exports.getBusinesses = async (req, res, next) => {
   try {
     let { location, category, search, featured, verified, page = 1, limit = 5 } = req.query;
-
-
-  //   const response = await fetch(
-  //   `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=m&types=(cities)&components=country:in&key=AlzaSyYUeyBepB4nsGFjZ_R2RvKcXzxP9xi1hTV`
-  // );
-
-  // const data = await response.json();
-  // console.log("api data ", data);
 
     category = category.toLowerCase();
     const pageNum = parseInt(page);

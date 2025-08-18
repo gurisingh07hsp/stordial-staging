@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setMessage('✅ Login successful!');
         setTimeout(()=>{
           router.push('/');
-        },1000);
+        },1500);
       }
     }catch(error){
       if (axios.isAxiosError(error)) {
