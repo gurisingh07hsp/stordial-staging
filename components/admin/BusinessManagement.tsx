@@ -512,6 +512,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
 
   const handleToggleFeatured = async(businessId: string) => {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/admin/featured/${businessId}`, {}, {withCredentials: true} );
+      console.log(response);
 
     setFeaturedBusinesses(prev => 
       prev.includes(businessId) 
