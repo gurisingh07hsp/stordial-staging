@@ -33,6 +33,11 @@ interface OpeningHours {
   };
 }
 
+interface imageData {
+  url: string;
+  public_id: string;
+}
+
 export default function BusinessManagement() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
@@ -74,7 +79,7 @@ export default function BusinessManagement() {
       "24x7": { open: '10:00', close: '15:00', closed: false },
     });
   
-  
+    const [images, setImages] = useState<imageData[]>([]);
     const [formData, setFormData] = useState<BusinessFormData>({
       name: '',
       description: '',
@@ -86,17 +91,13 @@ export default function BusinessManagement() {
       address: '',
       city: '',
       website: '',
+      images: images,
       hours: openingHours
     });
 
     const [id,setId] = useState('');
 
-    const handleSubmit = async(e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-      formData.city = formData.city.toLowerCase();
-      formData.category = formData.category.toLowerCase();
-      if(isEditing){
+    const editBusiness = async() => {
       try{
         const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/${id}`, formData,{withCredentials: true});
         if(response.status == 200){
@@ -105,45 +106,111 @@ export default function BusinessManagement() {
           setTimeout(() => {
             setShowAddModal(false);
             setIsEditing(false);
+            setUploadedImages([]);
+            setImages([]);
             setMessage('');
             setId('');
           }, 1000);
         }
       }catch(error){
-      if (axios.isAxiosError(error)) {
-    setIsSubmitting(false);
-    setMessage('You must be logged in to submit a business listing')
-  } else {
-    setMessage('An unexpected error occurred');
-  }
-    }
-      }
-      else{
-      try{
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, formData,{withCredentials: true});
-        if(response.status == 201){
+        if (axios.isAxiosError(error)) {
           setIsSubmitting(false);
-          setMessage('Business listing submitted successfully');
-          setTimeout(() => {
-            setShowAddModal(false);
-            setMessage('');
-          }, 1000);
+          setMessage('You must be logged in to submit a business listing')
+        } else {
+          setMessage('An unexpected error occurred');
         }
-      }catch(error){
-      if (axios.isAxiosError(error)) {
-    setIsSubmitting(false);
-    setMessage('You must be logged in to submit a business listing')
-  } else {
-    setMessage('An unexpected error occurred');
-  }
+      }
     }
-    
+
+      const submitBusiness = async() => {
+        try{
+          const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, formData,{withCredentials: true});
+          if(response.status == 201){
+            setIsSubmitting(false);
+            setIsSubmit(false);
+            setMessage('Business listing submitted successfully');
+            setTimeout(()=>{
+              setShowAddModal(false);
+          },1000);
+          }
+        }catch(error){
+          if (axios.isAxiosError(error)) {
+            setIsSubmitting(false);
+            setIsSubmit(false);
+            setMessage('You must be logged in to submit a business listing')
+          } else {
+            setMessage('An unexpected error occurred');
+          }
+        }
       }
 
+  const uploadimages = async() => {
+    const formdata = new FormData();
+    uploadedImages.forEach((file, index) => {
+      formdata.append("files", file);
+    });
+    try{
+      const result = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/uploadimages`, formdata);
+      setImages(result.data.files);
+      setUploadedImages([]);
+    }catch(error){
+      console.log(error);
+    }
+  }
+
+    const handleSubmit = async(e: React.FormEvent) => {
+      e.preventDefault();
+      setIsSubmitting(true);
+      formData.city = formData.city.toLowerCase();
+      formData.category = formData.category.toLowerCase();
+      if(isEditing){
+        if(uploadedImages.length > 0)
+        {
+          uploadimages();
+        }
+        else{
+          editBusiness();
+        }
+      }
+      else{
+        if(uploadedImages.length > 0)
+        {
+          uploadimages();
+        }
+        else{
+        submitBusiness();
+        }
+      }
   };
+  
+  const [issubmit, setIsSubmit] = useState(false);
+    useEffect(()=>{
+      if(images.length > 0)
+      {
+        setFormData((prev) => ({
+        ...prev,
+        images: images,
+      }));
+      setIsSubmit(true);
+      }
+    },[images])
+  
+    useEffect(() => {
+    if (issubmit) {
+      if(isEditing)
+      {
+        editBusiness();
+      }
+      else{
+        submitBusiness();
+      }
+    }
+  }, [issubmit]);
+  
 
   useEffect(()=>{
     if(!showAddModal){
+      setImages([]);
       setFormData({
       name: '',
       description: '',
@@ -155,6 +222,7 @@ export default function BusinessManagement() {
       address: '',
       city: '',
       website: '',
+      images: images,
       hours: openingHours // or empty if you want {}
     });
     setId('');
@@ -349,7 +417,20 @@ const filteredBusinesses = businesses;
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    setUploadedImages(prev => [...prev, ...files]);
+
+    let selectedfiles = files;
+    if(files.length > 4)
+    {
+      selectedfiles = files.slice(0,4);
+    }
+    selectedfiles.forEach((file)=>{
+      setUploadedImages((prev) => {
+        if (prev.length < 4) {
+          return [...prev, file];
+        }
+        return prev; // do not add if already 4
+  });
+    })
   };
   const removeImage = (index: number) => {
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
@@ -431,7 +512,6 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
 
   const handleToggleFeatured = async(businessId: string) => {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/admin/featured/${businessId}`, {}, {withCredentials: true} );
-      console.log(response.data);
 
     setFeaturedBusinesses(prev => 
       prev.includes(businessId) 
@@ -672,7 +752,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
                       <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10">
                         <img
                           className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg object-cover"
-                          src={business.image}
+                          src={business.images && business.images[0]?.url}
                           alt={business.name}
                         />
                       </div>
@@ -687,13 +767,13 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {business.category}
+                      {business.category.charAt(0).toUpperCase() + business.category.slice(1)}
                     </span>
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden lg:table-cell">
                     <div className="flex items-center text-sm text-gray-900">
                       <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-gray-400 flex-shrink-0" />
-                      <span className="truncate">{business.city}</span>
+                      <span className="truncate">{business.city.charAt(0).toUpperCase() + business.city.slice(1)}</span>
                     </div>
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
@@ -1052,7 +1132,7 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
                         <img
                           src={URL.createObjectURL(file)}
                           alt={`Upload ${index + 1}`}
-                          className="w-full h-16 object-cover rounded"
+                          className="w-full h-16 object-contain rounded"
                         />
                         <button
                           type="button"

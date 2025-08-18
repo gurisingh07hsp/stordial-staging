@@ -17,7 +17,7 @@ export interface Business {
   hours?: {
     [key: string]: { open: string; close: string; closed: boolean };
   };
-  images?: string[];
+  images?: imageData[];
   yearsInBusiness?: number;
   isClaimed?: boolean;
   specialties?: string[];
@@ -61,6 +61,11 @@ export interface User {
   businessOwner: boolean;
 }
 
+interface imageData {
+  url: string;
+  public_id: string;
+}
+
 export interface BusinessFormData {
   name: string;
   description: string;
@@ -72,5 +77,6 @@ export interface BusinessFormData {
   address: string;
   city: string;
   website: string;
+  images: imageData[];
   hours: object;
 } 

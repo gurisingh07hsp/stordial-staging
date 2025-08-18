@@ -20,8 +20,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
   useEffect(() => {
     const getBusinessesByCategotyAndLocation = async () => {
-      console.log("decodedcategory: ", decodedCategory);
-      console.log("decodedLocation: ", decodedLocation);
       try{
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}`, {withCredentials: true});
         if(response.status == 200){
@@ -193,21 +191,25 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
                   <div onClick={()=>handleBusinessClick(premiumAds[currentAdIndex])} className="flex items-center justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-2">
+                      <div className="flex items-start space-x-2 mb-2">
                         <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">PREMIUM</span>
                         <div className="flex items-center space-x-1">
                           <Star className="w-4 h-4 text-yellow-400 fill-current" />
                           <span className="font-medium">{premiumAds[currentAdIndex]?.rating}</span>
-                          <span className="text-gray-500">({premiumAds[currentAdIndex]?.reviews} reviews)</span>
+                          <span className="lg:block hidden text-gray-500">({premiumAds[currentAdIndex]?.reviews} reviews)</span>
                         </div>
                       </div>
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">{premiumAds[currentAdIndex]?.name}</h3>
                       {/* <p className="text-lg font-medium text-blue-600 mb-2">{premiumAds[currentAdIndex].}</p> */}
                       <p className="text-gray-600 mb-4">{premiumAds[currentAdIndex]?.address}</p>
                     </div>
+                    {premiumAds && premiumAds[currentAdIndex].images && premiumAds[currentAdIndex].images.length > 0 ? (
+                      <img src={premiumAds[currentAdIndex].images && premiumAds[currentAdIndex].images[0].url} alt="" className="w-32 h-24 rounded-lg"/>
+                    ) : (
                     <div className="w-32 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
                       <span className="text-2xl">🏨</span>
                     </div>
+                    )}
                   </div>
                 </div>
                 

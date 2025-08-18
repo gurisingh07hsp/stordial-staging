@@ -43,6 +43,9 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
             >
               <Link href={formatBusinessUrl(business)} className="block">
                 <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200">
+                  {business && business.images && business.images.length > 0 ? (
+                    <img src={business.images[0].url} alt="" className='w-full h-full'/>
+                  ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <div className="text-gray-400 text-4xl">
                       {business.category === 'Restaurants' ? '🍽️' : 
@@ -50,6 +53,7 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
                        business.category === 'Services' ? '🔧' : '🏢'}
                     </div>
                   </div>
+                  )}
                   <div className="absolute top-3 right-3 bg-white rounded-full px-2 py-1 shadow-sm">
                     <div className="flex items-center">
                       <Star className="w-3 h-3 text-yellow-500 fill-current" />
@@ -70,7 +74,7 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
                     <MapPin className="w-4 h-4 mr-1" />
                     <span className="text-sm">{business.city.charAt(0).toUpperCase() + business.city.slice(1)}</span>
                     <span className="mx-2">•</span>
-                    <span className="text-sm">{business.category} • {business.subcategory}</span>
+                    <span className="text-sm">{business.category.charAt(0).toUpperCase() + business.category.slice(1)} • {business.subcategory}</span>
                   </div>
                   
                   <div className="flex flex-wrap gap-2 mb-4">

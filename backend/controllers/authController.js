@@ -1,12 +1,12 @@
 const User = require('../models/user');
 const sendToken = require('../utils/jwtToken');
+const jwt = require('jsonwebtoken');
 
 // Register user
 exports.registerUser = async (req, res, next) => {
   try {
     const { name, email, phone, password } = req.body;
 
-    console.log(name, email, phone, password);
 
     const isuser = await User.findOne({ email});
 
@@ -27,8 +27,6 @@ exports.registerUser = async (req, res, next) => {
         url: 'sample_url'
       }
     });
-
-    console.log("user created: ", user);
 
     sendToken(user, 201, res);
   } catch (error) {
@@ -215,4 +213,53 @@ exports.deleteUser = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}; 
+};
+
+exports.isAdmin = async (req,res) =>{
+      try {
+      const { token } = req.cookies;
+      if (!token) {
+        return res.status(401).json({
+          success: false,
+          message: 'Only Admin can Access!'
+        });
+      }
+  
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  
+      if (!decoded || !decoded.id) {
+        return res.status(401).json({
+          success: false,
+          message: 'Only Admin Can Access!'
+        });
+      }
+  
+      req.user = await User.findById(decoded.id).select('-password');
+      if (!req.user) {
+        return res.status(404).json({
+          success: false,
+          message: 'Only Admin Can Access!'
+        });
+      }
+  
+      if(req.user.role == 'admin')
+      {
+        return res.status(200).json({
+          success : true,
+          message: 'You can Access!'
+        })
+      }
+      else{
+        return res.status(404).json({
+          success: false,
+          message: 'Only Admin Can Access!'
+        });
+      }
+
+    } catch (error) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication failed'
+      });
+    }
+}

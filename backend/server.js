@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/database');
 const errorMiddleware = require('./middleware/error');
 
+
 // Load environment variables
 dotenv.config({ path: './config.env' });
 
@@ -32,6 +33,8 @@ app.use('/api/v1/categories', require('./routes/categories'));
 app.use('/api/v1/users', require('./routes/users'));
 app.use('/api/v1/reviews', require('./routes/reviews'));
 app.use('/api/v1/admin', require('./routes/admin'));
+app.use('/api/v1/places', require('./routes/places'));
+app.use('/api/v1/uploadimages', require('./routes/uploadimages'));
 
 // Health check route
 app.get('/api/v1/health', (req, res) => {
