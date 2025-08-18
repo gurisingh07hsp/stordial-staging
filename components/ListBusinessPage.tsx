@@ -125,7 +125,7 @@ export default function ListBusinessPage({
       {
         const formdata = new FormData();
         // Suppose uploadedImages is an array of File objects
-        uploadedImages.forEach((file, index) => {
+        uploadedImages.forEach((file) => {
           formdata.append("files", file); // all files under "files" field
         });
         try{
