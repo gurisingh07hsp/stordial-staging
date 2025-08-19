@@ -13,7 +13,7 @@ interface CategoryPageProps {
 }
 
 export default function CategoryPage({ params }: CategoryPageProps) {
-  const decodedLocation = decodeURIComponent(params.location);
+  const decodedLocation = decodeURIComponent(params.location.replace(/-/g, ' '));
   const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
 
   const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
@@ -341,7 +341,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                       <div className="flex lg:flex-col flex-row justify-center items-center space-x-2 lg:space-y-2 ml-4">
                         <button
                           onClick={() => handleCall(business.phone)}
-                          className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                          className="flex items-center space-x-2 bg-green-600 text-white px-4 lg:ms-2 lg:px-9 py-2 rounded-lg hover:bg-green-700 transition-colors"
                         >
                           <Phone className="w-4 h-4" />
                           <span>Call</span>

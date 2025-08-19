@@ -24,6 +24,7 @@ import axios from 'axios';
 import Select from "react-select";
 import { Toaster } from 'react-hot-toast'
 import toast from 'react-hot-toast'
+import Papa from "papaparse";
 
 interface OpeningHours {
   [key: string]: {
@@ -38,6 +39,69 @@ interface imageData {
   public_id: string;
 }
 
+interface ImportedBusiness {
+  // Basic Info
+  name: string;
+  description: string;
+  category: string;
+  subcategory: string;
+  services: string;
+  website: string;
+  image_url: string;
+
+  // Contact Info
+  phone: string;
+  email: string;
+  address: string;
+  city: string;
+
+  // Business Hours
+  monday_open: string;
+  monday_close: string;
+  monday_closed: boolean;
+
+  tuesday_open: string;
+  tuesday_close: string;
+  tuesday_closed: boolean;
+
+  wednesday_open: string;
+  wednesday_close: string;
+  wednesday_closed: boolean;
+
+  thursday_open: string;
+  thursday_close: string;
+  thursday_closed: boolean;
+
+  friday_open: string;
+  friday_close: string;
+  friday_closed: boolean;
+
+  saturday_open: string;
+  saturday_close: string;
+  saturday_closed: boolean;
+
+  sunday_open: string;
+  sunday_close: string;
+  sunday_closed: boolean;
+}
+
+type DayHours = {
+  open: string;
+  close: string;
+  closed: boolean;
+};
+
+type openinghours = {
+  monday: DayHours;
+  tuesday: DayHours;
+  wednesday: DayHours;
+  thursday: DayHours;
+  friday: DayHours;
+  saturday: DayHours;
+  sunday: DayHours;
+  "24x7": DayHours;
+};
+
 export default function BusinessManagement() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
@@ -48,18 +112,7 @@ export default function BusinessManagement() {
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bulkImportFile, setBulkImportFile] = useState<File | null>(null);
-  const [importPreview, setImportPreview] = useState<Array<{
-    name: string;
-    description: string;
-    category: string;
-    subcategory: string;
-    phone: string;
-    email: string;
-    address: string;
-    city: string;
-    website: string;
-    status: string;
-  }>>([]);
+
   const [isImporting, setIsImporting] = useState(false);
   const [featuredBusinesses, setFeaturedBusinesses] = useState<string[]>([]);
     const [is24x7, setIs24x7] = useState(false);
@@ -78,6 +131,20 @@ export default function BusinessManagement() {
       sunday: { open: '10:00', close: '15:00', closed: false },
       "24x7": { open: '10:00', close: '15:00', closed: false },
     });
+
+
+  const [importPreview, setImportPreview] = useState<Array<{
+    name: string;
+    description: string;
+    category: string;
+    subcategory: string;
+    phone: string;
+    email: string;
+    address: string;
+    city: string;
+    website: string;
+    hours: OpeningHours;
+  }>>([]);
   
     const [images, setImages] = useState<imageData[]>([]);
     const [formData, setFormData] = useState<BusinessFormData>({
@@ -94,6 +161,8 @@ export default function BusinessManagement() {
       images: images,
       hours: openingHours
     });
+
+  
 
     const [id,setId] = useState('');
 
@@ -443,64 +512,93 @@ const filteredBusinesses = businesses;
     if (file) {
       setBulkImportFile(file);
       // Simulate CSV parsing - in real app, you'd use a CSV parser
-      const mockPreview = [
-        {
-          name: 'Sample Business 1',
-          description: 'A sample business for import',
-          category: 'Restaurants',
-          subcategory: 'Coffee Shop',
-          phone: '+1 (555) 111-1111',
-          email: 'sample1@example.com',
-          address: '123 Sample St, City, State',
-          city: 'Sample City',
-          website: 'https://sample1.com',
-          status: 'valid'
-        },
-        {
-          name: 'Sample Business 2',
-          description: 'Another sample business',
-          category: 'Services',
-          subcategory: 'Consulting',
-          phone: '+1 (555) 222-2222',
-          email: 'sample2@example.com',
-          address: '456 Sample Ave, City, State',
-          city: 'Sample City',
-          website: 'https://sample2.com',
-          status: 'valid'
-        },
-        {
-          name: '',
-          description: 'Invalid business - missing name',
-          category: 'Retail',
-          subcategory: 'Clothing',
-          phone: '+1 (555) 333-3333',
-          email: 'invalid@example.com',
-          address: '789 Sample Blvd, City, State',
-          city: 'Sample City',
-          website: 'https://invalid.com',
-          status: 'error'
-        }
-      ];
-      setImportPreview(mockPreview);
+
+      Papa.parse<ImportedBusiness>(file, {
+  header: true,
+  skipEmptyLines: true,
+  complete: (results) => {
+    const parsedData = results.data.map((data) => {
+      const hours: OpeningHours = {
+        monday: { open: data.monday_open, close: data.monday_close, closed: String(data.monday_closed).toLowerCase() === "true", },
+        tuesday: { open: data.tuesday_open, close: data.tuesday_close, closed: String(data.tuesday_closed).toLowerCase() === "true", },
+        wednesday: { open: data.wednesday_open, close: data.wednesday_close, closed: String(data.wednesday_closed).toLowerCase() === "true", },
+        thursday: { open: data.thursday_open, close: data.thursday_close, closed: String(data.thursday_closed).toLowerCase() === "true",},
+        friday: { open: data.friday_open, close: data.friday_close, closed: String(data.friday_closed).toLowerCase() === "true", },
+        saturday: { open: data.saturday_open, close: data.saturday_close, closed: String(data.saturday_closed).toLowerCase() === "true", },
+        sunday: { open: data.sunday_open, close: data.sunday_close, closed: String(data.sunday_closed).toLowerCase() === "true", },
+        "24x7": { open: "10:00", close: "15:00", closed: false },
+      };
+
+      return {
+        name: data.name,
+        description: data.description,
+        category: data.category,
+        subcategory: data.subcategory,
+        services: data.services,
+        phone: data.phone,
+        email: data.email,
+        address: data.address,
+        city: data.city,
+        website: data.website,
+        hours,
+      };
+    });
+
+    setImportPreview(parsedData);
+  },
+});
+
     }
   };
 
-  const handleBulkImport = () => {
+  const handleBulkImport = async() => {
+    let count = 0;
     setIsImporting(true);
-    setTimeout(() => {
+    for(let i = 0; i < importPreview.length; i++)
+    {
+      const BusinessData = importPreview[i];
+      if(BusinessData.name && BusinessData.description && BusinessData.category && categories.includes(BusinessData.category) && BusinessData.subcategory
+        && BusinessData.phone && BusinessData.address && BusinessData.city)
+        {
+          BusinessData.category = BusinessData.category.toLowerCase();
+          BusinessData.city = BusinessData.city.toLowerCase();
+          BusinessData.city = BusinessData.city.toLowerCase();
+
+          try{
+          const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, BusinessData ,{withCredentials: true});
+          if(response.status == 201){
+            count++;
+          }
+          else{
+            setIsImporting(false);
+          }
+        }catch(error){
+          if (axios.isAxiosError(error)) {
+            toast.error('somthing went wrong');
+          } else {
+            toast.error('somthing went wrong');
+          }
+        }
+
+        }
+    }
+
+    if(count > 0)
+    {
       setIsImporting(false);
-      alert(`Successfully imported ${importPreview.filter(item => item.status === 'valid').length} businesses!`);
+      toast.success(`Successfully imported ${count} Businesses`); // ✅ Last one
       setShowBulkImportModal(false);
       setBulkImportFile(null);
       setImportPreview([]);
-    }, 2000);
+    }
+
   };
 
   const downloadTemplate = () => {
     const csvContent = `name,description,category,subcategory,services,phone,email,address,city,website,image_url,monday_open,monday_close,monday_closed,tuesday_open,tuesday_close,tuesday_closed,wednesday_open,wednesday_close,wednesday_closed,thursday_open,thursday_close,thursday_closed,friday_open,friday_close,friday_closed,saturday_open,saturday_close,saturday_closed,sunday_open,sunday_close,sunday_closed
 Sample Business,Description of the business,Restaurants,Coffee Shop,"Coffee, Pastries, Breakfast",+1 (555) 123-4567,business@example.com,123 Main St,New York,https://example.com,https://example.com/image.jpg,09:00,17:00,false,09:00,17:00,false,09:00,17:00,false,09:00,17:00,false,09:00,17:00,false,10:00,15:00,false,10:00,15:00,true
-Tech Solutions,IT consulting and development services,Services,Consulting,"IT Consulting, Web Development, System Administration",+1 (555) 987-6543,contact@techsolutions.com,456 Tech Ave,San Francisco,https://techsolutions.com,https://techsolutions.com/image.jpg,09:00,18:00,false,09:00,18:00,false,09:00,18:00,false,09:00,18:00,false,09:00,18:00,false,10:00,16:00,false,00:00,00:00,true
-Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping, Garden Maintenance, Tree Trimming",+1 (555) 456-7890,hello@greengardens.com,789 Garden Blvd,Los Angeles,https://greengardens.com,https://greengardens.com/image.jpg,08:00,17:00,false,08:00,17:00,false,08:00,17:00,false,08:00,17:00,false,08:00,17:00,false,09:00,14:00,false,00:00,00:00,true`;
+Tech Solutions,IT consulting and development Hotels,Services,Consulting,"IT Consulting, Web Development, System Administration",+1 (555) 987-6543,contact@techsolutions.com,456 Tech Ave,San Francisco,https://techsolutions.com,https://techsolutions.com/image.jpg,09:00,18:00,false,09:00,18:00,false,09:00,18:00,false,09:00,18:00,false,09:00,18:00,false,10:00,16:00,false,00:00,00:00,true
+Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Garden Maintenance, Tree Trimming",+1 (555) 456-7890,hello@greengardens.com,789 Garden Blvd,Los Angeles,https://greengardens.com,https://greengardens.com/image.jpg,08:00,17:00,false,08:00,17:00,false,08:00,17:00,false,08:00,17:00,false,08:00,17:00,false,09:00,14:00,false,00:00,00:00,true`;
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -512,7 +610,6 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
 
   const handleToggleFeatured = async(businessId: string) => {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/admin/featured/${businessId}`, {}, {withCredentials: true} );
-      console.log(response);
 
     setFeaturedBusinesses(prev => 
       prev.includes(businessId) 
@@ -1273,14 +1370,14 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
                           </thead>
                           <tbody className="bg-white divide-y divide-gray-200">
                             {importPreview.map((item, index) => (
-                              <tr key={index} className={item.status === 'error' ? 'bg-red-50' : ''}>
+                              <tr key={index} className={item.name === '' ? 'bg-red-50' : ''}>
                                 <td className="px-4 py-3 whitespace-nowrap">
                                   <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                                    item.status === 'valid' 
+                                    item.name !== '' 
                                       ? 'bg-green-100 text-green-800' 
                                       : 'bg-red-100 text-red-800'
                                   }`}>
-                                    {item.status === 'valid' ? 'Valid' : 'Error'}
+                                    {item.name !== '' ? 'Valid' : 'Error'}
                                   </span>
                                 </td>
                                 <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
@@ -1304,10 +1401,10 @@ Green Gardens,Landscaping and garden maintenance,Services,Cleaning,"Landscaping,
 
                     <div className="flex items-center justify-between text-sm text-gray-600">
                       <span>
-                        Valid entries: {importPreview.filter(item => item.status === 'valid').length}
+                        Valid entries: {importPreview.filter(item => item.name !== '').length}
                       </span>
                       <span>
-                        Errors: {importPreview.filter(item => item.status === 'error').length}
+                        Errors: {importPreview.filter(item => item.name === '').length}
                       </span>
                     </div>
                   </div>

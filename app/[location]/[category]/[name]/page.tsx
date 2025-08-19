@@ -11,13 +11,14 @@ import {
   ArrowLeft,
   Share2,
   X,
+  Camera,
   ChevronLeft,
   ChevronRight,
   CheckCircle,
   Calendar,
   Users,
   Award,
-  Navigation
+  Navigation,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Business } from '../../../../types';
@@ -40,7 +41,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   const [noBusiness, setNoBusiness] = useState(false);
   const [similarBusinesses, setSimilarBusinesses] = useState<Business[]>([]);
 
-  const decodedLocation = decodeURIComponent(params.location);
+  const decodedLocation = decodeURIComponent(params.location.replace(/-/g, ' '));
   const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
   const decodedName = decodeURIComponent(params.name.replace(/-/g, ' '));
 
@@ -189,54 +190,76 @@ export default function BusinessPage({ params }: BusinessPageProps) {
       </div>
 
       {/* Back Button */}
-      <div className="container mx-auto px-4 py-6">
+      <div className="hidden lg:block container mx-auto px-4 py-6">
         <Link href="/" className="inline-flex items-center text-gray-600 hover:text-blue-600 transition-colors bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Search
         </Link>
       </div>
 
-      <div className="container mx-auto px-4 pb-12">
+      <div className="container mx-auto mt-2 lg:mt-0 px-4 pb-12">
         {/* Hero Section */}
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-8">
           {/* Image Gallery */}
-          <div className="relative h-60 lg:h-[430px] bg-gradient-to-br from-gray-100 to-gray-200">
-            <div className="flex gap-3 p-4 h-full">
+          <div className="relative h-60 lg:h-[350px] bg-gradient-to-br from-gray-100 to-gray-200">
+            <div className="grid lg:grid-cols-3 space-x-2 p-4 h-full">
               <div className="">
                 { business && business.images && business.images.length > 0 ? (
-                  <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[1100px] lg:h-96 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center' />
+                  <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[600px] lg:h-80 w-full h-full rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center' />
                 ) : (
                 <div 
-                  className="lg:w-[1050px] lg:h-96 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
+                  className="lg:w-[480px] lg:h-80 w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
                   onClick={() => openImageModal(0)}
                 >
-                <div className="text-6xl">☕</div>
-
+                  {/* <div className="text-6xl">☕</div> */}
+                   <Camera/>
                 </div>
                 )}
               </div>
-              <div className="hidden w-[520px] h-[380px] lg:flex flex-col gap-y-2">
-                {business && business.images && business.images.length > 0 ? business.images.slice(1, 4).map((image, index) => (
-                  <img key={index+1} onClick={() => openImageModal(index + 1)} src={image?.url} className={`w-full ${business.images?.length == 2 ? 'h-full' : business.images?.length == 3 ? 'h-[50%]' : 'h-[120px]'} rounded-xl cursor-pointer`}></img>
-                )) : (
-                  <div className='hidden w-[400px] h-full lg:flex flex-col gap-y-2'>
+              <div className="hidden lg:block">
+                { business && business.images && business.images.length > 1 ? (
+                  <img  onClick={() => openImageModal(1)} src={business?.images?.[1]?.url} alt="" className='hidden lg:w-[600px] lg:h-80 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:flex items-center justify-center' />
+                ) : (
+                <div
+                  className="hidden lg:w-[480px] lg:h-80 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:flex items-center justify-center shadow-lg hover:shadow-xl"
+                  onClick={() => openImageModal(1)}
+                >
+                  {/* <div className="text-6xl">☕</div> */}
+                   <Camera/>
+                </div>
+                )}
+              </div>
+              <div className="hidden w-[475px] h-80 lg:flex flex-col gap-x-1 gap-y-2">
+      
+                {business && business.images && business.images.length > 2 ? <div className={`flex space-x-2 w-full ${business.images.length == 3 ? 'h-[99%]' : 'h-[50%]'}`}> {business.images.slice(2, 4).map((image, index) => (
+                  <img key={index+1} onClick={() => openImageModal(index + 1)} src={image?.url} className={`${business.images?.length == 3 ? 'w-full h-full' : 'w-[49%] h-full'} rounded-xl cursor-pointer`}></img>
+                ))  }</div> : (
+                  <div className='hidden w-[480px] ms-2 h-full lg:flex flex-wrap gap-x-2'>
                     {
-                  [1,2,3].map((item,index) => (
+                  [1,2,3,4].map((item,index) => (
                     <div 
                     key={item}
-                    className="w-full h-full bg-gradient-to-br from-green-100 to-blue-100 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
-                    onClick={() => openImageModal(index + 1)}
+                    className="w-[48%] h-[48%] bg-gradient-to-br from-green-100 to-blue-100 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
+                    onClick={() => openImageModal(index + 2)}
                   >
-                    <div className="text-2xl">☕</div>
+                    {/* <div className="text-2xl">☕</div> */}
+                     <Camera/>
                   </div>
                   ))}
                   </div>
                 )}
+                <div className={`${business.images?.length == 4 ? 'lg:flex' : 'hidden'} w-[480px] ms-1 h-full gap-x-2`}>
+                  <div 
+                    // key={item}
+                    className="w-[98%] h-full bg-gray-300 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
+                    // onClick={() => openImageModal(index + 1)}
+                  >
+                    {/* <div className="text-2xl">☕</div> */}
+                    <Camera/>
+                  </div>
+                </div>
               </div>
             </div>
-            {/* <button className="hidden lg:block absolute bottom-6 right-6 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300">
-              <Camera className="w-6 h-6 text-gray-600" />
-            </button> */}
           </div>
 
           {/* Business Info */}
@@ -276,20 +299,42 @@ export default function BusinessPage({ params }: BusinessPageProps) {
 
                 {/* Action Buttons */}
                 <div className="flex lg:flex-row flex-col lg:items-center items-start gap-4 mb-6">
-                  <div className='flex items-center gap-x-4'>
+                  <div className='flex justify-center items-center gap-x-4'>
                   <a 
                     href={`tel:${business.phone}`}
-                    className="bg-gradient-to-r from-green-500 to-green-600 text-white lg:px-8 px-4 py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center font-semibold"
+                    className="hidden bg-gradient-to-r from-green-500 to-green-600 text-white lg:px-8 px-4 py-3 rounded-xl hover:shadow-lg transition-all duration-300 lg:flex items-center font-semibold"
                   >
-                    <Phone className="w-5 h-5 mr-2" />
+                    <Phone className="w-5 h-5 mr-2" />  
                     Call Now
                   </a>
-                  <button className="bg-gradient-to-r from-green-500 to-green-600 text-white lg:px-8 px-4 py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center font-semibold">
+
+                  <a 
+                    href={`tel:${business.phone}`}
+                    className="lg:hidden block"
+                  >
+                    <div className='lg:hidden bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex justify-center items-center font-semibold'>
+                      <Phone className="w-7 h-7" />
+                    </div>
+                    <p className='mt-1 font-semibold text-sm'>Call Now</p>  
+                  </a>
+                  <button className="hidden bg-gradient-to-r from-green-500 to-green-600 text-white lg:px-8 px-4 py-3 rounded-xl hover:shadow-lg transition-all duration-300 lg:flex items-center font-semibold">
                     <MessageSquare className="w-5 h-5 mr-2" />
                     WhatsApp
                   </button>
+
+                  <button className="lg:hidden rounded-xl flex flex-col justify-center items-center text-sm font-semibold">
+                    <img src="https://akam.cdn.jdmagicbox.com/images/icons/iphone/newicon/whatsappIcn2308x48.png" width={57} height={55} alt="" />
+                    WhatsApp
+                  </button>
+
+                  <button className="lg:hidden block">
+                    <div className="lg:hidden block bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
+                      <Share2 className="w-7 h-7" />
+                    </div>
+                    <p className='mt-1 font-semibold text-sm'>Share</p>
+                  </button>
                   </div>
-                  <button className="bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
+                    <button className="hidden lg:block bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
                     <Share2 className="w-5 h-5" />
                   </button>
                   {/* <button className="bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
@@ -310,7 +355,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
               </div>
 
               {/* Quick Stats */}
-              <div className="lg:w-64 space-y-4">
+              <div className="lg:w-64 hidden lg:block space-y-4">
                 <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6">
                   <div className="flex items-center mb-3">
                     <Users className="w-5 h-5 text-blue-600 mr-2" />
@@ -523,7 +568,8 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                       {similarBusiness.images && similarBusiness.images.length > 0 ? (<img src={similarBusiness && similarBusiness.images && similarBusiness.images[0].url} alt="" className={`rounded-2xl h-48 mb-4 group-hover:shadow-lg transition-all duration-300`} />
                       ) : (
                         <div className={`bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl h-48 mb-4 flex items-center justify-center group-hover:shadow-lg transition-all duration-300`}>
-                        <div className="text-4xl">☕</div>
+                        {/* <div className="text-4xl">☕</div> */}
+                         <Camera/>
                       </div>
                       )}
                       <h4 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors text-lg">
@@ -649,7 +695,8 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                 <img className='rounded-3xl h-[400px] lg:h-[600px] w-full' src={business && business.images && business.images[selectedImageIndex].url} alt="" />
               ) : (
               <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl h-[600px] w-full flex items-center justify-center shadow-2xl">
-                <div className="text-gray-400 text-8xl">☕</div>
+                {/* <div className="text-gray-400 text-8xl">☕</div> */}
+                 <Camera/>
               </div>
               )}
               
