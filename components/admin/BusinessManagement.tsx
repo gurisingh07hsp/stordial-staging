@@ -85,23 +85,6 @@ interface ImportedBusiness {
   sunday_closed: boolean;
 }
 
-type DayHours = {
-  open: string;
-  close: string;
-  closed: boolean;
-};
-
-type openinghours = {
-  monday: DayHours;
-  tuesday: DayHours;
-  wednesday: DayHours;
-  thursday: DayHours;
-  friday: DayHours;
-  saturday: DayHours;
-  sunday: DayHours;
-  "24x7": DayHours;
-};
-
 export default function BusinessManagement() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
