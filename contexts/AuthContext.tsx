@@ -14,6 +14,7 @@ interface AuthContextType {
   openAuthModal: () => void;
   closeAuthModal: () => void;
   message: string;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -159,6 +160,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     openAuthModal,
     closeAuthModal,
     message,
+    setUser
   };
 
   return (

@@ -1,14 +1,16 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+"use client"
+import axios from 'axios'
+import React from 'react'
+import { useState, useEffect } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
+import { Business, BusinessFormData } from '@/types'
+import { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
+import Select from "react-select";
 import { 
-  Search, 
-  Filter, 
-  Plus, 
   Edit, 
   Trash2, 
   Eye, 
-  Check,
   X,
   Star,
   MapPin,
@@ -16,15 +18,14 @@ import {
   Upload,
   Clock,
   Image as ImageIcon,
-  FileSpreadsheet,
-  Download
+  Building2, 
+  MessageSquare,
 } from 'lucide-react';
-import { Business, BusinessFormData,} from '../../types';
-import axios from 'axios';
-import Select from "react-select";
-import { Toaster } from 'react-hot-toast'
-import toast from 'react-hot-toast'
-import Papa from "papaparse";
+
+interface imageData {
+  url: string;
+  public_id: string;
+}
 
 interface OpeningHours {
   [key: string]: {
@@ -33,253 +34,48 @@ interface OpeningHours {
     closed: boolean;
   };
 }
+const UserDashboard = () => {
 
-interface imageData {
-  url: string;
-  public_id: string;
-}
-
-interface ImportedBusiness {
-  // Basic Info
-  name: string;
-  description: string;
-  category: string;
-  subcategory: string;
-  services: string;
-  website: string;
-  image_url: string;
-
-  // Contact Info
-  phone: string;
-  email: string;
-  address: string;
-  city: string;
-
-  // Business Hours
-  monday_open: string;
-  monday_close: string;
-  monday_closed: boolean;
-
-  tuesday_open: string;
-  tuesday_close: string;
-  tuesday_closed: boolean;
-
-  wednesday_open: string;
-  wednesday_close: string;
-  wednesday_closed: boolean;
-
-  thursday_open: string;
-  thursday_close: string;
-  thursday_closed: boolean;
-
-  friday_open: string;
-  friday_close: string;
-  friday_closed: boolean;
-
-  saturday_open: string;
-  saturday_close: string;
-  saturday_closed: boolean;
-
-  sunday_open: string;
-  sunday_close: string;
-  sunday_closed: boolean;
-}
-
-export default function BusinessManagement() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All Categories');
-  const [selectedStatus, setSelectedStatus] = useState('All');
-  const [selectedBusinesses, setSelectedBusinesses] = useState<string[]>([]);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showBulkImportModal, setShowBulkImportModal] = useState(false);
-  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [bulkImportFile, setBulkImportFile] = useState<File | null>(null);
-
-  const [isImporting, setIsImporting] = useState(false);
-  const [featuredBusinesses, setFeaturedBusinesses] = useState<string[]>([]);
+    const [businesses,setBusinesses] = useState<Business[]>([]);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [is24x7, setIs24x7] = useState(false);
     const [message, setMessage] = useState('');
-
-    const [businesses, setBusinesses] = useState<Business[]>([]);
-
-
-      const [openingHours, setOpeningHours] = useState<OpeningHours>({
-      monday: { open: '09:00', close: '17:00', closed: false },
-      tuesday: { open: '09:00', close: '17:00', closed: false },
-      wednesday: { open: '09:00', close: '17:00', closed: false },
-      thursday: { open: '09:00', close: '17:00', closed: false },
-      friday: { open: '09:00', close: '17:00', closed: false },
-      saturday: { open: '10:00', close: '15:00', closed: false },
-      sunday: { open: '10:00', close: '15:00', closed: false },
-      "24x7": { open: '10:00', close: '15:00', closed: false },
-    });
-
-
-  const [importPreview, setImportPreview] = useState<Array<{
-    name: string;
-    description: string;
-    category: string;
-    subcategory: string;
-    phone: string;
-    email: string;
-    address: string;
-    city: string;
-    website: string;
-    hours: OpeningHours;
-  }>>([]);
-  
+    const [loading,setloading] = useState(true);
+    const {user, setUser} = useAuth();
     const [images, setImages] = useState<imageData[]>([]);
+    const [openingHours, setOpeningHours] = useState<OpeningHours>({
+        monday: { open: '09:00', close: '17:00', closed: false },
+        tuesday: { open: '09:00', close: '17:00', closed: false },
+        wednesday: { open: '09:00', close: '17:00', closed: false },
+        thursday: { open: '09:00', close: '17:00', closed: false },
+        friday: { open: '09:00', close: '17:00', closed: false },
+        saturday: { open: '10:00', close: '15:00', closed: false },
+        sunday: { open: '10:00', close: '15:00', closed: false },
+        "24x7": { open: '10:00', close: '15:00', closed: false },
+    });
     const [formData, setFormData] = useState<BusinessFormData>({
-      name: '',
-      description: '',
-      category: '',
-      subcategory: '',
-      services: [],
-      phone: '',
-      email: '',
-      address: '',
-      city: '',
-      website: '',
-      images: images,
-      hours: openingHours
-    });
-
-  
-
-    const [id,setId] = useState('');
-
-    const editBusiness = async() => {
-      try{
-        const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/${id}`, formData,{withCredentials: true});
-        if(response.status == 200){
-          setIsSubmitting(false);
-          setMessage('Business Edited successfully');
-          setTimeout(() => {
-            setShowAddModal(false);
-            setIsEditing(false);
-            setUploadedImages([]);
-            setImages([]);
-            setMessage('');
-            setId('');
-          }, 1000);
-        }
-      }catch(error){
-        if (axios.isAxiosError(error)) {
-          setIsSubmitting(false);
-          setMessage('You must be logged in to submit a business listing')
-        } else {
-          setMessage('An unexpected error occurred');
-        }
-      }
-    }
-
-      const submitBusiness = async() => {
-        try{
-          const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, formData,{withCredentials: true});
-          if(response.status == 201){
-            setIsSubmitting(false);
-            setIsSubmit(false);
-            setMessage('Business listing submitted successfully');
-            setTimeout(()=>{
-              setShowAddModal(false);
-          },1000);
-          }
-        }catch(error){
-          if (axios.isAxiosError(error)) {
-            setIsSubmitting(false);
-            setIsSubmit(false);
-            setMessage('You must be logged in to submit a business listing')
-          } else {
-            setMessage('An unexpected error occurred');
-          }
-        }
-      }
-
-  const uploadimages = async() => {
-    const formdata = new FormData();
-    uploadedImages.forEach((file) => {
-      formdata.append("files", file);
-    });
-    try{
-      const result = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/uploadimages`, formdata);
-      setImages(result.data.files);
-      setUploadedImages([]);
-    }catch(error){
-      console.log(error);
-    }
-  }
-
-    const handleSubmit = async(e: React.FormEvent) => {
-      e.preventDefault();
-      setIsSubmitting(true);
-      formData.city = formData.city.toLowerCase();
-      formData.category = formData.category.toLowerCase();
-      if(isEditing){
-        if(uploadedImages.length > 0)
-        {
-          uploadimages();
-        }
-        else{
-          editBusiness();
-        }
-      }
-      else{
-        if(uploadedImages.length > 0)
-        {
-          uploadimages();
-        }
-        else{
-        submitBusiness();
-        }
-      }
-  };
-  
-  const [issubmit, setIsSubmit] = useState(false);
-    useEffect(()=>{
-      if(images.length > 0)
-      {
-        setFormData((prev) => ({
-        ...prev,
+        name: '',
+        description: '',
+        category: '',
+        subcategory: '',
+        services: [],
+        phone: '',
+        email: '',
+        address: '',
+        city: '',
+        website: '',
         images: images,
-      }));
-      setIsSubmit(true);
-      }
-    },[images])
-  
-    useEffect(() => {
-    if (issubmit) {
-      if(isEditing)
-      {
-        editBusiness();
-      }
-      else{
-        submitBusiness();
-      }
-    }
-  }, [issubmit]);
-  
-
-  useEffect(()=>{
-    if(!showAddModal){
-      setImages([]);
-      setFormData({
-      name: '',
-      description: '',
-      category: '',
-      subcategory: '',
-      services: [],
-      phone: '',
-      email: '',
-      address: '',
-      city: '',
-      website: '',
-      images: images,
-      hours: openingHours // or empty if you want {}
+        hours: openingHours
     });
-    setId('');
-    }
-  },[showAddModal])
+
+    const [userData, setUserData] = useState({
+        name: '',
+        email: '',
+        phone: ''
+    })
 
     const categories: string[] = ['Restaurants','Hotels','Hospitals','Schools','Shopping','Automotive','Beauty','Spa',
       'Fitness','Dentists','Lawyers','Real Estate','Banks','Pharmacies','Petrol Pumps','Pet Services','Home Services',
@@ -409,48 +205,166 @@ export default function BusinessManagement() {
     value: cat,
     label: cat
   }));
-  
-    const days = [
-      { key: 'monday', label: 'Mon' },
-      { key: 'tuesday', label: 'Tue' },
-      { key: 'wednesday', label: 'Wed' },
-      { key: 'thursday', label: 'Thu' },
-      { key: 'friday', label: 'Fri' },
-      { key: 'saturday', label: 'Sat' },
-      { key: 'sunday', label: 'Sun' },
-      { key: '24x7', label: 'Open 24x7' }
-    ];
-  
-    useEffect(()=>{
-      setFormData({...formData, hours: openingHours});
-    },[openingHours]);
 
-  const statuses = ['All', 'Featured'];
+      const days = [
+        { key: 'monday', label: 'Mon' },
+        { key: 'tuesday', label: 'Tue' },
+        { key: 'wednesday', label: 'Wed' },
+        { key: 'thursday', label: 'Thu' },
+        { key: 'friday', label: 'Fri' },
+        { key: 'saturday', label: 'Sat' },
+        { key: 'sunday', label: 'Sun' },
+        { key: '24x7', label: 'Open 24x7' }
+      ];
+    
+      useEffect(()=>{
+        setFormData({...formData, hours: openingHours});
+      },[openingHours]);
 
-const filteredBusinesses = businesses;
+        const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+          const files = Array.from(event.target.files || []);
+      
+          let selectedfiles = files;
+          if(files.length > 4)
+          {
+            selectedfiles = files.slice(0,4);
+          }
+          selectedfiles.forEach((file)=>{
+            setUploadedImages((prev) => {
+              if (prev.length < 4) {
+                return [...prev, file];
+              }
+              return prev; // do not add if already 4
+        });
+          })
+        };
+        const removeImage = (index: number) => {
+          setUploadedImages(prev => prev.filter((_, i) => i !== index));
+        };
 
-  const handleSelectAll = () => {
-    if (selectedBusinesses.length === filteredBusinesses.length) {
-      setSelectedBusinesses([]);
-    } else {
-      setSelectedBusinesses(filteredBusinesses.map(b => b._id));
+      const uploadimages = async() => {
+        const formdata = new FormData();
+        uploadedImages.forEach((file) => {
+            formdata.append("files", file);
+        });
+        try{
+            const result = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/uploadimages`, formdata);
+            setImages(result.data.files);
+            setUploadedImages([]);
+        }catch(error){
+            console.log(error);
+        }
+  }
+
+  const [id,setId] = useState('');
+
+    const editBusiness = async() => {
+      try{
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/${id}`, formData,{withCredentials: true});
+        if(response.status == 200){
+          setIsSubmitting(false);
+          setMessage('Business Edited successfully');
+          getBusinesses();
+          setTimeout(() => {
+            setShowAddModal(false);
+            setIsEditing(false);
+            setUploadedImages([]);
+            setImages([]);
+            setMessage('');
+            setId('');
+          }, 1000);
+        }
+      }catch(error){
+        if (axios.isAxiosError(error)) {
+          setIsSubmitting(false);
+          setMessage('You must be logged in to submit a business listing')
+        } else {
+          setMessage('An unexpected error occurred');
+        }
+      }
     }
-  };
 
-  const handleSelectBusiness = (id: string) => {
-    setSelectedBusinesses(prev => 
-      prev.includes(id) 
-        ? prev.filter(b => b !== id)
-        : [...prev, id]
-    );
-  };
+    const handleSubmit = async(e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        formData.city = formData.city.toLowerCase();
+        formData.category = formData.category.toLowerCase();
+        if(isEditing){
+        if(uploadedImages.length > 0)
+        {
+            uploadimages();
+        }
+        else{
+            editBusiness();
+        }
+        }
+    };
 
+      useEffect(()=>{
+        if(images.length > 0)
+        {
+          setFormData((prev) => ({
+          ...prev,
+          images: images,
+        }));
+        }
+      },[images])
+    
+      useEffect(() => {
+      if (formData.images.length > 0) {
+        editBusiness();
+      }
+    }, [formData]);
 
-  const handleDelete = async(business: Business) => {
+      useEffect(()=>{
+        if(!showAddModal){
+          setImages([]);
+          setFormData({
+          name: '',
+          description: '',
+          category: '',
+          subcategory: '',
+          services: [],
+          phone: '',
+          email: '',
+          address: '',
+          city: '',
+          website: '',
+          images: images,
+          hours: openingHours // or empty if you want {}
+        });
+        setId('');
+        }
+      },[showAddModal])
+    
+    const getBusinesses = async() => {
+        try{
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/user/${user?._id}`,  { withCredentials: true });
+            if(response.status == 200){
+                setBusinesses(response.data.businesses);
+                setloading(false);
+            }
+            else{
+                setloading(false);
+            }
+        } catch {
+            console.log("Server Error")
+        }
+    }
+
+    const handleView = (business: Business) => {
+        const locationPath = business.city.replace(/\s+/g, '-');
+        const categoryPath = business.category.replace(/\s+/g, '-');
+        const id = business._id;
+        const url = `/${locationPath}/${categoryPath}/${id}`;
+        window.location.href = url;
+    }
+
+    const handleDelete = async(business: Business) => {
     try{
       const response = await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/${business._id}`, {withCredentials: true});
       toast.success(response.data.message || 'Business deleted successfully!')
-      fetchBusinesses();
+      getBusinesses();
 
     }catch(error){
       console.log(error);
@@ -458,348 +372,111 @@ const filteredBusinesses = businesses;
     }
   }
 
-  const [isEditing, setIsEditing] = useState(false);
-  const handleEditBusiness = (business: Business) => {
-    console.log("edit : ", business);
-    // setFormData({...formData, ...business});
-    setFormData({
-      ...formData,
-      ...business,
-    });
-    // console.log("form Data : ", formData);
-    setIsEditing(true);
-    setShowAddModal(true);
-  };
-
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-
-    let selectedfiles = files;
-    if(files.length > 4)
-    {
-      selectedfiles = files.slice(0,4);
+    const [isEditing, setIsEditing] = useState(false);
+    const handleEditBusiness = (business: Business) => {
+      setFormData({...formData,...business,});
+      setIsEditing(true);
+      setShowAddModal(true);
+    };
+  
+  useEffect(()=>{
+    if(user && user._id){
+        getBusinesses();
+        setUserData({
+            name: user.name,
+            email: user.email,
+            phone: user.phone
+        })
     }
-    selectedfiles.forEach((file)=>{
-      setUploadedImages((prev) => {
-        if (prev.length < 4) {
-          return [...prev, file];
+  },[user]);
+
+  const handleProfileEdit = async() => {
+    try {
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/me/update`, userData, {withCredentials:true});
+        if(response.status == 200){
+            toast.success('Profile Updated Successfully!');
+            setUser(response.data.user);
         }
-        return prev; // do not add if already 4
-  });
-    })
-  };
-  const removeImage = (index: number) => {
-    setUploadedImages(prev => prev.filter((_, i) => i !== index));
-  };
-
-
-
-  const handleBulkImportFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setBulkImportFile(file);
-      // Simulate CSV parsing - in real app, you'd use a CSV parser
-
-      Papa.parse<ImportedBusiness>(file, {
-  header: true,
-  skipEmptyLines: true,
-  complete: (results) => {
-    const parsedData = results.data.map((data) => {
-      const hours: OpeningHours = {
-        monday: { open: data.monday_open, close: data.monday_close, closed: String(data.monday_closed).toLowerCase() === "true", },
-        tuesday: { open: data.tuesday_open, close: data.tuesday_close, closed: String(data.tuesday_closed).toLowerCase() === "true", },
-        wednesday: { open: data.wednesday_open, close: data.wednesday_close, closed: String(data.wednesday_closed).toLowerCase() === "true", },
-        thursday: { open: data.thursday_open, close: data.thursday_close, closed: String(data.thursday_closed).toLowerCase() === "true",},
-        friday: { open: data.friday_open, close: data.friday_close, closed: String(data.friday_closed).toLowerCase() === "true", },
-        saturday: { open: data.saturday_open, close: data.saturday_close, closed: String(data.saturday_closed).toLowerCase() === "true", },
-        sunday: { open: data.sunday_open, close: data.sunday_close, closed: String(data.sunday_closed).toLowerCase() === "true", },
-        "24x7": { open: "10:00", close: "15:00", closed: false },
-      };
-
-      return {
-        name: data.name,
-        description: data.description,
-        category: data.category,
-        subcategory: data.subcategory,
-        services: data.services,
-        phone: data.phone,
-        email: data.email,
-        address: data.address,
-        city: data.city,
-        website: data.website,
-        hours,
-      };
-    });
-
-    setImportPreview(parsedData);
-  },
-});
-
+    } catch {
+        console.error("Server Error");
     }
-  };
-
-  const handleBulkImport = async() => {
-    let count = 0;
-    setIsImporting(true);
-    for(let i = 0; i < importPreview.length; i++)
-    {
-      const BusinessData = importPreview[i];
-      if(BusinessData.name && BusinessData.category && categories.includes(BusinessData.category) && BusinessData.subcategory
-       && BusinessData.address && BusinessData.city)
-        {
-          BusinessData.category = BusinessData.category.toLowerCase();
-          BusinessData.city = BusinessData.city.toLowerCase();
-
-          try{
-          const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, BusinessData ,{withCredentials: true});
-          if(response.status == 201){
-            console.log(response.data);
-            count++;
-          }
-          else{
-            console.log("error : ", response.data);
-            // setIsImporting(false);
-          }
-        }catch(error){
-          if (axios.isAxiosError(error)) {
-            toast.error('somthing went wrong');
-          } else {
-            toast.error('somthing went wrong');
-          }
-        }
-
-        }
-    }
-
-    if(count > 0)
-    {
-      setIsImporting(false);
-      toast.success(`Successfully imported ${count} Businesses`); // ✅ Last one
-      setShowBulkImportModal(false);
-      setBulkImportFile(null);
-      setImportPreview([]);
-    }
-
-  };
-
-  const downloadTemplate = () => {
-    const csvContent = `name,description,category,subcategory,services,phone,email,address,city,website,image_url,monday_open,monday_close,monday_closed,tuesday_open,tuesday_close,tuesday_closed,wednesday_open,wednesday_close,wednesday_closed,thursday_open,thursday_close,thursday_closed,friday_open,friday_close,friday_closed,saturday_open,saturday_close,saturday_closed,sunday_open,sunday_close,sunday_closed
-Sample Business,Description of the business,Restaurants,Coffee Shop,"Coffee, Pastries, Breakfast",+1 (555) 123-4567,business@example.com,123 Main St,New York,https://example.com,https://example.com/image.jpg,09:00,17:00,false,09:00,17:00,false,09:00,17:00,false,09:00,17:00,false,09:00,17:00,false,10:00,15:00,false,10:00,15:00,true
-Tech Solutions,IT consulting and development Hotels,Services,Consulting,"IT Consulting, Web Development, System Administration",+1 (555) 987-6543,contact@techsolutions.com,456 Tech Ave,San Francisco,https://techsolutions.com,https://techsolutions.com/image.jpg,09:00,18:00,false,09:00,18:00,false,09:00,18:00,false,09:00,18:00,false,09:00,18:00,false,10:00,16:00,false,00:00,00:00,true
-Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Garden Maintenance, Tree Trimming",+1 (555) 456-7890,hello@greengardens.com,789 Garden Blvd,Los Angeles,https://greengardens.com,https://greengardens.com/image.jpg,08:00,17:00,false,08:00,17:00,false,08:00,17:00,false,08:00,17:00,false,08:00,17:00,false,09:00,14:00,false,00:00,00:00,true`;
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'business_import_template.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
-
-  const handleToggleFeatured = async(businessId: string) => {
-      const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/admin/featured/${businessId}`, {}, {withCredentials: true} );
-      console.log(response.data);
-    setFeaturedBusinesses(prev => 
-      prev.includes(businessId) 
-        ? prev.filter(id => id !== businessId)
-        : [...prev, businessId]
-    );
-  };
-
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(10);
-
-
-    const fetchBusinesses = async () => {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/?page=${page}
-        &limit=5&search=${searchQuery}&category=${selectedCategory}&${selectedStatus.toLowerCase()}=${true}`);
-      setBusinesses(response.data.businesses);
-       setTotalPages(response.data.totalPages);
-  };
-
-    const handleDeleteSelected = async() => {
-    for (let i = 0; i < selectedBusinesses.length; i++) {
-  try {
-    const id = selectedBusinesses[i];
-    const response = await axios.delete(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/${id}`,
-      { withCredentials: true }
-    );
-
-    if (i === selectedBusinesses.length - 1) {
-      toast.success(`${selectedBusinesses.length} Businesses Deleted Successfully` || response.data.message) // ✅ Last one
-    }
-  } catch (error) {
-    console.log(error);
-     toast.error('Failed to delete businesses. Please try again.');
   }
-}
-    setSelectedBusinesses([]);
-    fetchBusinesses();
-  };
 
-  useEffect(() => {
-    fetchBusinesses();
-  }, [page, selectedCategory, searchQuery,selectedStatus]);
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-        toastOptions={{
-          duration: 4000, // auto-close after 4s
-          style: {
-            borderRadius: '8px',
-            background: '#333',
-            color: '#fff',
-          },
-          success: {
+    <div className='h-[100vh]'>
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+          toastOptions={{
+            duration: 4000, // auto-close after 4s
             style: {
-              background: 'green',
+              borderRadius: '8px',
+              background: '#333',
+              color: '#fff',
             },
-          },
-          error: {
-            style: {
-              background: 'red',
+            success: {
+              style: {
+                background: 'green',
+              },
             },
-          },
-        }}
-      />
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Business Management</h1>
-          <p className="text-sm sm:text-base text-gray-600">Manage all business listings and their information</p>
-        </div>
-        <div className="flex items-center space-x-2 mt-4 sm:mt-0">
-          <button
-            onClick={() => setShowBulkImportModal(true)}
-            className="flex items-center px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
-          >
-            <FileSpreadsheet className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0" />
-            <span className="hidden sm:inline">Bulk Import</span>
-            <span className="sm:hidden">Import</span>
-          </button>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="flex items-center px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-          >
-            <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0" />
-            <span className="hidden sm:inline">Add Business</span>
-            <span className="sm:hidden">Add</span>
-          </button>
-        </div>
-      </div>
+            error: {
+              style: {
+                background: 'red',
+              },
+            },
+          }}
+        />
+    <div className='w-[87%] mx-auto'>
+        <h1 className='text-4xl text-center font-semibold mt-2'>DASHBOARD</h1>
 
-      {/* Filters and Search */}
-      <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
-            <input
-              type="text"
-              placeholder="Search businesses..."
-              value={searchQuery }
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-            />
-          </div>
-
-          {/* Category Filter */}
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white text-sm"
-            >
-              <option>All Categories</option>
-              {categories.map(category => (
-                <option key={category} value={category}>{category}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Status Filter */}
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
-            <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white text-sm"
-            >
-              {statuses.map(status => (
-                <option key={status} value={status}>{status}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Results Count */}
-          <div className="flex items-center justify-end">
-            <span className="text-xs sm:text-sm text-gray-600">
-              {filteredBusinesses.length} businesses found
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Bulk Actions */}
-      {selectedBusinesses.length > 0 && (
-        <div className="bg-blue-50 rounded-xl p-3 sm:p-4 border border-blue-200">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <span className="text-xs sm:text-sm font-medium text-blue-800">
-              {selectedBusinesses.length} businesses selected
-            </span>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => {
-                  selectedBusinesses.forEach(id => handleToggleFeatured(id));
-                  setSelectedBusinesses([]);
-                }}
-                className="flex items-center px-2 sm:px-3 py-1 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors text-xs sm:text-sm"
-              >
-                <Star className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
-                <span className="hidden sm:inline">Toggle Featured</span>
-                <span className="sm:hidden">Featured</span>
-              </button>
-              <button
-                onClick={handleDeleteSelected}
-                className="flex items-center px-2 sm:px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-xs sm:text-sm"
-              >
-                <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
-                <span className="hidden sm:inline">Delete Selected</span>
-                <span className="sm:hidden">Delete</span>
-              </button>
-              <button
-                onClick={() => setSelectedBusinesses([])}
-                className="flex items-center px-2 sm:px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors text-xs sm:text-sm"
-              >
-                <X className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
-                <span className="hidden sm:inline">Clear Selection</span>
-                <span className="sm:hidden">Clear</span>
-              </button>
+        <div className='flex items-center lg:flex-row flex-col-reverse gap-x-5 lg:gap-y-0 gap-y-3 mt-6 relative'>
+            <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 w-64 border border-gray-200">
+              <div className="flex items-center justify-between">
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Businesses</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 truncate">{businesses.length || 0}</p>
+                </div>
+                <div className={`p-2 sm:p-3 rounded-lg bg-green-500 flex-shrink-0 ml-3`}>
+                  <Building2 className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
+                </div>
+              </div>
+              <div className="mt-3 sm:mt-4 flex items-center">
+              </div>
             </div>
-          </div>
-        </div>
-      )}
 
-      {/* Businesses Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
+            <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 w-64 border border-gray-200">
+              <div className="flex items-center justify-between">
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Reviews</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 truncate">{businesses.length>0 ? '2,367' : '0'}</p>
+                </div>
+                <div className={`p-2 sm:p-3 rounded-lg bg-purple-500 flex-shrink-0 ml-3`}>
+                  <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
+                </div>
+              </div>
+              <div className="mt-3 sm:mt-4 flex items-center">
+              </div>
+            </div>
+
+            <div className="lg:absolute right-0 bg-white py-4 sm:p-6">
+              <div className="flex items-center justify-between">
+                <button onClick={()=>setShowEditModal(true)} className={`p-2 flex sm:p-3 rounded-lg bg-blue-500 flex-shrink-0 ml-3`}>
+                  <Edit className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white mr-2" />
+                  <p className='text-white'>Edit Your Profile</p>
+                </button>
+              </div>
+            </div>
+        </div>
+
+    </div>
+    <h1 className='text-3xl mt-4 text-center font-semibold'>Your Businesses</h1>
+    {/* Businesses Table */}
+      <div className="bg-white rounded-xl mt-3 w-[89%] mx-auto shadow-sm border border-gray-200">
+        <div className="overflow-x-auto overflow-y-auto max-h-[400px] hide-scrollbar">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
-              <tr>
-                <th className="px-3 sm:px-6 py-3 text-left">
-                  <input
-                    type="checkbox"
-                    checked={selectedBusinesses.length === filteredBusinesses.length && filteredBusinesses.length > 0}
-                    onChange={handleSelectAll}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                </th>
+              <tr className='h-16'>
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Business
                 </th>
@@ -823,17 +500,9 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredBusinesses.map((business) => (
-                <tr key={business._id} className="hover:bg-gray-50">
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                    <input
-                      type="checkbox"
-                      checked={selectedBusinesses.includes(business._id)}
-                      onChange={() => handleSelectBusiness(business._id)}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                  </td>
+            {businesses.length > 0 && <tbody className="bg-white divide-y divide-gray-200">
+              {businesses.map((business) => (
+                <tr key={business._id} className="hover:bg-gray-50 h-28">
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10">
@@ -876,16 +545,15 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
                     <button
-                      onClick={() => handleToggleFeatured(business._id)}
                       className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium transition-colors ${
-                        featuredBusinesses.includes(business._id) || business.featured
+                        business.featured
                           ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                       }`}
-                      title={featuredBusinesses.includes(business._id) || business.featured ? 'Remove from Featured' : 'Add to Featured'}
+                      title={business.featured ? 'Remove from Featured' : 'Add to Featured'}
                     >
-                      <Star className={`w-3 h-3 mr-1 ${featuredBusinesses.includes(business._id) || business.featured ? 'fill-current' : ''}`} />
-                      {featuredBusinesses.includes(business._id) || business.featured ? 'Featured' : 'Not Featured'}
+                      <Star className={`w-3 h-3 mr-1 ${business.featured ? 'fill-current' : ''}`} />
+                      {business.featured ? 'Featured' : 'Not Featured'}
                     </button>
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -897,7 +565,7 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                       >
                         <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
-                      <button className="text-gray-600 hover:text-gray-900 p-1" title="View">
+                      <button onClick={()=>handleView(business)} className="text-gray-600 hover:text-gray-900 p-1" title="View">
                         <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
                       <button onClick={()=>handleDelete(business)} className="text-red-600 hover:text-red-900 p-1" title="Delete">
@@ -907,39 +575,21 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                   </td>
                 </tr>
               ))}
-            </tbody>
+            </tbody>}
           </table>
         </div>
-      </div>
-
-      {/* Pagination */}
-      <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 py-3 border border-gray-200">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="text-xs sm:text-sm text-gray-700">
-            Showing <span className="font-medium">{page}</span> to <span className="font-medium">{filteredBusinesses.length}</span> of{' '}
-            <span className="font-medium">{businesses.length}</span> results
-          </div>
-          <div className="flex space-x-1 sm:space-x-2">
-            <button
-            onClick={() => setPage((prev) => Math.max(prev - 1, 1))} 
-            disabled={page === 1}
-            className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-gray-500 bg-gray-100 rounded-md hover:bg-gray-200">
-              Previous
-            </button>
-            <button className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-white bg-blue-600 rounded-md">
-              {page}
-            </button>
-            <button
-            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))} 
-            disabled={page === totalPages}
-            className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-gray-500 bg-gray-100 rounded-md hover:bg-gray-200">
-              Next
-            </button>
-          </div>
+        {loading ? (
+            <div className={`my-8`}>
+            <p className='text-center text-2xl text-gray-600'>Loading...</p>
         </div>
+        ) : (
+        <div className={`my-8 ${businesses.length > 0 ? 'hidden' : 'block'}`}>
+            <p className='text-center text-2xl text-gray-600'>You have not listed any business.</p>
+        </div>
+        )}
       </div>
 
-      {/* Comprehensive Add Business Modal */}
+          {/* Comprehensive Add Business Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-2 mx-auto  p-4 sm:p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
@@ -1254,175 +904,71 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
         </div>
       )}
 
-      {/* Bulk Import Modal */}
-      {showBulkImportModal && (
+
+            {/* Add/Edit Post Modal */}
+      {(showEditModal) && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-4 mx-auto p-4 sm:p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
+          <div className="relative top-10 mx-auto p-4 sm:p-5 border w-full max-w-sm sm:max-w-md lg:max-w-lg shadow-lg rounded-md bg-white">
             <div className="mt-3">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-medium text-gray-900">Bulk Import Businesses</h3>
-                <button
-                  onClick={() => setShowBulkImportModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-
-              <div className="space-y-6">
-                {/* File Upload Section */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-800 flex items-center">
-                    <FileSpreadsheet className="w-4 h-4 mr-2 text-green-600" />
-                    Upload File
-                  </h4>
-                  
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <FileSpreadsheet className="mx-auto h-12 w-12 text-gray-400" />
-                    <div className="mt-4">
-                      <label htmlFor="bulk-import-file" className="cursor-pointer bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
-                        Choose CSV/Excel File
-                      </label>
-                      <input
-                        id="bulk-import-file"
-                        type="file"
-                        accept=".csv,.xlsx,.xls"
-                        onChange={handleBulkImportFile}
-                        className="hidden"
-                      />
-                    </div>
-                    <p className="mt-2 text-xs text-gray-500">
-                      Supported formats: CSV, Excel (.xlsx, .xls)
-                    </p>
-                    <p className="mt-1 text-xs text-gray-500">
-                      Maximum file size: 10MB
-                    </p>
-                  </div>
-
-                  {bulkImportFile && (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                      <div className="flex items-center">
-                        <Check className="w-5 h-5 text-green-600 mr-2" />
-                        <span className="text-sm font-medium text-green-800">
-                          File uploaded: {bulkImportFile.name}
-                        </span>
-                      </div>
-                    </div>
-                  )}
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                Edit Profile
+              </h3>
+              <form onSubmit={handleProfileEdit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">User Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={userData.name}
+                    onChange={(e)=>setUserData({...userData, name: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  />
                 </div>
-
-                {/* Template Download */}
-                <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-800 flex items-center">
-                    <Download className="w-4 h-4 mr-2 text-blue-600" />
-                    Download Template
-                  </h4>
-                  
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <p className="text-sm text-blue-800 mb-3">
-                      Download our CSV template to ensure your file has the correct format and column headers.
-                    </p>
-                    <button
-                      onClick={downloadTemplate}
-                      className="flex items-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
-                    >
-                      <Download className="w-4 h-4 mr-2" />
-                      Download Template
-                    </button>
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <input
+                    type="email"
+                    required
+                    value={userData.email}
+                    onChange={(e)=>setUserData({...userData, email: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  />
                 </div>
-
-                {/* Import Preview */}
-                {importPreview.length > 0 && (
-                  <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-800">Import Preview</h4>
-                    
-                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                      <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-gray-50">
-                            <tr>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status
-                              </th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Business Name
-                              </th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Category
-                              </th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                City
-                              </th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Email
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
-                            {importPreview.map((item, index) => (
-                              <tr key={index} className={item.name === '' ? 'bg-red-50' : ''}>
-                                <td className="px-4 py-3 whitespace-nowrap">
-                                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                                    item.name !== '' 
-                                      ? 'bg-green-100 text-green-800' 
-                                      : 'bg-red-100 text-red-800'
-                                  }`}>
-                                    {item.name !== '' ? 'Valid' : 'Error'}
-                                  </span>
-                                </td>
-                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                  {item.name || <span className="text-red-600">Missing name</span>}
-                                </td>
-                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                  {item.category}
-                                </td>
-                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                  {item.city}
-                                </td>
-                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                  {item.email}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-sm text-gray-600">
-                      <span>
-                        Valid entries: {importPreview.filter(item => item.name !== '').length}
-                      </span>
-                      <span>
-                        Errors: {importPreview.filter(item => item.name === '').length}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Action Buttons */}
-                <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">phone</label>
+                  <input
+                    type="tel"
+                    required
+                    value={userData.phone}
+                    onChange={(e)=>setUserData({...userData, phone: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  />
+                </div>
+                <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
                   <button
                     type="button"
-                    onClick={() => setShowBulkImportModal(false)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                    onClick={() => {
+                      setShowEditModal(false);
+                    }}
+                    className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
                   >
                     Cancel
                   </button>
                   <button
-                    onClick={handleBulkImport}
-                    disabled={!bulkImportFile || isImporting}
-                    className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    type="submit"
+                    className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
                   >
-                    {isImporting ? 'Importing...' : 'Import Businesses'}
+                    Update Profile
                   </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
       )}
+
     </div>
-  );
-} 
+  )
+}
+
+export default UserDashboard

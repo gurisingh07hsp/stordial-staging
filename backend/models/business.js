@@ -9,7 +9,7 @@ const businessSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: [true, 'Please enter business description']
+    // required: [true, 'Please enter business description']
   },
   category: {
     type: String,
@@ -44,7 +44,7 @@ const businessSchema = new mongoose.Schema({
   }],
   phone: {
     type: String,
-    required: [true, 'Please enter business phone number']
+    // required: [true, 'Please enter business phone number']
   },
   email: {
     type: String,
