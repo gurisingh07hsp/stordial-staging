@@ -29,7 +29,7 @@ interface BusinessPageProps {
   params: {
     location: string;
     category: string;
-    name: string;
+    id: string;
   };
 }
 
@@ -43,7 +43,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
 
   const decodedLocation = decodeURIComponent(params.location.replace(/-/g, ' '));
   const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
-  const decodedName = decodeURIComponent(params.name.replace(/-/g, ' '));
+  const decodedId = decodeURIComponent(params.id);
 
 
   const getSimilarBusinesses = async() => {
@@ -60,7 +60,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   useEffect(() => {
     const getBusinessByName = async () => {
       try{
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}/name/${decodedName}`, {withCredentials: true});
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}/id/${decodedId}`, {withCredentials: true});
         if(response.status == 200){
           setBusiness(response.data.business);
         }
@@ -75,7 +75,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
     }
     getBusinessByName();
     getSimilarBusinesses();
-  }, [decodedName])
+  }, [decodedId])
   
   if (!business) {
     return (
@@ -85,7 +85,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
         <div className="text-center bg-white rounded-2xl p-8 shadow-xl max-w-md">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">Business Not Found</h1>
                           <p className="text-gray-600 mb-6">
-                  The business &quot;{decodedName}&quot; in {decodedCategory} category in {decodedLocation} could not be found.
+                  This business in {decodedCategory} category in {decodedLocation} could not be found.
                 </p>
           <div className="space-y-3">
             <Link 
@@ -184,7 +184,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
             <span className="text-gray-400">›</span>
             <Link href={`/${decodedLocation}/${decodedCategory}`} className="hover:text-blue-600 transition-colors capitalize">{decodedCategory}</Link>
             <span className="text-gray-400">›</span>
-            <span className="text-gray-800 font-medium capitalize">{decodedName}</span>
+            {/* <span className="text-gray-800 font-medium capitalize">{decodedName}</span> */}
           </nav>
         </div>
       </div>

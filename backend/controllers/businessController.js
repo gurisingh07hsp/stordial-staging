@@ -121,13 +121,13 @@ exports.getBusiness = async (req, res, next) => {
 };
 
 
-exports.getBusinessByName = async (req, res, next) => {
+exports.getBusinessById = async (req, res, next) => {
   try {
-    let { location, category, name } = req.params;
+    let { location, category, id } = req.params;
 
     location = location.toLowerCase();
 
-    const business = await Business.findOne({ name: name, city: location, category: category })
+    const business = await Business.findById(id)
       .populate('owner', 'name email phone')
       .populate({
         path: 'reviews',
@@ -149,6 +149,25 @@ exports.getBusinessByName = async (req, res, next) => {
       success: true,
       business
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getBusinessByUser = async (req,res,next) => {
+  try {
+    const businesses = await Business.find({owner: req.params.id});
+    if(!businesses){
+      return res.status(404).json({
+        success: false,
+        message: 'Businesses not found'
+      });
+    }
+    res.status(200).json({
+    success: true,
+    businesses
+    });
+    
   } catch (error) {
     next(error);
   }

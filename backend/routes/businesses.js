@@ -5,13 +5,14 @@ const {
   createBusiness,
   getBusinesses,
   getBusiness,
-  getBusinessByName,
+  getBusinessById,
   updateBusiness,
   deleteBusiness,
   getFeaturedBusinesses,
   getBusinessesByCategoryAndLocation,
   toggleFeatured,
-  toggleVerified
+  toggleVerified,
+  getBusinessByUser
 } = require('../controllers/businessController');
 
 // Public routes
@@ -19,10 +20,11 @@ router.route('/').get(getBusinesses);
 router.route('/featured').get(getFeaturedBusinesses);
 router.route('/location/:location/category/:category').get(getBusinessesByCategoryAndLocation);
 router.route('/:id').get(getBusiness);
-router.route('/location/:location/category/:category/name/:name').get(getBusinessByName);
+router.route('/location/:location/category/:category/id/:id').get(getBusinessById);
 
 // Protected routes
 router.route('/new').post(isAuthenticated, createBusiness);
+router.route('/user/:id').get(isAuthenticated, getBusinessByUser);
 router.route('/:id')
   .put(isAuthenticated, updateBusiness)
   .delete(isAuthenticated, deleteBusiness);

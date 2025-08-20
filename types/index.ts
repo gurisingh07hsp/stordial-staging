@@ -66,6 +66,14 @@ interface imageData {
   public_id: string;
 }
 
+interface OpeningHours {
+  [key: string]: {
+    open: string;
+    close: string;
+    closed: boolean;
+  };
+}
+
 export interface BusinessFormData {
   name: string;
   description: string;
@@ -78,5 +86,5 @@ export interface BusinessFormData {
   city: string;
   website: string;
   images: imageData[];
-  hours: object;
+  hours: OpeningHours; 
 } 

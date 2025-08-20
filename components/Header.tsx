@@ -28,7 +28,7 @@ export default function Header({
               <span className="text-white font-bold text-xl">L</span>
             </div>
             <div>
-                              <span className="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-200">
+                <span className="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-200">
                   Stordial
                 </span>
                 <p className="text-xs text-gray-500 -mt-1">Find Local Businesses</p>
@@ -72,7 +72,7 @@ export default function Header({
                               {user ? (
               <div className="hidden lg:flex items-center space-x-4">              
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-3 cursor-pointer border py-1 px-1 rounded-lg">
+                  <Link href="/dashboard" className="flex items-center space-x-3 cursor-pointer border py-1 px-1 rounded-lg">
                     <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-md">
                       <User className="w-4 h-4 text-white" />
                     </div>
@@ -80,7 +80,7 @@ export default function Header({
                       <p className="text-sm font-semibold text-gray-800">{user.name}</p>
                       <p className="text-xs text-gray-500">{user.email}</p>
                     </div>
-                  </div>
+                  </Link>
                   
                   <button 
                     onClick={onLogout}
@@ -120,7 +120,7 @@ export default function Header({
             <hr></hr>
 
             {user &&
-              <div className='flex items-center space-x-3 p-4'>
+              <div onClick={()=> window.location.href = '/dashboard'} className='flex items-center space-x-3 p-4'>
                 <div className='w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-md'>
                   <User className='w-6 h-6 text-white' />
                 </div>
