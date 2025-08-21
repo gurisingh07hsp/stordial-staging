@@ -6,6 +6,7 @@ import { BusinessFormData, Business, User } from '../types';
 import { ArrowLeft, Upload, Clock, MapPin, Phone, Image as ImageIcon, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Select from "react-select";
+import { useTags } from '@/hooks/use-tags';
 
 interface ListBusinessPageProps {
   onBack: () => void;
@@ -302,6 +303,29 @@ const categoryOptions = categories.map(cat => ({
     setFormData({...formData, hours: openingHours});
   },[openingHours]);
 
+
+  const [inputValue, setInputValue] = useState("");
+  const { tags, addTag, removeTag, removeLastTag, hasReachedMax } = useTags({
+    maxTags: 30,
+    onChange: (tags) => console.log("Tags updated:", tags),
+  });
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !inputValue) {
+      e.preventDefault();
+      removeLastTag();
+    }
+    if (e.key === "Enter" && inputValue) {
+      e.preventDefault();
+      addTag({ id: inputValue.toLowerCase(), label: inputValue });
+      setInputValue("");
+    }
+  };
+
+  useEffect(()=>{
+    setFormData({...formData, services: tags.map((e)=> e.label)});
+  },[tags]);
+
   if(!user){
     return(
       <div className='flex justify-center item-center h-[400px]'>
@@ -490,6 +514,40 @@ const categoryOptions = categories.map(cat => ({
                   </div>
                 </div>
               </div>
+
+              <div className="space-y-2">
+              <label className="text-sm font-medium">Services</label>
+              <div className="rounded-lg border border-input bg-background p-1">
+              <div className="flex flex-wrap gap-1">
+                {tags.map((tag) => (
+                  <span
+                    key={tag.id}
+                    className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm ${tag.color || "bg-primary/10 text-primary"}`}
+                  >
+                    {tag.label}
+                    <button
+                      onClick={() => removeTag(tag.id)}
+                      className="rounded-full p-0.5 hover:bg-black/10 dark:hover:bg-white/20"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+                <input
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={hasReachedMax ? "Max tags reached" : "Add Services..."}
+                  disabled={hasReachedMax}
+                  className="flex-1 bg-transparent px-2 py-2 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
+                />
+              </div>
+            </div>
+            </div>
+
+
+
+
                               {/* Opening Hours */}
                               <div className="space-y-4">
                                 <h4 className="text-lg font-semibold text-gray-800 flex items-center">

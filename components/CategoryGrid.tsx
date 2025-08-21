@@ -24,7 +24,7 @@ export default function CategoryGrid({ onCategoryClick }: CategoryGridProps) {
     { name: 'Real Estate', icon: '🏠', description: 'Property and real estate agents' },
     { name: 'Banks', icon: '🏦', description: 'Financial services and banking' },
     { name: 'Pharmacies', icon: '💊', description: 'Medicine and health products' },
-    { name: 'Gas Stations', icon: '⛽', description: 'Fuel and convenience stores' },
+    { name: 'Petrol Pumps', icon: '⛽', description: 'Fuel and convenience stores' },
     { name: 'Pet Services', icon: '🐕', description: 'Veterinary and pet care' },
     { name: 'Home Services', icon: '🔧', description: 'Plumbing, electrical, and repairs' }
   ];
