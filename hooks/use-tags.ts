@@ -28,23 +28,6 @@ export function useTags({
 }: UseTagsProps = {}) {
     const [tags, setTags] = useState<Tag[]>(defaultTags);
 
-    // function addTag(tag: Tag) {
-    //     if (tags.length >= maxTags) return;
-
-    //     const newTags = [
-    //         ...tags,
-    //         {
-    //             ...tag,
-    //             color:
-    //                 tag.color ||
-    //                 defaultColors[tags.length % defaultColors.length],
-    //         },
-    //     ];
-    //     setTags(newTags);
-    //     onChange?.(newTags);
-    //     return newTags;
-    // }
-
       function addTag(tag: Tag) {
     setTags((prev) => {
       if (prev.length >= maxTags) return prev;

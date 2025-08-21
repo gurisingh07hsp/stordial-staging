@@ -9,7 +9,6 @@ import { motion } from "framer-motion";
 import { Check, Star } from "lucide-react";
 import Link from "next/link";
 import { useState, useRef } from "react";
-// import confetti from "canvas-confetti";
 import NumberFlow from "@number-flow/react";
 
 interface PricingPlan {
@@ -41,9 +40,6 @@ export function Pricing({
 
   const handleToggle = (checked: boolean) => {
     setIsMonthly(!checked);
-    if (checked && switchRef.current) {
-      const rect = switchRef.current.getBoundingClientRect();
-    }
   };
 
   return (
@@ -61,7 +57,7 @@ export function Pricing({
         <label className="relative inline-flex items-center cursor-pointer">
           <Label>
             <Switch
-              ref={switchRef as any}
+              ref={switchRef}
               checked={!isMonthly}
               onCheckedChange={handleToggle}
               className="relative"
