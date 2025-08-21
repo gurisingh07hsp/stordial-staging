@@ -449,7 +449,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                     <h3 className="text-xl font-semibold text-gray-800 mb-4">What We Offer</h3>
                     <div className="flex flex-wrap gap-5 w-full ">
                       {business.services.map((service, index) => (
-                            <span className="font-semibold bg-blue-100 text-blue-800 py-2 px-4 rounded-lg">{service}</span>
+                            <span key={index} className="font-semibold bg-blue-100 text-blue-800 py-2 px-4 rounded-lg">{service}</span>
                       ))}
                     </div>
                   </div>
