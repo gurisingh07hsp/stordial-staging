@@ -528,8 +528,11 @@ const filteredBusinesses = businesses;
           "24x7": { open: "10:00", close: "15:00", closed: false },
         };
 
-        let services = data.services.split(',');
-        data.services == '' ? services = [] : services = data.services.split(',');
+        let services: string[] = [];
+
+        if (data.services !== '') {
+          services = data.services.split(',');
+        }
       
 
       return {
