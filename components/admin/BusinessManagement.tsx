@@ -25,6 +25,7 @@ import Select from "react-select";
 import { Toaster } from 'react-hot-toast'
 import toast from 'react-hot-toast'
 import Papa from "papaparse";
+import { useTags } from '@/hooks/use-tags';
 
 interface OpeningHours {
   [key: string]: {
@@ -445,6 +446,14 @@ const filteredBusinesses = businesses;
     );
   };
 
+  const handleView = (business: Business) => {
+      const locationPath = business.city.replace(/\s+/g, '-');
+      const categoryPath = business.category.replace(/\s+/g, '-');
+      const id = business._id;
+      const url = `/${locationPath}/${categoryPath}/${id}`;
+      window.location.href = url;
+  }
+
 
   const handleDelete = async(business: Business) => {
     try{
@@ -460,13 +469,15 @@ const filteredBusinesses = businesses;
 
   const [isEditing, setIsEditing] = useState(false);
   const handleEditBusiness = (business: Business) => {
-    console.log("edit : ", business);
-    // setFormData({...formData, ...business});
     setFormData({
       ...formData,
       ...business,
     });
-    // console.log("form Data : ", formData);
+
+    business.services.forEach((service)=>{
+      addTag({ id: service.toLowerCase(), label: service });
+    })
+    
     setIsEditing(true);
     setShowAddModal(true);
   };
@@ -502,27 +513,31 @@ const filteredBusinesses = businesses;
       // Simulate CSV parsing - in real app, you'd use a CSV parser
 
       Papa.parse<ImportedBusiness>(file, {
-  header: true,
-  skipEmptyLines: true,
-  complete: (results) => {
-    const parsedData = results.data.map((data) => {
-      const hours: OpeningHours = {
-        monday: { open: data.monday_open, close: data.monday_close, closed: String(data.monday_closed).toLowerCase() === "true", },
-        tuesday: { open: data.tuesday_open, close: data.tuesday_close, closed: String(data.tuesday_closed).toLowerCase() === "true", },
-        wednesday: { open: data.wednesday_open, close: data.wednesday_close, closed: String(data.wednesday_closed).toLowerCase() === "true", },
-        thursday: { open: data.thursday_open, close: data.thursday_close, closed: String(data.thursday_closed).toLowerCase() === "true",},
-        friday: { open: data.friday_open, close: data.friday_close, closed: String(data.friday_closed).toLowerCase() === "true", },
-        saturday: { open: data.saturday_open, close: data.saturday_close, closed: String(data.saturday_closed).toLowerCase() === "true", },
-        sunday: { open: data.sunday_open, close: data.sunday_close, closed: String(data.sunday_closed).toLowerCase() === "true", },
-        "24x7": { open: "10:00", close: "15:00", closed: false },
-      };
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+      const parsedData = results.data.map((data) => {
+        const hours: OpeningHours = {
+          monday: { open: data.monday_open, close: data.monday_close, closed: String(data.monday_closed).toLowerCase() === "true", },
+          tuesday: { open: data.tuesday_open, close: data.tuesday_close, closed: String(data.tuesday_closed).toLowerCase() === "true", },
+          wednesday: { open: data.wednesday_open, close: data.wednesday_close, closed: String(data.wednesday_closed).toLowerCase() === "true", },
+          thursday: { open: data.thursday_open, close: data.thursday_close, closed: String(data.thursday_closed).toLowerCase() === "true",},
+          friday: { open: data.friday_open, close: data.friday_close, closed: String(data.friday_closed).toLowerCase() === "true", },
+          saturday: { open: data.saturday_open, close: data.saturday_close, closed: String(data.saturday_closed).toLowerCase() === "true", },
+          sunday: { open: data.sunday_open, close: data.sunday_close, closed: String(data.sunday_closed).toLowerCase() === "true", },
+          "24x7": { open: "10:00", close: "15:00", closed: false },
+        };
+
+        let services = data.services.split(',');
+        data.services == '' ? services = [] : services = data.services.split(',');
+      
 
       return {
         name: data.name,
         description: data.description,
         category: data.category,
         subcategory: data.subcategory,
-        services: data.services,
+        services: services,
         phone: data.phone,
         email: data.email,
         address: data.address,
@@ -642,6 +657,29 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
   useEffect(() => {
     fetchBusinesses();
   }, [page, selectedCategory, searchQuery,selectedStatus]);
+
+
+    const [inputValue, setInputValue] = useState("");
+    const { tags, setTags, addTag, removeTag, removeLastTag, hasReachedMax } = useTags({
+      maxTags: 30,
+      onChange: (tags) => console.log("Tags updated:", tags),
+    });
+  
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+      if (e.key === "Backspace" && !inputValue) {
+        e.preventDefault();
+        removeLastTag();
+      }
+      if (e.key === "Enter" && inputValue) {
+        e.preventDefault();
+        addTag({ id: inputValue.toLowerCase(), label: inputValue });
+        setInputValue("");
+      }
+    };
+  
+    useEffect(()=>{
+      setFormData({...formData, services: tags.map((e)=> e.label)});
+    },[tags]);
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -897,7 +935,7 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                       >
                         <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
-                      <button className="text-gray-600 hover:text-gray-900 p-1" title="View">
+                      <button onClick={()=>handleView(business)} className="text-gray-600 hover:text-gray-900 p-1" title="View">
                         <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
                       <button onClick={()=>handleDelete(business)} className="text-red-600 hover:text-red-900 p-1" title="Delete">
@@ -947,7 +985,7 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-medium text-gray-900">{`${isEditing ? "Edit Business" : "Add New Business"}`}</h3>
                 <button
-                  onClick={() => {setShowAddModal(false); setIsEditing(false); setUploadedImages([]); setImages([])}}
+                  onClick={() => {setShowAddModal(false); setIsEditing(false); setUploadedImages([]); setImages([]); setTags([])}}
                   className="text-gray-400 hover:text-gray-600"
                 >
                   <X className="w-6 h-6" />
@@ -1107,6 +1145,38 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                   </div>
                 </div>
               </div>
+
+
+                                <div className="space-y-2">
+                                <label className="text-sm font-medium">Services</label>
+                                <div className="rounded-lg border border-input bg-background p-1">
+                                <div className="flex flex-wrap gap-1">
+                                  {tags.map((tag) => (
+                                    <span
+                                      key={tag.id}
+                                      className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm ${tag.color || "bg-primary/10 text-primary"}`}
+                                    >
+                                      {tag.label}
+                                      <button
+                                        onClick={() => removeTag(tag.id)}
+                                        className="rounded-full p-0.5 hover:bg-black/10 dark:hover:bg-white/20"
+                                      >
+                                        <X className="h-3 w-3" />
+                                      </button>
+                                    </span>
+                                  ))}
+                                  <input
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder={hasReachedMax ? "Max tags reached" : "Add Services..."}
+                                    disabled={hasReachedMax}
+                                    className="flex-1 bg-transparent px-2 py-2 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
+                                  />
+                                </div>
+                              </div>
+                              </div>
+
                               {/* Opening Hours */}
                               <div className="space-y-4">
                                 <h4 className="text-lg font-semibold text-gray-800 flex items-center">

@@ -402,6 +402,14 @@ const UserDashboard = () => {
     }
   }
 
+  const totalReviews = () => {
+    let totalreviews = 0;
+    businesses.forEach((business)=> {
+      totalreviews += business.reviews;
+    });
+    return totalreviews;
+  }
+
 
   return (
     <div className='h-[100vh]'>
@@ -428,8 +436,6 @@ const UserDashboard = () => {
           }}
         />
     <div className='w-[87%] mx-auto'>
-        <h1 className='text-4xl text-center font-semibold mt-2'>DASHBOARD</h1>
-
         <div className='flex items-center lg:flex-row flex-col-reverse gap-x-5 lg:gap-y-0 gap-y-3 mt-6 relative'>
             <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 w-64 border border-gray-200">
               <div className="flex items-center justify-between">
@@ -449,7 +455,7 @@ const UserDashboard = () => {
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
                   <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Reviews</p>
-                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 truncate">{businesses.length>0 ? '2,367' : '0'}</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 truncate">{totalReviews()}</p>
                 </div>
                 <div className={`p-2 sm:p-3 rounded-lg bg-purple-500 flex-shrink-0 ml-3`}>
                   <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
@@ -462,15 +468,15 @@ const UserDashboard = () => {
             <div className="lg:absolute right-0 bg-white py-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <button onClick={()=>setShowEditModal(true)} className={`p-2 flex sm:p-3 rounded-lg bg-blue-500 flex-shrink-0 ml-3`}>
-                  <Edit className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white mr-2" />
-                  <p className='text-white'>Edit Your Profile</p>
+                  <Edit className="w-4 h-4 sm:w-5 sm:h-5 lg:w-5 lg:h-5 text-white mr-2" />
+                  <p className='text-white'>Edit Profile</p>
                 </button>
               </div>
             </div>
         </div>
 
     </div>
-    <h1 className='text-3xl mt-4 text-center font-semibold'>Your Businesses</h1>
+    <h1 className='text-3xl mt-6 text-center font-semibold'>Your Businesses</h1>
     {/* Businesses Table */}
       <div className="bg-white rounded-xl mt-3 w-[89%] mx-auto shadow-sm border border-gray-200">
         <div className="overflow-x-auto overflow-y-auto max-h-[400px] hide-scrollbar">
@@ -494,6 +500,9 @@ const UserDashboard = () => {
                 </th>
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                   Featured
+                </th>
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell">
+                  Promote Business
                 </th>
                 <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
@@ -554,6 +563,13 @@ const UserDashboard = () => {
                     >
                       <Star className={`w-3 h-3 mr-1 ${business.featured ? 'fill-current' : ''}`} />
                       {business.featured ? 'Featured' : 'Not Featured'}
+                    </button>
+                  </td>
+                  <td className="text-center px-3 sm:px-6 py-4 whitespace-nowrap md:table-cell">
+                    <button onClick={()=> window.location.href = '/advertise'}
+                      className={`mx-auto inline-flex items-center px-2 py-1 rounded-full text-xs font-medium transition-colors text-green-800 bg-green-300`}
+                    >
+                      Promote
                     </button>
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

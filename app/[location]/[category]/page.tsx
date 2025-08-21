@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Star, Phone, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Star, Phone, MapPin, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
 import { Business } from '../../../types';
 import axios from 'axios';
 
@@ -23,6 +23,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
       try{
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}`, {withCredentials: true});
         if(response.status == 200){
+          console.log(response.data.businesses);
           setFilteredBusinesses(response.data.businesses);
         }
       }catch(error){
@@ -34,45 +35,9 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
 
   const [sortBy, setSortBy] = useState<'rating' | 'reviews' | 'name'>('rating');
+  const [sortByRatings, setSortByRatings] = useState<'Rating' |'any' | '3.5' | '4' | '4.5' | '5'>('Rating');
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
-
-  // Premium advertisement data
-  // const premiumAds = [
-  //   {
-  //     id: 1,
-  //     businessName: "Hotel Grand Plaza",
-  //     tagline: "Premium Accommodation in Jalandhar",
-  //     description: "Experience luxury with rooftop dining and spa services",
-  //     image: "/hotel-premium-1",
-  //     rating: 4.5,
-  //     reviews: 567,
-  //     cta: "Book Now",
-  //     link: "/jalandhar/hotels/hotel-grand-plaza"
-  //   },
-  //   {
-  //     id: 2,
-  //     businessName: "Hotel Royal Palace",
-  //     tagline: "Royal Experience Awaits",
-  //     description: "Perfect for special occasions and business events",
-  //     image: "/hotel-premium-2",
-  //     rating: 4.3,
-  //     reviews: 345,
-  //     cta: "Learn More",
-  //     link: "/jalandhar/hotels/hotel-royal-palace"
-  //   },
-  //   {
-  //     id: 3,
-  //     businessName: "Hotel Rigal Blu",
-  //     tagline: "3-Star Luxury in Model Town",
-  //     description: "Swimming pool, spa, and conference facilities",
-  //     image: "/hotel-premium-3",
-  //     rating: 4.2,
-  //     reviews: 234,
-  //     cta: "View Details",
-  //     link: "/jalandhar/hotels/hotel-rigal-blu"
-  //   }
-  // ];
 
   const premiumAds = filteredBusinesses.filter((business)=> business.featured == true).slice(0,4);
 
@@ -86,7 +51,17 @@ export default function CategoryPage({ params }: CategoryPageProps) {
     } else if (sortBy === 'name') {
       sorted.sort((a, b) => a.name.localeCompare(b.name));
     }
-    
+
+    if(sortByRatings === '3.5'){
+      sorted = sorted.filter(business => business.rating >= 3.5);
+    } else if(sortByRatings === '4'){
+      sorted = sorted.filter(business => business.rating >= 4);
+    } else if(sortByRatings === '4.5'){
+      sorted = sorted.filter(business => business.rating >= 4.5);
+    } else if(sortByRatings === '5'){
+      sorted = sorted.filter(business => business.rating == 5);
+    } 
+
     if (selectedServices.length > 0) {
       sorted = sorted.filter(business => 
         selectedServices.some(service => 
@@ -96,7 +71,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
     }
     
     return sorted;
-  }, [filteredBusinesses, sortBy, selectedServices]);
+  }, [filteredBusinesses, sortBy, sortByRatings, selectedServices]);
 
   const allServices = useMemo(() => {
     const services = new Set<string>();
@@ -117,6 +92,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const clearFilters = () => {
     setSelectedServices([]);
     setSortBy('rating');
+    setSortByRatings('Rating');
   };
 
   const handleCall = (phone: string) => {
@@ -241,7 +217,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
             {/* Filters and Sort */}
             <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-              <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center relative gap-4">
                 <div className="flex items-center space-x-4">
                   <label className="text-sm font-medium text-gray-700">Sort by:</label>
                   <select
@@ -255,10 +231,25 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                   </select>
                 </div>
 
-                {selectedServices.length > 0 && (
+                <div className="flex items-center space-x-4">
+                  <select
+                    value={sortByRatings}
+                    onChange={(e) => setSortByRatings(e.target.value as 'any' |'3.5' | '4' | '4.5' | '5')}
+                    className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option className='hidden' value="Rating">Rating</option>
+                    <option value="any">Any</option>
+                    <option value="3.5">3.5+</option>
+                    <option value="4">4+</option>
+                    <option value="4.5">4.5+</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
+
+                {(selectedServices.length > 0 || sortBy != 'rating' || sortByRatings != 'Rating') && (
                   <button
                     onClick={clearFilters}
-                    className="text-sm text-red-600 hover:text-red-800"
+                    className="text-sm absolute right-3 text-red-600 hover:text-red-800"
                   >
                     Clear Filters
                   </button>
@@ -292,9 +283,14 @@ export default function CategoryPage({ params }: CategoryPageProps) {
             {sortedBusinesses.length > 0 ? (
               <div className="space-y-4">
                 {sortedBusinesses.map((business) => (
-                  <div key={business._id} className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow">
+                  <div key={business._id} className="bg-white rounded-lg shadow-sm border p-4 hover:shadow-md transition-shadow">
                     <div className="flex lg:flex-row flex-col items-start justify-between">
-                      <div className="flex-1">
+                      <div className='flex'>
+                      <div className='lg:w-32 w-24 h-[100px] flex justify-center items-center'>
+                        <img src={business.images && business.images[0]?.url} alt="" className={`h-full rounded-lg ${business.images && business.images?.length > 0 ? 'block' : 'hidden'}`} />
+                        <Camera className={`w-6 h-6 ${business.images && business.images.length > 0 ? 'hidden' : 'block'}`}/>
+                      </div>
+                      <div className="flex-1 ms-2">
                         <div className="flex items-center space-x-3 mb-2">
                           <h3 className="text-lg font-semibold text-gray-900">{business.name}</h3>
                           {business.isClaimed && (
@@ -316,7 +312,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                             <span className="text-sm">{business.address}</span>
                           </div>
 
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex flex-wrap gap-2 mb-4 mt-2">
                           {business.services.slice(0, 5).map((service, index) => (
                             <span
                               key={index}
@@ -337,8 +333,9 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                           </div>
                         )}
                       </div>
+                      </div>
 
-                      <div className="flex lg:flex-col flex-row justify-center items-center space-x-2 lg:space-y-2 ml-4">
+                      <div className="flex lg:flex-col flex-row justify-center items-center space-x-2 lg:space-y-2">
                         <button
                           onClick={() => handleCall(business.phone)}
                           className="flex items-center space-x-2 bg-green-600 text-white px-4 lg:ms-2 lg:px-9 py-2 rounded-lg hover:bg-green-700 transition-colors"

@@ -232,7 +232,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
               <div className="hidden w-[475px] h-80 lg:flex flex-col gap-x-1 gap-y-2">
       
                 {business && business.images && business.images.length > 2 ? <div className={`flex space-x-2 w-full ${business.images.length == 3 ? 'h-[99%]' : 'h-[50%]'}`}> {business.images.slice(2, 4).map((image, index) => (
-                  <img key={index+1} onClick={() => openImageModal(index + 1)} src={image?.url} className={`${business.images?.length == 3 ? 'w-full h-full' : 'w-[49%] h-full'} rounded-xl cursor-pointer`}></img>
+                  <img key={index+1} onClick={() => openImageModal(index + 2)} src={image?.url} className={`${business.images?.length == 3 ? 'w-full h-full' : 'w-[49%] h-full'} rounded-xl cursor-pointer`}></img>
                 ))  }</div> : (
                   <div className='hidden w-[480px] ms-2 h-full lg:flex flex-wrap gap-x-2'>
                     {
@@ -422,7 +422,6 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {business.services.map((service, index) => (
                           <div key={index} className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-4 text-center">
-                            <div className="text-2xl mb-2">☕</div>
                             <span className="font-medium text-gray-800">{service}</span>
                           </div>
                         ))}
@@ -448,17 +447,9 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                 {activeTab === 'services' && (
                   <div className="space-y-6">
                     <h3 className="text-xl font-semibold text-gray-800 mb-4">What We Offer</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex flex-wrap gap-5 w-full ">
                       {business.services.map((service, index) => (
-                        <div key={index} className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-6">
-                          <div className="flex items-center mb-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mr-4">
-                              <span className="text-white text-lg">☕</span>
-                            </div>
-                            <h4 className="font-semibold text-gray-800">{service}</h4>
-                          </div>
-                          <p className="text-gray-600">Professional {service.toLowerCase()} services with the highest quality standards.</p>
-                        </div>
+                            <span className="font-semibold bg-blue-100 text-blue-800 py-2 px-4 rounded-lg">{service}</span>
                       ))}
                     </div>
                   </div>
@@ -484,13 +475,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                     {business.images && business.images.length > 0 ? (
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {business.images.map((image, index) => (
-                          <div 
-                            key={index}
-                            className="aspect-square bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center"
-                            onClick={() => openImageModal(index)}
-                          >
-                            <div className="text-4xl">☕</div>
-                          </div>
+                          <img key={index} onClick={()=>openImageModal(index)} src={image.url} alt="" className='aspect-square rounded-xl cursor-pointer' />
                         ))}
                       </div>
                     ) : (
