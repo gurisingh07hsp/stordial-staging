@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Search, 
   Filter, 
@@ -9,23 +9,29 @@ import {
   Trash2, 
   Eye, 
   Calendar,
-  User,
-  Tag,
   Grid3X3,
   List
 } from 'lucide-react';
+import axios from 'axios';
+import { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 interface BlogPost {
-  id: string;
   title: string;
   excerpt: string;
   content: string;
-  author: string;
   category: string;
-  status: 'published' | 'draft' | 'archived';
-  publishedAt: string;
-  image: string;
-  tags: string[];
+  status: string;
+}
+
+interface Blog {
+  _id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  status: string;
+  createdAt: Date;
 }
 
 export default function BlogManagement() {
@@ -35,48 +41,16 @@ export default function BlogManagement() {
   const [selectedPosts, setSelectedPosts] = useState<string[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [editingPost, setEditingPost] = useState<BlogPost>({
+  title: "",
+  excerpt: "",
+  content: "",
+  category: "Business Trends",
+  status: "Draft",
+});
 
-  // Mock data
-  const posts: BlogPost[] = [
-    {
-      id: '1',
-      title: 'Top 10 Local Business Trends for 2024',
-      excerpt: 'Discover the latest trends that are shaping the local business landscape this year.',
-      content: 'Full article content here...',
-      author: 'Sarah Johnson',
-      category: 'Business Trends',
-      status: 'published',
-      publishedAt: '2024-01-15',
-      image: '/api/placeholder/300/200',
-      tags: ['trends', 'business', '2024']
-    },
-    {
-      id: '2',
-      title: 'How to Optimize Your Business for Local SEO',
-      excerpt: 'Essential strategies to improve your business visibility in local search results.',
-      content: 'Full article content here...',
-      author: 'Mike Chen',
-      category: 'SEO',
-      status: 'published',
-      publishedAt: '2024-01-12',
-      image: '/api/placeholder/300/200',
-      tags: ['seo', 'local', 'optimization']
-    },
-    {
-      id: '3',
-      title: 'Customer Service Best Practices',
-      excerpt: 'Learn how to provide exceptional customer service that builds loyalty.',
-      content: 'Full article content here...',
-      author: 'Emily Davis',
-      category: 'Customer Service',
-      status: 'draft',
-      publishedAt: '2024-01-10',
-      image: '/api/placeholder/300/200',
-      tags: ['customer-service', 'best-practices']
-    }
-  ];
+  const [posts,setPosts] = useState<Blog[]>([]);
 
   const categories = ['All', 'Business Trends', 'SEO', 'Customer Service', 'Marketing', 'Technology'];
   const statuses = ['All', 'Published', 'Draft', 'Archived'];
@@ -89,11 +63,89 @@ export default function BlogManagement() {
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
+
+  const getposts = async() => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/blogs/`);
+      if(response.status === 200){
+        setPosts(response.data.blogs);
+      }
+    } catch(error){
+      console.error(error);
+    }
+  }
+  useEffect(()=> {
+    getposts();
+  },[]);
+
+  const addBlog = async() => {
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/blogs/new`, editingPost, {withCredentials:true});
+      if(response.status === 200){
+        getposts();
+        setEditingPost({
+          title: "",
+          excerpt: "",
+          content: "",
+          category: "Business Trends",
+          status: "Draft",
+        });
+        setShowAddModal(false);
+      }
+    } catch(error) {
+      console.error(error);
+    }
+  }
+
+  const [id,setId] = useState('');
+  const editBlog = async() => {
+    try {
+      const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/blogs/${id}`, editingPost, {withCredentials:true});
+      if(response.status === 200){
+        setId('');
+        setShowEditModal(false);
+        getposts();
+        toast.success("Blog Updated Successfully");
+      }
+      else{
+        toast.error(response.data.message);
+      }
+    } catch(error){
+      console.error(error);
+    }
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if(showEditModal){
+      editBlog();
+    }
+    else{
+      addBlog();
+    }
+  }
+
+    const handleDelete = async(post: Blog) => {
+      try {
+        const response = await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/blogs/${post._id}`, {withCredentials:true});
+        if(response.status === 200){
+          toast.success(response.data.message);
+          getposts();
+        }
+        else{
+          toast.error(response.data.message);
+        }
+      } catch(error){
+        console.error(error);
+      }
+  }
+
+
   const handleSelectAll = () => {
     if (selectedPosts.length === filteredPosts.length) {
       setSelectedPosts([]);
     } else {
-      setSelectedPosts(filteredPosts.map(p => p.id));
+      setSelectedPosts(filteredPosts.map(p => p.title));
     }
   };
 
@@ -105,27 +157,81 @@ export default function BlogManagement() {
     );
   };
 
-  const handleDeleteSelected = () => {
-    alert(`Delete ${selectedPosts.length} posts?`);
+  const handleDeleteSelected = async() => {
+    for(let i=0; i<selectedPosts.length; i++)
+    {
+      try {
+        const response = await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/blogs/${selectedPosts[i]}`, {withCredentials:true});
+        if(response.status === 200){
+          if(i == selectedPosts.length-1){
+            toast.success(`${i+1} Blogs Deleted Successfully` || response.data.message);
+            getposts();
+          }
+        }
+        else{
+          toast.error(response.data.message);
+        }
+      } catch(error){
+        console.error(error);
+      }
+    }
     setSelectedPosts([]);
   };
 
-  const handleEditPost = (post: BlogPost) => {
+  const handleEditPost = (post: Blog) => {
     setEditingPost(post);
+    setId(post._id);
     setShowEditModal(true);
   };
 
+
+  useEffect(() => {
+    if(!showAddModal && !showEditModal){
+    setEditingPost({
+      title: "",
+      excerpt: "",
+      content: "",
+      category: "Business Trends",
+      status: "Draft",
+    });
+  }
+  }, [showAddModal, showEditModal])
+  
+
+
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'published': return 'bg-green-100 text-green-800';
-      case 'draft': return 'bg-yellow-100 text-yellow-800';
-      case 'archived': return 'bg-gray-100 text-gray-800';
+      case 'Published': return 'bg-green-100 text-green-800';
+      case 'Draft': return 'bg-yellow-100 text-yellow-800';
+      case 'Archived': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   return (
     <div className="space-y-3 sm:space-y-4">
+      <Toaster
+              position="top-right"
+              reverseOrder={false}
+              toastOptions={{
+                duration: 4000, // auto-close after 4s
+                style: {
+                  borderRadius: '8px',
+                  background: '#333',
+                  color: '#fff',
+                },
+                success: {
+                  style: {
+                    background: 'green',
+                  },
+                },
+                error: {
+                  style: {
+                    background: 'red',
+                  },
+                },
+              }}
+            />
       {/* Header */}
       <div className="flex flex-col w-full sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -260,9 +366,6 @@ export default function BlogManagement() {
                   <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Post
                   </th>
-                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
-                    Author
-                  </th>
                   <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                     Category
                   </th>
@@ -279,37 +382,24 @@ export default function BlogManagement() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredPosts.map((post) => (
-                  <tr key={post.id} className="hover:bg-gray-50">
+                  <tr key={post._id} className="hover:bg-gray-50">
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                       <input
                         type="checkbox"
-                        checked={selectedPosts.includes(post.id)}
-                        onChange={() => handleSelectPost(post.id)}
+                        checked={selectedPosts.includes(post._id)}  
+                        onChange={() => handleSelectPost(post._id)}
                         className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10">
-                          <img
-                            className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg object-cover"
-                            src={post.image}
-                            alt={post.title}
-                          />
-                        </div>
                         <div className="ml-3 sm:ml-4 min-w-0">
                           <div className="text-sm font-medium text-gray-900 truncate">{post.title}</div>
                           <div className="text-xs sm:text-sm text-gray-500 truncate">{post.excerpt.slice(0,10)}</div>
                           <div className="sm:hidden text-xs text-gray-500">
-                            {post.author} • {post.category}
+                           {post.category}
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
-                      <div className="flex items-center text-sm text-gray-900">
-                        <User className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-gray-400 flex-shrink-0" />
-                        <span className="truncate">{post.author}</span>
                       </div>
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
@@ -320,7 +410,7 @@ export default function BlogManagement() {
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden lg:table-cell">
                       <div className="flex items-center text-sm text-gray-900">
                         <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-gray-400 flex-shrink-0" />
-                        <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
+                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
                       </div>
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
@@ -340,7 +430,7 @@ export default function BlogManagement() {
                         <button className="text-gray-600 hover:text-gray-900 p-1" title="View">
                           <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
-                        <button className="text-red-600 hover:text-red-900 p-1" title="Delete">
+                        <button onClick={()=>handleDelete(post)} className="text-red-600 hover:text-red-900 p-1" title="Delete">
                           <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
                       </div>
@@ -357,18 +447,13 @@ export default function BlogManagement() {
       {viewMode === 'grid' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredPosts.map((post) => (
-            <div key={post.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div key={post._id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="relative">
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-32 sm:h-40 object-cover"
-                />
                 <div className="absolute top-2 right-2">
                   <input
                     type="checkbox"
-                    checked={selectedPosts.includes(post.id)}
-                    onChange={() => handleSelectPost(post.id)}
+                    checked={selectedPosts.includes(post._id)}
+                    onChange={() => handleSelectPost(post._id)}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
                 </div>
@@ -399,12 +484,8 @@ export default function BlogManagement() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <div className="flex items-center">
-                      <User className="w-3 h-3 mr-1" />
-                      <span className="truncate">{post.author}</span>
-                    </div>
-                    <div className="flex items-center">
                       <Calendar className="w-3 h-3 mr-1" />
-                      <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
+                      <span>{new Date(post.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
                   
@@ -415,18 +496,6 @@ export default function BlogManagement() {
                     <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(post.status)}`}>
                       {post.status}
                     </span>
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-1">
-                    {post.tags.slice(0, 2).map((tag) => (
-                      <span key={tag} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                        <Tag className="w-2 h-2 mr-1" />
-                        {tag}
-                      </span>
-                    ))}
-                    {post.tags.length > 2 && (
-                      <span className="text-xs text-gray-500">+{post.tags.length - 2} more</span>
-                    )}
                   </div>
                 </div>
               </div>
@@ -464,12 +533,13 @@ export default function BlogManagement() {
               <h3 className="text-lg font-medium text-gray-900 mb-4">
                 {showAddModal ? 'Create New Post' : 'Edit Post'}
               </h3>
-              <form className="space-y-4">
+              <form onSubmit={(e)=>handleSubmit(e)} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                   <input
                     type="text"
-                    defaultValue={editingPost?.title || ''}
+                    value={editingPost.title}
+                    onChange={(e) => setEditingPost({...editingPost, title: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
                   />
                 </div>
@@ -477,14 +547,17 @@ export default function BlogManagement() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Excerpt</label>
                   <textarea
                     rows={2}
-                    defaultValue={editingPost?.excerpt || ''}
+                    value={editingPost.excerpt}
+                    onChange={(e) => setEditingPost({...editingPost, excerpt: e.target.value})} 
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
                   />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    <select
+                     onChange={(e) => setEditingPost({...editingPost, category: e.target.value})}
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
                       {categories.filter(c => c !== 'All').map(category => (
                         <option key={category} value={category}>{category}</option>
                       ))}
@@ -492,10 +565,12 @@ export default function BlogManagement() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
-                      <option value="draft">Draft</option>
-                      <option value="published">Published</option>
-                      <option value="archived">Archived</option>
+                    <select
+                    onChange={(e) => setEditingPost({...editingPost, status: e.target.value})}
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
+                      <option value="Draft">Draft</option>
+                      <option value="Published">Published</option>
+                      <option value="Archived">Archived</option>
                     </select>
                   </div>
                 </div>
@@ -505,7 +580,7 @@ export default function BlogManagement() {
                     onClick={() => {
                       setShowAddModal(false);
                       setShowEditModal(false);
-                      setEditingPost(null);
+                      // setEditingPost();
                     }}
                     className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
                   >

@@ -64,7 +64,7 @@ export default function HowItWorks() {
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">How LocalConnect Works</h1>
+            <h1 className="text-[35px] font-bold text-gray-800 mb-4">How LocalConnect Works</h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Discover how easy it is to find and connect with the best local businesses in your area. Our platform makes local business discovery simple and reliable.
             </p>
@@ -110,7 +110,7 @@ export default function HowItWorks() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">Why Choose LocalConnect?</h2>
+            <h2 className="text-[30px] font-bold text-gray-800 mb-4">Why Choose LocalConnect?</h2>
             <p className="text-lg text-gray-600">We make local business discovery simple and reliable</p>
           </div>
           

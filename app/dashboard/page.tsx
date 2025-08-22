@@ -7,6 +7,7 @@ import { Business, BusinessFormData } from '@/types'
 import { Toaster } from 'react-hot-toast'
 import toast from 'react-hot-toast'
 import Select from "react-select";
+import { useTags } from '@/hooks/use-tags';
 import { 
   Edit, 
   Trash2, 
@@ -375,6 +376,11 @@ const UserDashboard = () => {
     const [isEditing, setIsEditing] = useState(false);
     const handleEditBusiness = (business: Business) => {
       setFormData({...formData,...business,});
+
+      business.services.forEach((service)=>{
+        addTag({ id: service.toLowerCase(), label: service });
+      });
+
       setIsEditing(true);
       setShowAddModal(true);
     };
@@ -409,6 +415,28 @@ const UserDashboard = () => {
     });
     return totalreviews;
   }
+
+      const [inputValue, setInputValue] = useState("");
+      const { tags, setTags, addTag, removeTag, removeLastTag, hasReachedMax } = useTags({
+        maxTags: 30,
+        onChange: (tags) => console.log("Tags updated:", tags),
+      });
+    
+      const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "Backspace" && !inputValue) {
+          e.preventDefault();
+          removeLastTag();
+        }
+        if (e.key === "Enter" && inputValue) {
+          e.preventDefault();
+          addTag({ id: inputValue.toLowerCase(), label: inputValue });
+          setInputValue("");
+        }
+      };
+    
+      useEffect(()=>{
+        setFormData({...formData, services: tags.map((e)=> e.label)});
+      },[tags]);
 
 
   return (
@@ -613,7 +641,7 @@ const UserDashboard = () => {
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-medium text-gray-900">{`${isEditing ? "Edit Business" : "Add New Business"}`}</h3>
                 <button
-                  onClick={() => {setShowAddModal(false); setIsEditing(false); setUploadedImages([]); setImages([])}}
+                  onClick={() => {setShowAddModal(false); setIsEditing(false); setUploadedImages([]); setImages([]); setTags([])}}
                   className="text-gray-400 hover:text-gray-600"
                 >
                   <X className="w-6 h-6" />
@@ -773,86 +801,115 @@ const UserDashboard = () => {
                   </div>
                 </div>
               </div>
-                              {/* Opening Hours */}
-                              <div className="space-y-4">
-                                <h4 className="text-lg font-semibold text-gray-800 flex items-center">
-                                  <Clock className="w-4 h-4 mr-2 text-blue-600" />
-                                  Opening Hours
-                                </h4>
-                                
-                                <div className="grid gap-3">
-                                  {days.map(({ key, label }) => (
-                                    <div key={key} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
-                                      <div className="w-10 lg:w-16 text-sm font-medium text-gray-700">
-                                        {label}
-                                      </div>
-                                      {key == "24x7" ? (
-                                        <label className="flex items-center space-x-2">
-                                        <input
-                                          type="checkbox"
-                                          // checked={openingHours[key].closed}
-                                          checked={formData?.hours?.[key as string]?.closed ?? openingHours[key].closed}
-                                          onChange={()=> {setIs24x7(!is24x7); setOpeningHours({
-                                            ...openingHours,
-                                            [key]: { ...openingHours[key], closed: !is24x7 }
-                                          })}}
-                                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                        />
-                                        {/* <span className="text-sm text-gray-700">Open 24X7</span> */}
-                                      </label>
-                                      ):(
-                                        <>
-                                        <div className="flex flex-col lg:flex-row items-center space-x-2">
-                                        <input
-                                          type="time"
-                                          // value={formData && formData.hours && formData?.hours?.[key]?.open || openingHours[key].open}
-                                         value={formData?.hours?.[key as string]?.open ?? openingHours[key].open}
 
-                                          onChange={(e) => setOpeningHours({
-                                            ...openingHours,
-                                            [key]: { ...openingHours[key], open: e.target.value, }
-                                          })}
-                                          disabled={openingHours[key].closed}
-                                          className="px-2 py-1 border border-gray-300 rounded text-sm disabled:bg-gray-200"
-                                        />
-                                        <div>
-                                          <span className="text-gray-500">to</span>
-                                        </div>
-                                        <input
-                                          type="time"
-                                          // value={openingHours[key].close}
-                                          value={formData?.hours?.[key as string]?.close ?? openingHours[key].close}
-                                          onChange={(e) => setOpeningHours({
-                                            ...openingHours,
-                                            [key]: { ...openingHours[key], close: e.target.value }
-                                          })}
-                                          disabled={openingHours[key].closed}
-                                          className="px-2 py-1 border border-gray-300 rounded text-sm disabled:bg-gray-200"
-                                        />
-                                      </div>
-                                      {!is24x7 &&
-                                      <label className="flex items-center space-x-2">
-                                        <input
-                                          type="checkbox"
-                                          checked={formData?.hours?.[key as string]?.closed ?? openingHours[key].closed}
-                                          onChange={(e) =>
-          setOpeningHours((prev) => ({
-            ...prev,
-            [key]: { ...prev[key],closed: e.target.checked }
-          }))
-        }
-                                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                        />
-                                        <span className="text-sm text-gray-700">Closed</span>
-                                      </label>}
-                                      </>
-                                      )}
-                                      
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Amenities</label>
+                <div className="rounded-lg border border-input bg-background p-1">
+                <div className="flex flex-wrap gap-1">
+                  {tags.map((tag) => (
+                    <span
+                      key={tag.id}
+                      className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm ${tag.color || "bg-primary/10 text-primary"}`}
+                    >
+                      {tag.label}
+                      <button
+                        onClick={() => removeTag(tag.id)}
+                        className="rounded-full p-0.5 hover:bg-black/10 dark:hover:bg-white/20"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder={hasReachedMax ? "Max amenities reached" : "Add Amenities..."}
+                    disabled={hasReachedMax}
+                    className="flex-1 bg-transparent px-2 py-2 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
+                  />
+                </div>
+              </div>
+            </div>
 
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
+            {/* Opening Hours */}
+            <div className="space-y-4">
+              <h4 className="text-lg font-semibold text-gray-800 flex items-center">
+                <Clock className="w-4 h-4 mr-2 text-blue-600" />
+                Opening Hours
+              </h4>
+              
+              <div className="grid gap-3">
+                {days.map(({ key, label }) => (
+                  <div key={key} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
+                    <div className="w-10 lg:w-16 text-sm font-medium text-gray-700">
+                      {label}
+                    </div>
+                    {key == "24x7" ? (
+                      <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        // checked={openingHours[key].closed}
+                        checked={formData?.hours?.[key as string]?.closed ?? openingHours[key].closed}
+                        onChange={()=> {setIs24x7(!is24x7); setOpeningHours({
+                          ...openingHours,
+                          [key]: { ...openingHours[key], closed: !is24x7 }
+                        })}}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      {/* <span className="text-sm text-gray-700">Open 24X7</span> */}
+                    </label>
+                    ):(
+                      <>
+                      <div className="flex flex-col lg:flex-row items-center space-x-2">
+                      <input
+                        type="time"
+                        // value={formData && formData.hours && formData?.hours?.[key]?.open || openingHours[key].open}
+                        value={formData?.hours?.[key as string]?.open ?? openingHours[key].open}
+
+                        onChange={(e) => setOpeningHours({
+                          ...openingHours,
+                          [key]: { ...openingHours[key], open: e.target.value, }
+                        })}
+                        disabled={openingHours[key].closed}
+                        className="px-2 py-1 border border-gray-300 rounded text-sm disabled:bg-gray-200"
+                      />
+                      <div>
+                        <span className="text-gray-500">to</span>
+                      </div>
+                      <input
+                        type="time"
+                        // value={openingHours[key].close}
+                        value={formData?.hours?.[key as string]?.close ?? openingHours[key].close}
+                        onChange={(e) => setOpeningHours({
+                          ...openingHours,
+                          [key]: { ...openingHours[key], close: e.target.value }
+                        })}
+                        disabled={openingHours[key].closed}
+                        className="px-2 py-1 border border-gray-300 rounded text-sm disabled:bg-gray-200"
+                      />
+                    </div>
+                    {!is24x7 &&
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={formData?.hours?.[key as string]?.closed ?? openingHours[key].closed}
+                        onChange={(e) =>
+                        setOpeningHours((prev) => ({
+                        ...prev,
+                        [key]: { ...prev[key],closed: e.target.checked }
+                        }))
+                        }
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span className="text-sm text-gray-700">Closed</span>
+                    </label>}
+                    </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
 
               {/* Media Upload - Compact */}
               <div className="space-y-4">

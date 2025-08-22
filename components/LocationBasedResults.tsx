@@ -71,7 +71,7 @@ export default function LocationBasedResults({
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
             <MapPin className="w-6 h-6 text-blue-600" />
-            <h2 className="text-3xl font-bold text-gray-800">
+            <h2 className="text-[30px] font-bold text-gray-800">
               Businesses in {selectedLocation.charAt(0).toUpperCase() + selectedLocation.slice(1)}
             </h2>
           </div>

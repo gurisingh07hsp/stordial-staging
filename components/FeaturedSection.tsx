@@ -30,7 +30,7 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
             <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
               <div className="w-4 h-4 bg-blue-600 rounded-sm"></div>
             </div>
-            <h2 className="text-3xl font-bold text-gray-800">Featured Businesses</h2>
+            <h2 className="text-[30px] font-bold text-gray-800">Featured Businesses</h2>
           </div>
           <p className="text-gray-600 max-w-2xl mx-auto">Discover our featured businesses - premium listings that have been handpicked for their exceptional quality and service. These businesses are trusted by our community.</p>
         </div>
