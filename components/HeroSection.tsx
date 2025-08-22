@@ -4,14 +4,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, MapPin, ArrowRight, ChevronDown } from 'lucide-react';
 import { popularCities } from '../data/mockData';
 import { useAutoLocation } from '../hooks/useAutoLocation';
-import axios from 'axios';
+import cities from "cities.json";
 
 interface HeroSectionProps {
   onSearch: (query: string, location: string, category: string) => void;
 }
 
-interface place{
-  description: '',
+interface City {
+  country: string;
+  name: string;
+  lat: string;
+  lng: string;
 }
 
 export default function HeroSection({ onSearch }: HeroSectionProps) {
@@ -65,8 +68,16 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
 
   const handleLocationChange = async(e: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(e.target.value);
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/places?input=${e.target.value}`);
-    setFilteredCities(response.data.predictions.map((place : place) => place.description.split(',')[0]));
+    const indianCities: string[] = (cities as City[])
+    .filter((c) => c.country === "IN")
+    .map((c) => c.name);
+
+
+    const matches = indianCities.filter(city =>
+      city.toLowerCase().includes(location.toLowerCase())
+    );
+    
+    setFilteredCities(matches);
     setShowLocationDropdown(true);
   };
 
@@ -120,7 +131,7 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
     <section className="relative py-8 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3 leading-tight">
+          <h1 className="text-[35px] md:text-4xl font-bold text-gray-800 mb-3 leading-tight">
             Find Local Businesses
             <br />
             <span className="text-3xl md:text-4xl text-blue-600">That Deliver</span>

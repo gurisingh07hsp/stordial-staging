@@ -45,7 +45,7 @@ export function Pricing({
   return (
     <div className="container py-20">
       <div className="text-center space-y-4 mb-12">
-        <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
+        <h2 className="text-[30px] text-[#0765F2] font-bold tracking-tight sm:text-5xl">
           {title}
         </h2>
         <p className="text-muted-foreground text-lg whitespace-pre-line">
@@ -95,7 +95,7 @@ export function Pricing({
             }}
             className={cn(
               `rounded-2xl border-[1px] p-6 bg-background text-center lg:flex lg:flex-col lg:justify-center relative`,
-              plan.isPopular ? "border-primary border-2" : "border-border",
+              plan.isPopular ? "border-[#0765F2] border-2" : "border-border",
               "flex flex-col",
               !plan.isPopular && "mt-5",
               index === 0 || index === 2
@@ -106,7 +106,7 @@ export function Pricing({
             )}
           >
             {plan.isPopular && (
-              <div className="absolute top-0 right-0 bg-primary py-0.5 px-2 rounded-bl-xl rounded-tr-xl flex items-center">
+              <div className="absolute top-0 right-0 bg-[#0765F2] py-0.5 px-2 rounded-bl-xl rounded-tr-xl flex items-center">
                 <Star className="text-primary-foreground h-4 w-4 fill-current" />
                 <span className="text-primary-foreground ml-1 font-sans font-semibold">
                   Popular
@@ -135,7 +135,7 @@ export function Pricing({
                       easing: "ease-out",
                     }}
                     willChange
-                    className="font-variant-numeric: tabular-nums"
+                    className="font-variant-numeric: tabular-nums text-[#0765F2]"
                   />
                 </span>
                 {plan.period !== "Next 3 months" && (
@@ -167,10 +167,10 @@ export function Pricing({
                     variant: "outline",
                   }),
                   "group relative w-full gap-2 overflow-hidden text-lg font-semibold tracking-tighter",
-                  "transform-gpu ring-offset-current transition-all duration-300 ease-out hover:ring-2 hover:ring-primary hover:ring-offset-1 hover:bg-primary hover:text-primary-foreground",
+                  "transform-gpu ring-offset-current transition-all duration-300 ease-out hover:ring-2 hover:ring-[#0765F2] hover:ring-offset-1 hover:bg-[#0765F2] hover:text-primary-foreground",
                   plan.isPopular
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-background text-foreground"
+                    ? "bg-[#0765F2] text-primary-foreground"
+                    : "bg-[#0765F2] text-primary-foreground"
                 )}
               >
                 {plan.buttonText}

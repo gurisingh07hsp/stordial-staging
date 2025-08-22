@@ -9,7 +9,7 @@ export default function PrivacyPolicy() {
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">Privacy Policy</h1>
+            <h1 className="text-[35px] font-bold text-gray-800 mb-4">Privacy Policy</h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Your privacy is important to us. This policy explains how we collect, use, and protect your information.
             </p>

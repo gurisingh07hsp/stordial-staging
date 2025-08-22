@@ -516,7 +516,7 @@ const categoryOptions = categories.map(cat => ({
               </div>
 
               <div className="space-y-2">
-              <label className="text-sm font-medium">Services</label>
+              <label className="text-sm font-medium">Amenities</label>
               <div className="rounded-lg border border-input bg-background p-1">
               <div className="flex flex-wrap gap-1">
                 {tags.map((tag) => (
@@ -537,7 +537,7 @@ const categoryOptions = categories.map(cat => ({
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder={hasReachedMax ? "Max tags reached" : "Add Services..."}
+                  placeholder={hasReachedMax ? "Max amenities reached" : "Add Amenities..."}
                   disabled={hasReachedMax}
                   className="flex-1 bg-transparent px-2 py-2 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
                 />

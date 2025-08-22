@@ -7,12 +7,12 @@ export default function AboutPage() {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">About Stordial</h1>
+          <h1 className="text-[35px] font-bold text-gray-900 mb-4">About Stordial</h1>
           <p className="text-xl text-gray-600">Connecting communities with local businesses</p>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border p-8 mb-8">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Our Mission</h2>
+          <h2 className="text-[30px] font-semibold text-gray-900 mb-6">Our Mission</h2>
                       <p className="text-gray-600 mb-6 leading-relaxed">
               Stordial is dedicated to helping communities discover and connect with the best local businesses in their area. 
               We believe that strong local businesses are the backbone of vibrant communities, and we&apos;re committed to making it 
