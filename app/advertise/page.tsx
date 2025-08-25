@@ -74,7 +74,7 @@ export default function AdvertisePage() {
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border p-8 mb-8">
-          <h2 className="text-[30px] font-semibold text-gray-900 mb-6">Why Advertise with Us?</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">Why Advertise with Us?</h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">

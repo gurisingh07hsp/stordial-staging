@@ -11,22 +11,22 @@ export default function CategoryGrid({ onCategoryClick }: CategoryGridProps) {
   const { location: userLocation, isLoading: locationLoading } = useAutoLocation();
 
   const categories = [
-    { name: 'Restaurants', icon: '🍽️', description: 'Find the best restaurants and cafes' },
-    { name: 'Hotels', icon: '🏨', description: 'Book hotels and accommodations' },
-    { name: 'Hospitals', icon: '🏥', description: 'Healthcare and medical services' },
-    { name: 'Schools', icon: '🎓', description: 'Educational institutions' },
-    { name: 'Shopping', icon: '🛍️', description: 'Retail stores and shopping centers' },
-    { name: 'Automotive', icon: '🚗', description: 'Car services and dealerships' },
-    { name: 'Beauty & Spa', icon: '💄', description: 'Salons and wellness centers' },
-    { name: 'Fitness', icon: '💪', description: 'Gyms and fitness centers' },
-    { name: 'Dentists', icon: '🦷', description: 'Dental care and orthodontics' },
-    { name: 'Lawyers', icon: '⚖️', description: 'Legal services and attorneys' },
-    { name: 'Real Estate', icon: '🏠', description: 'Property and real estate agents' },
-    { name: 'Banks', icon: '🏦', description: 'Financial services and banking' },
-    { name: 'Pharmacies', icon: '💊', description: 'Medicine and health products' },
-    { name: 'Petrol Pumps', icon: '⛽', description: 'Fuel and convenience stores' },
-    { name: 'Pet Services', icon: '🐕', description: 'Veterinary and pet care' },
-    { name: 'Home Services', icon: '🔧', description: 'Plumbing, electrical, and repairs' }
+    { name: 'Restaurants', icon: '/icons/restaurant.png', description: 'Find the best restaurants and cafes' },
+    { name: 'Hotels', icon: '/icons/hotel.png', description: 'Book hotels and accommodations' },
+    { name: 'Hospitals', icon: '/icons/hospital.png', description: 'Healthcare and medical services' },
+    { name: 'Schools', icon: '/icons/school.png', description: 'Educational institutions' },
+    { name: 'Shopping', icon: '/icons/online-shopping.png', description: 'Retail stores and shopping centers' },
+    { name: 'Automotive', icon: '/icons/car.png', description: 'Car services and dealerships' },
+    { name: 'Beauty', icon: '/icons/beauty.png', description: 'Salons and wellness centers' },
+    { name: 'Fitness', icon: '/icons/fitness.png', description: 'Gyms and fitness centers' },
+    { name: 'Dentists', icon: '/icons/male.png', description: 'Dental care and orthodontics' },
+    { name: 'Lawyers', icon: '/icons/lawyer-man.png', description: 'Legal services and attorneys' },
+    { name: 'Real Estate', icon: '/icons/agreement.png', description: 'Property and real estate agents' },
+    { name: 'Banks', icon: '/icons/bank.png', description: 'Financial services and banking' },
+    { name: 'Pharmacies', icon: '/icons/pharmacy.png', description: 'Medicine and health products' },
+    { name: 'Petrol Pumps', icon: '/icons/fuel-pump.png', description: 'Fuel and convenience stores' },
+    { name: 'Pet Services', icon: '/icons/petcare.png', description: 'Veterinary and pet care' },
+    { name: 'More Categories', icon: '/icons/more categories.png', description: '' }
   ];
 
   const handleCategoryClick = (categoryName: string) => {
@@ -54,7 +54,7 @@ export default function CategoryGrid({ onCategoryClick }: CategoryGridProps) {
               onClick={() => handleCategoryClick(category.name)}
               className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 text-center cursor-pointer hover:from-blue-100 hover:to-indigo-100 transition-all duration-300 transform hover:scale-105 hover:shadow-lg border border-blue-100 hover:border-blue-200"
             >
-              <div className="text-2xl md:text-3xl mb-2">{category.icon}</div>
+              <img src={category.icon} className='w-[50px] h-[50px] mx-auto'></img>
               <h3 className="text-sm md:text-base font-semibold text-gray-900 mb-1">{category.name}</h3>
               <p className="text-xs text-gray-600 hidden md:block">{category.description}</p>
             </div>
