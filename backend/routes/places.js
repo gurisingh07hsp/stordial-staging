@@ -9,7 +9,7 @@ router.get('/', async (req,res, next) => {
     // );
     
     const response = await fetch(
-      `https://api.locationiq.com/v1/autocomplete?key=pk.9611cbd13c44120529368e3857f1afe6&q=${input}&limit=5&dedupe=1&countrycodes=in&tag=place:city`
+      `https://api.locationiq.com/v1/autocomplete?key=pk.9611cbd13c44120529368e3857f1afe6&q=${input}&limit=5&dedupe=1&countrycodes=in`
     );
     
     const data = await response.json();

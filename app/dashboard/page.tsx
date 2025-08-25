@@ -45,6 +45,9 @@ const UserDashboard = () => {
     const [is24x7, setIs24x7] = useState(false);
     const [message, setMessage] = useState('');
     const [loading,setloading] = useState(true);
+    const [currPassword, setCurrPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [showChangePassword, setShowChangePassword] = useState(false);
     const {user, setUser} = useAuth();
     const [images, setImages] = useState<imageData[]>([]);
     const [openingHours, setOpeningHours] = useState<OpeningHours>({
@@ -396,15 +399,39 @@ const UserDashboard = () => {
     }
   },[user]);
 
-  const handleProfileEdit = async() => {
-    try {
+  const handleProfileEdit = async(e: React.FormEvent) => {
+    e.preventDefault();
+    if(showChangePassword){
+      try {
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/changepassword`, {currPassword, newPassword}, {withCredentials: true});
+        if(response.status === 200){
+          setMessage(response.data.message);
+          setNewPassword('');
+          setCurrPassword('');
+          setTimeout(()=>{
+            setShowEditModal(false);
+            setShowChangePassword(false);
+          },1500);
+        }
+        else{
+          setMessage("Current password is incorrect");
+        }
+      } catch(error){
+        setMessage("Current password is incorrect");
+       console.error(error);
+      }
+    }
+    else{
+      try {
         const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/me/update`, userData, {withCredentials:true});
         if(response.status == 200){
-            toast.success('Profile Updated Successfully!');
-            setUser(response.data.user);
+          toast.success('Profile Updated Successfully!');
+          setUser(response.data.user);
+          setShowEditModal(false);
         }
-    } catch {
+      } catch {
         console.error("Server Error");
+      }
     }
   }
 
@@ -988,9 +1015,10 @@ const UserDashboard = () => {
           <div className="relative top-10 mx-auto p-4 sm:p-5 border w-full max-w-sm sm:max-w-md lg:max-w-lg shadow-lg rounded-md bg-white">
             <div className="mt-3">
               <h3 className="text-lg font-medium text-gray-900 mb-4">
-                Edit Profile
+                {!showChangePassword ? 'Edit Profile' : 'Change Password'}
               </h3>
               <form onSubmit={handleProfileEdit} className="space-y-4">
+                {!showChangePassword ? <>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">User Name</label>
                   <input
@@ -1021,12 +1049,33 @@ const UserDashboard = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
                   />
                 </div>
+                <p onClick={()=> setShowChangePassword(true)} className='text-sm text-blue-600 cursor-pointer hover:underline'>Change Password</p>
+                </> : (
+                  <div className='flex flex-col'>
+                    <label className='mt-4 text-sm'>Current Password</label>
+                    <input type="password"
+                      required
+                      value={currPassword}
+                      onChange={(e)=> setCurrPassword(e.target.value)}
+                      className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm'
+                    />
+
+                    <label className='mt-4 text-sm'>New Password</label>
+                    <input type='password'
+                      required
+                      value={newPassword}
+                      onChange={(e)=> setNewPassword(e.target.value)}
+                      className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm'
+                    />
+                    <div className={`${message == "Password has been Changed Successfully" ? 'text-green-600' : 'text-red-600'} mt-3 text-center`}>{message}</div>
+                  </div>
+                )}
                 <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
                   <button
                     type="button"
                     onClick={() => {
                       setShowEditModal(false);
-                    }}
+                      setShowChangePassword(false)}}
                     className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
                   >
                     Cancel
@@ -1035,7 +1084,7 @@ const UserDashboard = () => {
                     type="submit"
                     className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
                   >
-                    Update Profile
+                    {!showChangePassword ? 'Update Profile' : 'Change Password'}
                   </button>
                 </div>
               </form>
