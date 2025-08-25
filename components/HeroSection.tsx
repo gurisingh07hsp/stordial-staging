@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, MapPin, ArrowRight, ChevronDown } from 'lucide-react';
 import { popularCities } from '../data/mockData';
 import { useAutoLocation } from '../hooks/useAutoLocation';
-import cities from "cities.json";
+// import cities from "cities.json";
 import axios from 'axios';
 
 interface HeroSectionProps {
