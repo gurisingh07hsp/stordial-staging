@@ -83,7 +83,7 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
       console.log(response.data);
       setFilteredCities(
         response.data.predictions
-          ?.filter((place: place_data) => place.class === "place" && place.type === "city")
+          ?.filter((place: place_data) => (place.class === "place" || place.class === 'boundary'))
           .map((place: place_data) => place.display_place)
       );
     }

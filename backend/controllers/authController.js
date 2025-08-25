@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const sendToken = require('../utils/jwtToken');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 // Register user
 exports.registerUser = async (req, res, next) => {
@@ -125,6 +126,28 @@ exports.updateProfile = async (req, res, next) => {
     next(error);
   }
 };
+
+
+exports.changePassword = async(req, res, next) => {
+    const {currPassword, newPassword} = req.body;
+    const user = await User.findById(req.user.id).select("+password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Compare current password with stored password
+    const isVerify = await bcrypt.compare(currPassword, user.password);
+    
+    if (!isVerify) {
+      return res.status(400).json({ message: "Current password is incorrect" });
+    }
+    
+    user.password = newPassword;
+    await user.save();
+
+    return res.status(200).json({message: "Password has been Changed Successfully"})
+}
 
 // Get all users (admin only)
 exports.allUsers = async (req, res, next) => {

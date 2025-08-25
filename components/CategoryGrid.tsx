@@ -30,7 +30,10 @@ export default function CategoryGrid({ onCategoryClick }: CategoryGridProps) {
   ];
 
   const handleCategoryClick = (categoryName: string) => {
-    if (userLocation && !locationLoading) {
+    if(categoryName === 'More Categories'){
+      window.location.href = '/popularcategories'
+    }
+    else if (userLocation && !locationLoading) {
       const location = userLocation.city.toLowerCase().replace(/\s+/g, '-');
       const category = categoryName.toLowerCase().replace(/\s+/g, '-');
       window.location.href = `/${location}/${category}`;
@@ -47,16 +50,16 @@ export default function CategoryGrid({ onCategoryClick }: CategoryGridProps) {
           <p className="text-lg text-gray-600">Discover local businesses in your area</p>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+        <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-4">
           {categories.map((category) => (
             <div
               key={category.name}
               onClick={() => handleCategoryClick(category.name)}
-              className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 text-center cursor-pointer hover:from-blue-100 hover:to-indigo-100 transition-all duration-300 transform hover:scale-105 hover:shadow-lg border border-blue-100 hover:border-blue-200"
+              className="rounded-xl p-4 flex flex-col justify-center items-center cursor-pointer hover:from-blue-100 hover:to-indigo-100 transition-all duration-300 transform hover:scale-105 hover:shadow-lg border border-blue-100 hover:border-blue-200"
             >
               <img src={category.icon} className='w-[50px] h-[50px] mx-auto'></img>
-              <h3 className="text-sm md:text-base font-semibold text-gray-900 mb-1">{category.name}</h3>
-              <p className="text-xs text-gray-600 hidden md:block">{category.description}</p>
+              <h3 className="text-[10px] text-center md:text-base font-semibold text-gray-900 mb-1">{category.name}</h3>
+              <p className="text-xs text-center text-gray-600 hidden md:block">{category.description}</p>
             </div>
           ))}
         </div>
