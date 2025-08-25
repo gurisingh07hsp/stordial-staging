@@ -86,5 +86,5 @@ export interface BusinessFormData {
   city: string;
   website: string;
   images: imageData[];
-  hours: OpeningHours; 
+  hours: OpeningHours;
 } 

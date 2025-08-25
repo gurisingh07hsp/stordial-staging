@@ -5,16 +5,16 @@ import { Search, MapPin, ArrowRight, ChevronDown } from 'lucide-react';
 import { popularCities } from '../data/mockData';
 import { useAutoLocation } from '../hooks/useAutoLocation';
 import cities from "cities.json";
+import axios from 'axios';
 
 interface HeroSectionProps {
   onSearch: (query: string, location: string, category: string) => void;
 }
 
-interface City {
-  country: string;
-  name: string;
-  lat: string;
-  lng: string;
+interface place_data {
+  class: string;
+  type: string;
+  display_place: string;
 }
 
 export default function HeroSection({ onSearch }: HeroSectionProps) {
@@ -68,16 +68,26 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
 
   const handleLocationChange = async(e: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(e.target.value);
-    const indianCities: string[] = (cities as City[])
-    .filter((c) => c.country === "IN")
-    .map((c) => c.name);
+    // const indianCities: string[] = (cities as City[])
+    // .filter((c) => c.country === "IN")
+    // .map((c) => c.name);
 
 
-    const matches = indianCities.filter(city =>
-      city.toLowerCase().includes(location.toLowerCase())
-    );
+    // const matches = indianCities.filter(city =>
+    //   city.toLowerCase().includes(location.toLowerCase())
+    // );
     
-    setFilteredCities(matches);
+    // setFilteredCities(matches);
+    if(e.target.value !== ' ' && e.target.value !== ''){ 
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/places/?input=${e.target.value}`);
+      console.log(response.data);
+      setFilteredCities(
+        response.data.predictions
+          ?.filter((place: place_data) => place.class === "place" && place.type === "city")
+          .map((place: place_data) => place.display_place)
+      );
+    }
+
     setShowLocationDropdown(true);
   };
 

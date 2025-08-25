@@ -135,7 +135,7 @@ export function Pricing({
                       easing: "ease-out",
                     }}
                     willChange
-                    className="font-variant-numeric: tabular-nums text-[#0765F2]"
+                    className="font-variant-numeric: tabular-nums"
                   />
                 </span>
                 {plan.period !== "Next 3 months" && (

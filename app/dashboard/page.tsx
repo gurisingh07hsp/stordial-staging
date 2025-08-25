@@ -594,10 +594,14 @@ const UserDashboard = () => {
                     </button>
                   </td>
                   <td className="text-center px-3 sm:px-6 py-4 whitespace-nowrap md:table-cell">
-                    <button onClick={()=> window.location.href = '/advertise'}
-                      className={`mx-auto inline-flex items-center px-2 py-1 rounded-full text-xs font-medium transition-colors text-green-800 bg-green-300`}
+                    <button onClick={()=> {if(!business.featured){window.location.href = '/advertise'}}}
+                      className={`mx-auto inline-flex items-center px-2 py-1 rounded-full text-xs font-medium transition-colors ${
+                        business.featured
+                          ? 'text-green-800 bg-green-100'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
                     >
-                      Promote
+                    {business.featured ? 'Promoted' : 'Promote'}
                     </button>
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
