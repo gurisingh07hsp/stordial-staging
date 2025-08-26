@@ -1,16 +1,10 @@
-"use client"
-import React from 'react'
-import OTPDialog from '@/components/otpdialog'
-import { useSearchParams } from "next/navigation";
-const ForgotPassword = () => {
-  const searchParams = useSearchParams();
-  const email = searchParams.get("email");
-  console.log(email); 
-  return (
-    <div>
-      <OTPDialog email={email}/>
-    </div>
-  )
-}
+import { Suspense } from "react";
+import ForgotPassword from "@/components/ForgotPassword";
 
-export default ForgotPassword
+export default function ForgotPasswordPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ForgotPassword/>
+    </Suspense>
+  );
+}
