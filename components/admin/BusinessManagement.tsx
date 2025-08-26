@@ -298,7 +298,7 @@ export default function BusinessManagement() {
       'Gastroenterologist','Pulmonologist Chest Specialist','Oncologist Cancer Specialist','Endocrinologist',
       'Rheumatologist','Surgeon General','Plastic Surgeon','Physiotherapist','Homeopathy Doctor','Ayurvedic Doctor',
       'Unani Doctor','Sexologist','Immunologist','Geriatric Specialist Elderly Care','Occupational Therapist',
-      'Speech Therapist','Dietitian Nutritionist',
+      'Speech Therapist','Dietitian Nutritionist', 'ATM'
     ];
   
   
@@ -403,7 +403,8 @@ export default function BusinessManagement() {
     'Geriatric Specialist Elderly Care': ['Elderly Rehab', 'Chronic Illness Management', 'Other'],
     'Occupational Therapist': ['Workplace Injury Care', 'Hand Therapy', 'Other'],
     'Speech Therapist': ['Speech Delay Therapy', 'Voice Therapy', 'Other'],
-    'Dietitian Nutritionist': ['Weight Loss Programs', 'Clinical Nutrition', 'Sports Nutrition', 'Other']
+    'Dietitian Nutritionist': ['Weight Loss Programs', 'Clinical Nutrition', 'Sports Nutrition', 'Other'],
+    'ATM': ['Cash Dispenser Only', 'Cash Recycler Machines', 'Multi function ATM', 'Smart ATM']
   };
   
   const categoryOptions = categories.map(cat => ({

@@ -14,7 +14,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="md:col-span-2">
-            <div className="flex items-center space-x-3 mb-4">
+            {/* <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold text-xl">L</span>
               </div>
@@ -22,7 +22,8 @@ export default function Footer() {
                 <span className="text-2xl font-bold text-gray-800">Stordial</span>
                 <p className="text-sm text-gray-500">Find Local Businesses</p>
               </div>
-            </div>
+            </div> */}
+            <img src="/Stordial.png" alt="Logo" width={120} height={50}/>
             <p className="text-gray-600 mb-6 max-w-md">
               Connect with the best local businesses in your area. From restaurants to services, 
               find what you need right in your neighborhood.
@@ -116,7 +117,7 @@ export default function Footer() {
                 placeholder="Enter your email"
                 className="flex-1 px-2 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition-colors">
+              <button className="bg-[#0765F2] text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition-colors">
                 Subscribe
               </button>
             </div>

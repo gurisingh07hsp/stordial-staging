@@ -57,7 +57,7 @@ export default function CategoryGrid({ onCategoryClick }: CategoryGridProps) {
               onClick={() => handleCategoryClick(category.name)}
               className="rounded-xl p-4 flex flex-col justify-center items-center cursor-pointer hover:from-blue-100 hover:to-indigo-100 transition-all duration-300 transform hover:scale-105 hover:shadow-lg border border-blue-100 hover:border-blue-200"
             >
-              <img src={category.icon} className='w-[50px] h-[50px] mx-auto'></img>
+              <img src={category.icon} className='lg:w-[50px] lg:h-[50px] w-[30px] h-[30px] mx-auto'></img>
               <h3 className="text-[10px] text-center md:text-base font-semibold text-gray-900 mb-1">{category.name}</h3>
               <p className="text-xs text-center text-gray-600 hidden md:block">{category.description}</p>
             </div>
