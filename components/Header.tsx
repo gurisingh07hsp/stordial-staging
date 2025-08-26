@@ -24,7 +24,7 @@ export default function Header({
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+            {/* <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
               <span className="text-white font-bold text-xl">L</span>
             </div>
             <div>
@@ -32,23 +32,23 @@ export default function Header({
                   Stordial
                 </span>
                 <p className="text-xs text-gray-500 -mt-1">Find Local Businesses</p>
-            </div>
+            </div> */}
+            <img src="/Stordial.png" alt="Logo" className='w-[190px] h-[160px]' />
           </Link>
 
           {/* Desktop Navigation */}
           <div className={`hidden lg:flex items-center space-x-2`}>
             <Link 
               href="/about"
-              className="hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group px-3 py-2 rounded-lg hover:bg-gray-100"
+              className="hidden lg:flex items-center text-black hover:text-blue-600 transition-colors group px-3 py-2 rounded-lg hover:bg-gray-100"
             >
               <span className="font-medium">About Us</span>
             </Link>
             
             <Link 
               href="/advertise"
-              className="hidden lg:flex items-center text-gray-600 hover:text-blue-600 transition-colors group px-3 py-2 rounded-lg hover:bg-gray-100"
+              className="hidden lg:flex items-center text-black hover:text-blue-600 transition-colors group px-3 py-2 rounded-lg hover:bg-gray-100"
             >
-              <Megaphone className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
               <span className="font-medium">Advertise</span>
             </Link>
             
@@ -94,7 +94,7 @@ export default function Header({
             ) : (
               <button
                 onClick={()=>window.location.href = "/login"}
-                className="hidden lg:flex items-center bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-md hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold group"
+                className="hidden lg:flex items-center bg-[#0765F2] text-white px-6 py-2 rounded-md hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold group"
               >
                 <User className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
                 <span>Sign In</span>

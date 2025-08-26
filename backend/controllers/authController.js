@@ -2,6 +2,7 @@ const User = require('../models/user');
 const sendToken = require('../utils/jwtToken');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const nodemailer = require("nodemailer");
 
 // Register user
 exports.registerUser = async (req, res, next) => {
@@ -146,6 +147,74 @@ exports.changePassword = async(req, res, next) => {
     user.password = newPassword;
     await user.save();
 
+    return res.status(200).json({message: "Password has been Changed Successfully"})
+}
+
+exports.forgotPassword = async(req, res, next) => {
+  const {email} = req.body;
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  const min = Math.pow(10, 4 - 1);
+  const max = Math.pow(10, 4) - 1;
+  const otp = Math.floor(min + Math.random() * (max - min + 1)).toString();
+  const hashedOtp = await bcrypt.hash(otp, 10);
+
+  user.otp = { code: hashedOtp, expiresAt: new Date(Date.now() + 10 * 60 * 1000) };
+  await user.save();
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'your email id',
+        pass: 'your pass',
+    },
+  });
+
+  const mailOptions = {
+    from: 'your email',
+    to: email,
+    subject: 'Forget OTP Code',
+    text: `Your OTP Code is - ${otp} Dont share the otp with anyone`,
+  };
+
+    try {
+      await transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.error(`Error sending email to ${email}:`, error);
+    }
+
+    return res.status(200).json({ success: true, message: "OTP sent to email" });
+}
+
+exports.verifyOTP = async(req, res, next) => {
+  const {email,otp} = req.body;
+  let Otp = '';
+  for(let i=0;i<otp.length;i++)
+  {
+    Otp = Otp + otp[i];
+  }
+
+  const user = await User.findOne({ email });
+  if (!user || !user.otp) return res.status(400).json({ message: "Invalid request" });
+
+  const isMatch = await bcrypt.compare(Otp, user.otp.code);
+  if (!isMatch || user.otp.expiresAt < new Date()) {
+    return res.status(400).json({ message: "Invalid or expired OTP" });
+  }
+  return res.status(200).json({message: 'OTP verified successfully!'});
+}
+
+exports.resetPassword = async(req, res, next) => {
+  const {email, newPassword} = req.body;
+      const user = await User.findOne({email}).select("+password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    user.password = newPassword;
+    await user.save();
     return res.status(200).json({message: "Password has been Changed Successfully"})
 }
 

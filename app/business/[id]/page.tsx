@@ -25,7 +25,7 @@ export default function BusinessDetail() {
       }
     }
     getBusinessById();
-  }, [])
+  }, [businessId])
   
   
   

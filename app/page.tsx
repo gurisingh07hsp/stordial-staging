@@ -258,7 +258,7 @@ export default function HomePage() {
             Join thousands of satisfied customers who have discovered amazing local businesses through Stordial
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button onClick={scrollToSearch} className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center">
+            <button onClick={scrollToSearch} className="bg-[#0765F2] text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center">
               Start Searching
               <ArrowRight className="w-5 h-5 ml-2" />
             </button>

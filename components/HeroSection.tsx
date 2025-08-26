@@ -115,7 +115,7 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
     'Gastroenterologist','Pulmonologist (Chest Specialist)','Oncologist Cancer Specialist','Endocrinologist',
     'Rheumatologist','Surgeon General','Plastic Surgeon','Physiotherapist','Homeopathy Doctor','Ayurvedic Doctor',
     'Unani Doctor','Sexologist','Immunologist','Geriatric Specialist Elderly Care','Occupational Therapist',
-    'Speech Therapist','Dietitian Nutritionist',
+    'Speech Therapist','Dietitian Nutritionist','ATM'
   ];
   
   const fetchSuggestions = (value: string) => {
@@ -172,7 +172,7 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
               {showLocationDropdown && (
                 <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
                   {filteredCities.length > 0 ? (
-                    filteredCities.map((city, index) => (
+                    filteredCities.filter((city, index, arr) => arr.indexOf(city) === index).map((city, index) => (
                       <button
                         key={index}
                         onClick={() => handleLocationSelect(city)}
@@ -230,7 +230,7 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
             {/* Search Button */}
             <button
               onClick={handleSearch}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-8 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center gap-2 font-medium text-base whitespace-nowrap"
+              className="bg-[#0765F2] text-white py-3 px-8 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center gap-2 font-medium text-base whitespace-nowrap"
             >
               Search
               <ArrowRight className="w-5 h-5" />

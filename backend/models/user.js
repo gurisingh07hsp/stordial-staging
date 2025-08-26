@@ -53,6 +53,10 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Business'
   }],
+  otp: {
+    code: String,
+    expiresAt: Date
+  },
   createdAt: {
     type: Date,
     default: Date.now

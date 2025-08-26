@@ -3,6 +3,9 @@ import React from 'react'
 import { useState} from 'react'
 import { User, Mail, Phone, Lock } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext'
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import axios from 'axios';
 const Loginpage = () => {
   const { user, login, signup, message  } = useAuth();
     const [isLogin, setIsLogin] = useState(true);
@@ -10,6 +13,9 @@ const Loginpage = () => {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
+    const [showForgot, setShowForgot] = useState(false);
+    const [Message, setMesage] = useState('');
+    const [loading, setLoading] = useState(false);
 
 
     if(user){
@@ -31,12 +37,33 @@ const Loginpage = () => {
         setPhone('');
       }
     };
+
+    const handleClick = async(e: React.FormEvent) => {
+      e.preventDefault();
+       setLoading(true);
+      try {
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/forgotpassword`, {email});
+        if(response.status == 200){
+          setLoading(false);
+          window.location.href = `/forgotpassword?email=${email}`;
+          console.log(response.data);
+        }
+        else{
+          setLoading(false);
+          setMesage(response.data.message);
+        }
+      } catch(error) {
+        setLoading(false);
+        setMesage("Email not found");
+        console.log(error);
+      }
+    }
   return (
     <>
     {!user &&
     <div className="fixed inset-0 bg-white flex items-center justify-center p-4">
-      <div className="rounded-2xl shadow-2xl max-w-md w-full transform transition-all duration-300 animate-slideUp">
-        <div className={`relative ${!isLogin ? "lg:h-[86vh] mt-12" : ""}`}>
+      <div className={`rounded-2xl ${!showForgot ? 'shadow-2xl max-w-md' : ''} w-full transform transition-all duration-300 animate-slideUp`}>
+        <div className={`relative ${!isLogin ? "lg:h-[86vh] mt-12" : ""} ${showForgot ? 'hidden' : 'block'}`}>
           {/* Header with gradient background */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-2xl p-6 text-white">
             <div className="flex justify-between items-center">
@@ -162,11 +189,11 @@ const Loginpage = () => {
                   </button>
                 </p>
                 
-                {/* {isLogin && (
-                  <button className="text-blue-600 hover:text-blue-700 text-sm transition-colors">
-                    Forgot your password?
+                {isLogin && (
+                  <button onClick={()=> setShowForgot(true)} className="text-blue-600 hover:text-blue-700 text-sm transition-colors">
+                    Forgot password?
                   </button>
-                )} */}
+                )}
               </div>
               
               {/* Social Login Options */}
@@ -194,6 +221,53 @@ const Loginpage = () => {
             </div>
           </div>
         </div>
+
+        <section className={`${showForgot ? 'flex' : 'hidden'} min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent`}>
+            <form onSubmit={handleClick}
+                className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]">
+                <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
+                    <div className="text-center">
+                        <h1 className="mb-1 mt-4 text-xl font-semibold">Recover Password</h1>
+                        <p className="text-sm">Enter your email to receive a OTP</p>
+                    </div>
+
+                    <div className="mt-6 space-y-6">
+                        <div className="space-y-2">
+                            <Label
+                                className="block text-sm">
+                                Email
+                            </Label>
+                            <Input
+                                type="email"
+                                required
+                                value={email}
+                                onChange={(e)=> setEmail(e.target.value)}
+                                placeholder="name@example.com"
+                            />
+                        </div>
+
+                        <input type='submit' className="w-full bg-black py-2 text-white rounded-md cursor-pointer" value={`${loading ? 'Sending...' : 'Send OTP'}`}/>
+                    </div>
+                    <p className='text-center mt-3 text-red-600'>{Message}</p>
+                    <div className="mt-6 text-center">
+                        <p className="text-muted-foreground text-sm">We&apos;ll send you a OTP to reset your password.</p>
+                    </div>
+                </div>
+
+                <div className="p-3">
+                    <p className="text-accent-foreground text-center text-sm">
+                        Remembered your password?
+                        <button
+                            onClick={()=> setShowForgot(false)}
+                            className="px-2 font-semibold hover:underline">
+                            Log in
+                        </button>
+                    </p>
+                </div>
+            </form>
+        </section>
+
+
       </div>
     </div>
     }
