@@ -23,7 +23,7 @@ export default function Footer() {
                 <p className="text-sm text-gray-500">Find Local Businesses</p>
               </div>
             </div> */}
-            <img src="/Stordial.png" alt="Logo" width={120} height={50}/>
+            <img src="/Stordial crop.png" alt="Logo" width={150} height={80}/>
             <p className="text-gray-600 mb-6 max-w-md">
               Connect with the best local businesses in your area. From restaurants to services, 
               find what you need right in your neighborhood.
@@ -72,8 +72,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/blogs" className="text-gray-600 hover:text-blue-600 transition-colors">
-                  Blogs
+                <Link href="/blog" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Blog
                 </Link>
               </li>
               <li>

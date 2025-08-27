@@ -33,7 +33,7 @@ export default function Header({
                 </span>
                 <p className="text-xs text-gray-500 -mt-1">Find Local Businesses</p>
             </div> */}
-            <img src="/Stordial.png" alt="Logo" className='w-[190px] h-[160px]' />
+            <img src="/Stordial crop.png" alt="Logo" className='w-[150px] h-[40px]' />
           </Link>
 
           {/* Desktop Navigation */}

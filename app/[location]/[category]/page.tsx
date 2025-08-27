@@ -1,10 +1,10 @@
 'use client';
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect,Suspense } from 'react';
 import Link from 'next/link';
 import { Star, Phone, MapPin, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
 import { Business } from '../../../types';
 import axios from 'axios';
-
+import { useSearchParams } from "next/navigation";
 interface CategoryPageProps {
   params: {
     location: string;
@@ -13,18 +13,28 @@ interface CategoryPageProps {
 }
 
 export default function CategoryPage({ params }: CategoryPageProps) {
+    const searchParams = useSearchParams();
+    const subcategory = searchParams.get("subcategory")?.replace(/-/g, ' ');
   const decodedLocation = decodeURIComponent(params.location.replace(/-/g, ' '));
   const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
+
 
   const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
 
   useEffect(() => {
     const getBusinessesByCategotyAndLocation = async () => {
       try{
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}`, {withCredentials: true});
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}?subcategory=${subcategory}`, {withCredentials: true});
         if(response.status == 200){
-          console.log(response.data.businesses);
-          setFilteredBusinesses(response.data.businesses);
+          // setFilteredBusinesses(response.data.businesses);
+          setFilteredBusinesses(
+  response.data.businesses.sort((a: Business, b: Business) => {
+    // Put featured businesses at the top
+    if (a.featured === b.featured) return 0;
+    return a.featured ? -1 : 1;
+  })
+);
+
         }
       }catch(error){
         console.error('Error fetching businesses: ', error);
@@ -116,6 +126,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   };
 
   return (
+    <Suspense fallback={<div className="text-center p-4">Loading businesses...</div>}>
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
@@ -435,5 +446,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         </div>
       </div>
     </div>
+    </Suspense>
   );
 } 

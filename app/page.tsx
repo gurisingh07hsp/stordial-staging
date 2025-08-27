@@ -8,7 +8,7 @@ import BusinessModal from '../components/BusinessModal';
 import LocationBasedResults from '../components/LocationBasedResults';
 import { businesses } from '../data/mockData';
 import { Business } from '../types';
-import { Star, Users, MapPin, CheckCircle, ArrowRight } from 'lucide-react';
+import { Star,ArrowRight } from 'lucide-react';
 import { useAutoLocation } from '../hooks/useAutoLocation';
 import axios from 'axios';
 export default function HomePage() {
@@ -105,7 +105,7 @@ export default function HomePage() {
       <TrendingSection businesses={businesses} />
 
       {/* How It Works Section */}
-      <section className="py-16 bg-white">
+      {/* <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">How Stordial Works</h2>
@@ -140,7 +140,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Statistics Section */}
       <section className="py-16 bg-gray-50">

@@ -181,15 +181,15 @@ export default function ListBusinessPage({
 
   
 const subcategories = {
-  'Restaurants': ['Coffee Shop', 'Fine Dining', 'Fast Food', 'Cafe', 'Bar', 'Pizza', 'Asian', 'Mexican', 'Italian', 'American', 'Other'],
+  'Restaurants': ['Fine Dining Restaurants', 'Casual Dining Restaurants', 'Cafes', 'Fast Food Outlets', 'Food Courts', 'Bakeries & Confectioneries', 'Sweet Shops', 'Buffet Restaurants', 'Multi-Cuisine Restaurants', 'North Indian Restaurants', 'South Indian Restaurants','Chinese Restaurants','Punjabi Dhabas','Seafood Restaurants','Barbeque & Grill Restaurants','Biryani Outlets','Pizza Outlets','Burger Joints','Sandwich & Snacks Corners','Juice Bars & Shakes Parlours','Ice Cream Parlours','Pubs & Bars'],
   'Hotels': ['Resort', 'Motel', 'Hostel', 'Luxury Hotel', 'Boutique Hotel', 'Guest House', 'Bed & Breakfast', 'Lodge', 'Capsule Hotel', 'Other'],
-  'Hospitals': ['General Hospital', 'Specialty Hospital', 'Children’s Hospital', 'Teaching Hospital', 'Private Hospital', 'Public Hospital', 'Other'],
-  'Schools': ['Primary School', 'Secondary School', 'High School', 'International School', 'Boarding School', 'Montessori', 'Special Needs School', 'Other'],
-  'Shopping': ['Malls', 'Department Stores', 'Boutiques', 'Street Markets', 'Online Stores', 'Other'],
-  'Automotive': ['Car Showroom', 'Bike Showroom', 'Car Wash', 'Tire Shop', 'Auto Repair', 'Spare Parts Store', 'Other'],
-  'Beauty': ['Hair Salon', 'Spa', 'Nail Salon', 'Barber Shop', 'Makeup Artist', 'Tanning', 'Tattoo', 'Piercing', 'Other'],
+  'Hospitals': ['General Hospital', 'Multi-Speciality Hospitals', 'Children’s Hospital', 'Super-Speciality Hospitals', 'Private Hospital', 'Public Hospital', 'Government Hospitals','Maternity Hospitals','Women’s Hospitals','Eye Hospitals','ENT Hospitals','Dental Hospitals','Orthopedic Hospitals','Cancer Hospitals','Heart Cardiac Hospitals','Neurology Hospitals','Kidney Urology Hospitals','Gastroenterology Hospitals','Pulmonology Chest Hospitals','Skin & Cosmetic Hospitals','Psychiatric Hospitals','Rehabilitation & Physiotherapy Centers','Ayurveda Hospitals','Homeopathy Hospitals','Veterinary Hospitals','Emergency & Trauma Care Hospitals','Surgical Hospitals','Day Care Hospitals','Nursing Homes','Charitable Trust Hospitals'],
+  'Schools': ['Play Schools','Pre-Primary Schools','Primary School','Middle Schools', 'High School','Senior Secondary Schools','Government Schools','Private Schools', 'International School','CBSE Schools','ICSE Schools','IB International Baccalaureate Schools','IGCSE Cambridge Schools','Residential Boarding Schools','Montessori', 'Special Needs School'],
+  'Shopping': ['Malls & Shopping Complexes', 'Supermarkets', 'Grocery Stores', 'Kirana Shops', 'Clothing Stores', 'Apparel Boutiques','Footwear Stores','Jewellery Shops','Watch Showrooms','Eyewear & Optical Stores','Electronics Stores','Mobile Phone Stores','Home Appliance Stores','Furniture Stores','Home Décor & Furnishing Shops','Kitchenware Stores','Toy Stores','Bookstores & Stationery Shops','Gift Shops','Handicrafts & Souvenir Shops','Sports Goods Stores','Cosmetic & Beauty Stores','Perfume Shops','Pet Shops','Baby Product Stores'],
+  'Automotive': ['Car Dealers', 'Bike Dealers', 'Used Car Dealers', 'Used Bike Dealers', 'Car Repair & Service Centres', 'Bike Repair & Service Centres', 'Car Wash & Detailing','Car Accessories Shops','Bike Accessories Shops','Car Spare Parts Dealers','Bike Spare Parts Dealers','Tyre Shops','Battery Dealers','Car Insurance Providers','Bike Insurance Providers','Car Finance & Loan Providers','Bike Finance & Loan Providers','Car Rentals','Bike Rentals','Driving Schools','Vehicle Pollution Check Centres','Truck Dealers','Bus Dealers','Commercial Vehicle Service Centres','Auto Rickshaw Dealers & Services'],
+  'Beauty': ['Salons', 'Beauty Parlours', 'Unisex Salons', 'Ladies Beauty Parlours', 'Men’s Grooming Centres', 'Makeup Studios', 'Bridal Makeup Services', 'Hair Styling & Cutting', 'Hair Colouring Services','Nail Art & Nail Extensions','Skin Care Clinics','Facial & Cleanup Services','Waxing & Threading Services','Mehndi Artists','Tattoo Studios','Cosmetic Clinics Botox Fillers etc','Ayurvedic Beauty Centres','Herbal Beauty Clinics','Spa & Wellness Centres','Beauty Academies Training Institutes'],
   'Spa': ['Day Spa', 'Medical Spa', 'Luxury Spa', 'Ayurvedic Spa', 'Thermal Spa', 'Other'],
-  'Fitness': ['Gym', 'Yoga Studio', 'Personal Training', 'Swimming Pool', 'Dance Studio', 'Martial Arts', 'Pilates', 'CrossFit', 'Boxing', 'Other'],
+  'Fitness': ['Gyms', 'Unisex Gyms', 'Women’s Fitness Centres', 'Personal Training Studios', 'Yoga Centres', 'Pilates Studios', 'Zumba Classes', 'Aerobics Centres', 'CrossFit Training Centres', 'Martial Arts Training Karate Taekwondo Judo','Boxing Training Centres','Mixed Martial Arts Training','Dance Fitness Studios','Weight Loss Centres','Bodybuilding Gyms','Meditation & Wellness Centres','Online Fitness Classes','Fitness Equipment Stores','Sports & Athletic Training Centres'],
   'Dentists': ['Orthodontist', 'Pediatric Dentist', 'Cosmetic Dentist', 'Oral Surgeon', 'Endodontist', 'Periodontist', 'Other'],
   'Lawyers': ['Criminal Lawyer', 'Corporate Lawyer', 'Family Lawyer', 'Immigration Lawyer', 'Tax Lawyer', 'Intellectual Property Lawyer', 'Other'],
   'Real Estate': ['Residential Sales', 'Commercial Sales', 'Property Management', 'Real Estate Investment', 'Rental Agency', 'Other'],
@@ -384,8 +384,6 @@ const categoryOptions = categories.map(cat => ({
                       placeholder="Enter business name"
                     />
                   </div>
-
-
                   <div>
       <label className="block text-sm font-medium text-gray-700 mb-1">
         Category *
@@ -410,7 +408,7 @@ const categoryOptions = categories.map(cat => ({
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Subcategory
                       </label>
-                      <select
+                      {/* <select
                         value={formData.subcategory}
                         required
                         onChange={(e) => setFormData({...formData, subcategory: e.target.value})}
@@ -420,7 +418,23 @@ const categoryOptions = categories.map(cat => ({
                         {subcategories[formData.category as keyof typeof subcategories]?.map(sub => (
                           <option key={sub} value={sub}>{sub}</option>
                         ))}
-                      </select>
+                      </select> */}
+                      <Select
+                        options={subcategories[formData.category as keyof typeof subcategories]?.map(
+                          (sub) => ({ value: sub, label: sub })
+                        )}
+                        value={
+                          formData.subcategory
+                            ? { value: formData.subcategory, label: formData.subcategory }
+                            : null
+                        }
+                        onChange={(e) =>
+                          setFormData({ ...formData, subcategory: e ? e.value : "" })
+                        }
+                        placeholder="Select Subcategory"
+                        menuPlacement="bottom"
+                        className="w-full"
+                      />
                     </div>
                   )}
 
