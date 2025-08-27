@@ -265,6 +265,10 @@ exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
     location = location.toLowerCase();
     category = category.toLowerCase();
 
+    let {subcategory} = req.query;
+
+    console.log("subcategory : ", subcategory);
+
     
     let query = {};
 
@@ -274,6 +278,10 @@ exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
 
     if (category && category !== 'All Categories') {
       query.category = { $regex: category, $options: 'i' };
+    }
+
+    if(subcategory && subcategory !== undefined){
+      query.subcategory = { $regex: subcategory, $options: 'i'};
     }
 
     const businesses = await Business.find(query)

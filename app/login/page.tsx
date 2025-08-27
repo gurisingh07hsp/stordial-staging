@@ -62,20 +62,20 @@ const Loginpage = () => {
     <>
     {!user &&
     <div className="fixed inset-0 bg-white flex items-center justify-center p-4">
-      <div className={`rounded-2xl ${!showForgot ? 'shadow-2xl max-w-md' : ''} w-full transform transition-all duration-300 animate-slideUp`}>
+      <div className={`rounded-2xl ${!showForgot ? 'max-w-md' : ''} w-full  transform transition-all duration-300 animate-slideUp`}>
         <div className={`relative ${!isLogin ? "lg:h-[86vh] mt-12" : ""} ${showForgot ? 'hidden' : 'block'}`}>
           {/* Header with gradient background */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-2xl p-6 text-white">
+          <div className="rounded-t-2xl p-6 text-black border border-b-0">
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center">
                   <User className="w-5 h-5" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold">
                     {isLogin ? 'Welcome Back' : 'Join Stordial'}
                   </h2>
-                  <p className="text-blue-100 text-sm">
+                  <p className=" text-sm">
                     {isLogin ? 'Sign in to your account' : 'Create your account'}
                   </p>
                 </div>
@@ -83,7 +83,7 @@ const Loginpage = () => {
             </div>
           </div>
 
-          <div className="p-6">
+          <div className="p-6 border rounded-b-2xl">
             <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
                 <div className="space-y-2">
@@ -95,7 +95,7 @@ const Loginpage = () => {
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 focus:bg-white"
                       placeholder="Enter your full name"
                       required
                     />
@@ -115,7 +115,7 @@ const Loginpage = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 focus:bg-white"
                     placeholder="Enter your email"
                     required
                   />
@@ -135,7 +135,7 @@ const Loginpage = () => {
                       type="tel"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 focus:bg-white"
                       placeholder="Enter your phone number"
                       required
                     />
@@ -155,7 +155,7 @@ const Loginpage = () => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 focus:bg-white"
                     placeholder="Enter your password"
                     required
                   />
@@ -167,7 +167,7 @@ const Loginpage = () => {
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="w-full bg-[#0765F2] text-white py-3 px-6 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 {isLogin ? 'Sign In' : 'Create Account'}
               </button>
@@ -177,7 +177,7 @@ const Loginpage = () => {
               {message}
             </p>}
 
-            <div className="mt-6 pt-6 border-t border-gray-100">
+            <div className="mt-6 pt-2 border-t border-gray-100">
               <div className="text-center">
                 <p className="text-gray-600 mb-4">
                   {isLogin ? "Don't have an account? " : "Already have an account? "}
@@ -246,7 +246,7 @@ const Loginpage = () => {
                             />
                         </div>
 
-                        <input type='submit' className="w-full bg-black py-2 text-white rounded-md cursor-pointer" value={`${loading ? 'Sending...' : 'Send OTP'}`}/>
+                        <input type='submit' className="w-full bg-[#0765F2] py-2 text-white rounded-md cursor-pointer" value={`${loading ? 'Sending...' : 'Send OTP'}`}/>
                     </div>
                     <p className='text-center mt-3 text-red-600'>{Message}</p>
                     <div className="mt-6 text-center">

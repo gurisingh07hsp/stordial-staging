@@ -36,7 +36,13 @@ export default function CategoryGrid({ onCategoryClick }: CategoryGridProps) {
     else if (userLocation && !locationLoading) {
       const location = userLocation.city.toLowerCase().replace(/\s+/g, '-');
       const category = categoryName.toLowerCase().replace(/\s+/g, '-');
-      window.location.href = `/${location}/${category}`;
+      
+      if(category === 'restaurants' || category === 'hospitals' || category === 'schools' || category === 'shopping' || category === 'automotive' || category === 'beauty' || category === 'fitness'){
+        window.location.href = `/subcategories?location=${location}&category=${category}`;
+      }
+      else{
+        window.location.href = `/${location}/${category}`;
+      }
     } else {
       onCategoryClick(categoryName);
     }

@@ -45,7 +45,7 @@ export function Pricing({
   return (
     <div className="container py-20">
       <div className="text-center space-y-4 mb-12">
-        <h2 className="text-[30px] text-[#0765F2] font-bold tracking-tight sm:text-5xl">
+        <h2 className="text-[30px] text-[#0765F2] font-bold tracking-tight sm:text-[35px]">
           {title}
         </h2>
         <p className="text-muted-foreground text-lg whitespace-pre-line">
@@ -65,11 +65,11 @@ export function Pricing({
           </Label>
         </label>
         <span className="ml-2 font-semibold">
-          Annual billing <span className="text-primary">(Save 20%)</span>
+          Monthly billing <span className="text-primary">(Save 20%)</span>
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 sm:2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 sm:2">
         {plans.map((plan, index) => (
           <motion.div
             key={index}
@@ -77,10 +77,10 @@ export function Pricing({
             whileInView={
               isDesktop
                 ? {
-                    y: plan.isPopular ? -20 : 0,
+                    y: plan.isPopular ? 0 : 0,
                     opacity: 1,
-                    x: index === 2 ? -30 : index === 0 ? 30 : 0,
-                    scale: index === 0 || index === 2 ? 0.94 : 1.0,
+                    x: index === 3 ? -15 : index === 0 ? 15 : 0,
+                    scale: index === 0 || index === 3 ? 0.94 : 1.0,
                   }
                 : {}
             }
@@ -97,12 +97,12 @@ export function Pricing({
               `rounded-2xl border-[1px] p-6 bg-background text-center lg:flex lg:flex-col lg:justify-center relative`,
               plan.isPopular ? "border-[#0765F2] border-2" : "border-border",
               "flex flex-col",
-              !plan.isPopular && "mt-5",
-              index === 0 || index === 2
+              "mt-5",
+              index === 0 || index === 3
                 ? "z-0 transform translate-x-0 translate-y-0 -translate-z-[50px] rotate-y-[10deg]"
                 : "z-10",
               index === 0 && "origin-right",
-              index === 2 && "origin-left"
+              index === 3 && "origin-left"
             )}
           >
             {plan.isPopular && (
@@ -125,7 +125,7 @@ export function Pricing({
                     }
                     format={{
                       style: "currency",
-                      currency: "USD",
+                      currency: "INR",
                       minimumFractionDigits: 0,
                       maximumFractionDigits: 0,
                     }}
@@ -138,15 +138,15 @@ export function Pricing({
                     className="font-variant-numeric: tabular-nums"
                   />
                 </span>
-                {plan.period !== "Next 3 months" && (
+                {plan.period === "per month" && (
                   <span className="text-sm font-semibold leading-6 tracking-wide text-muted-foreground">
-                    / {plan.period}
+                    / {isMonthly ? "Per Day" : 'Per Month'}
                   </span>
                 )}
               </div>
 
               <p className="text-xs leading-5 text-muted-foreground">
-                {isMonthly ? "billed monthly" : "billed annually"}
+                {!isMonthly ? "billed monthly" : "billed daily"}
               </p>
 
               <ul className="mt-5 gap-2 flex flex-col">
