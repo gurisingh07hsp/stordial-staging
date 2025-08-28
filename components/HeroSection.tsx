@@ -91,7 +91,7 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
     setShowLocationDropdown(true);
   };
 
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<string[]>(['Restaurants','Hotels','Hospitals','Schools','Shopping','Automotive']);
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
 
   const handleSearchQueryChange = (value: string) => {
@@ -121,16 +121,13 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
   const fetchSuggestions = (value: string) => {
     try{
       setSearchQuery(value);
-      setShowSearchSuggestions(true);
-
       const filteredSuggestions = Categories.filter((item) => item.toLowerCase().includes(value.toLowerCase()));
       if(value !== '')
         {
           setSuggestions(filteredSuggestions.slice(0.8));
         }
         else{
-        setShowSearchSuggestions(false);
-        setSuggestions([]);
+        setSuggestions(['Restaurants','Hotels','Hospitals','Schools','Shopping','Automotive']);
       }
     }catch(error){
       console.error(error);
@@ -199,6 +196,8 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
               <input
                 type="text"
                 placeholder="What are you looking for?"
+                onFocus={()=>setShowSearchSuggestions(true)}
+                onBlur={() => setShowSearchSuggestions(false)}
                 value={searchQuery}
                 onChange={(e) => fetchSuggestions(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
