@@ -21,6 +21,7 @@ import {
   Image as ImageIcon,
   Building2, 
   MessageSquare,
+  Activity,
 } from 'lucide-react';
 
 interface imageData {
@@ -35,6 +36,41 @@ interface OpeningHours {
     closed: boolean;
   };
 }
+
+interface CallData {
+  id: string;
+  businessId: string;
+  businessName: string;
+  timestamp: string;
+  duration: number;
+  callerLocation: string;
+  source: 'direct' | 'referral' | 'organic' | 'social';
+  phoneNumber: string;
+  status: 'completed' | 'missed' | 'voicemail';
+}
+
+interface WhatsAppData {
+  id: string;
+  businessId: string;
+  businessName: string;
+  timestamp: string;
+  userId: string;
+  inquiryType: 'general' | 'pricing' | 'support' | 'booking' | 'partnership';
+  message: string;
+  responseTime: number;
+  status: 'new' | 'replied' | 'resolved';
+}
+
+interface DirectionClickData {
+  id: string;
+  businessId: string;
+  businessName: string;
+  timestamp: string;
+  userLocation: string;
+  deviceType: 'desktop' | 'mobile' | 'tablet';
+  coordinates: { lat: number; lng: number };
+}
+
 const UserDashboard = () => {
 
     const [businesses,setBusinesses] = useState<Business[]>([]);
@@ -467,8 +503,165 @@ const subcategories = {
       },[tags]);
 
 
+        const formatDuration = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  // const formatTimestamp = (timestamp: string) => {
+  //   return new Date(timestamp).toLocaleString();
+  // };
+
+
+        // Mock data for calls
+  const callsData: CallData[] = [
+    {
+      id: '1',
+      businessId: 'biz_1',
+      businessName: 'Café Central',
+      timestamp: '2024-01-15T10:30:00Z',
+      duration: 245,
+      callerLocation: 'New York, NY',
+      source: 'direct',
+      phoneNumber: '+1 (555) 123-4567',
+      status: 'completed'
+    },
+    {
+      id: '2',
+      businessId: 'biz_1',
+      businessName: 'Café Central',
+      timestamp: '2024-01-15T14:15:00Z',
+      duration: 180,
+      callerLocation: 'Brooklyn, NY',
+      source: 'referral',
+      phoneNumber: '+1 (555) 987-6543',
+      status: 'completed'
+    },
+    {
+      id: '3',
+      businessId: 'biz_2',
+      businessName: 'Tech Solutions Inc',
+      timestamp: '2024-01-15T16:45:00Z',
+      duration: 320,
+      callerLocation: 'Los Angeles, CA',
+      source: 'organic',
+      phoneNumber: '+1 (555) 456-7890',
+      status: 'completed'
+    },
+    {
+      id: '4',
+      businessId: 'biz_3',
+      businessName: 'Green Gardens',
+      timestamp: '2024-01-15T09:20:00Z',
+      duration: 0,
+      callerLocation: 'Chicago, IL',
+      source: 'social',
+      phoneNumber: '+1 (555) 789-0123',
+      status: 'missed'
+    }
+  ];
+
+  // Mock data for WhatsApp messages
+  const whatsappData: WhatsAppData[] = [
+    {
+      id: '1',
+      businessId: 'biz_1',
+      businessName: 'Café Central',
+      timestamp: '2024-01-15T09:15:00Z',
+      userId: 'user_123',
+      inquiryType: 'pricing',
+      message: 'Hi, I would like to know about your catering prices.',
+      responseTime: 5,
+      status: 'resolved'
+    },
+    {
+      id: '2',
+      businessId: 'biz_2',
+      businessName: 'Tech Solutions Inc',
+      timestamp: '2024-01-15T11:30:00Z',
+      userId: 'user_456',
+      inquiryType: 'support',
+      message: 'I need help with your IT consulting services.',
+      responseTime: 12,
+      status: 'replied'
+    },
+    {
+      id: '3',
+      businessId: 'biz_3',
+      businessName: 'Green Gardens',
+      timestamp: '2024-01-15T15:20:00Z',
+      userId: 'user_789',
+      inquiryType: 'booking',
+      message: 'Can I schedule a landscaping consultation?',
+      responseTime: 8,
+      status: 'new'
+    }
+  ];
+
+    const directionClicksData: DirectionClickData[] = [
+    {
+      id: '1',
+      businessId: 'biz_1',
+      businessName: 'Café Central',
+      timestamp: '2024-01-15T10:45:00Z',
+      userLocation: 'New York, NY',
+      deviceType: 'mobile',
+      coordinates: { lat: 40.7128, lng: -74.0060 }
+    },
+    {
+      id: '2',
+      businessId: 'biz_1',
+      businessName: 'Café Central',
+      timestamp: '2024-01-15T12:20:00Z',
+      userLocation: 'Queens, NY',
+      deviceType: 'desktop',
+      coordinates: { lat: 40.7505, lng: -73.9934 }
+    },
+    {
+      id: '3',
+      businessId: 'biz_2',
+      businessName: 'Tech Solutions Inc',
+      timestamp: '2024-01-15T14:10:00Z',
+      userLocation: 'Los Angeles, CA',
+      deviceType: 'tablet',
+      coordinates: { lat: 34.0522, lng: -118.2437 }
+    },
+    {
+      id: '4',
+      businessId: 'biz_3',
+      businessName: 'Green Gardens',
+      timestamp: '2024-01-15T16:30:00Z',
+      userLocation: 'Chicago, IL',
+      deviceType: 'mobile',
+      coordinates: { lat: 41.8781, lng: -87.6298 }
+    }
+  ];
+
+    const selectedBusiness = 'all';
+
+        // Filter data based on selected business
+  const filteredCalls = selectedBusiness === 'all' 
+    ? callsData 
+    : callsData.filter(call => call.businessId === selectedBusiness);
+
+  const filteredWhatsApp = selectedBusiness === 'all' 
+    ? whatsappData 
+    : whatsappData.filter(msg => msg.businessId === selectedBusiness);
+
+  const filteredDirectionClicks = selectedBusiness === 'all' 
+    ? directionClicksData 
+    : directionClicksData.filter(click => click.businessId === selectedBusiness);
+
+        const totalCalls = filteredCalls.length;
+  const totalWhatsApp = filteredWhatsApp.length;
+  const totalDirectionClicks = filteredDirectionClicks.length;
+  const avgCallDuration = filteredCalls.reduce((sum, call) => sum + call.duration, 0) / totalCalls || 0;
+  const avgResponseTime = filteredWhatsApp.reduce((sum, msg) => sum + msg.responseTime, 0) / totalWhatsApp || 0;
+
+
   return (
-    <div className='h-[100vh]'>
+    <div className='h-[135vh]  lg:h-[110vh]'>
         <Toaster
           position="top-right"
           reverseOrder={false}
@@ -530,8 +723,71 @@ const subcategories = {
               </div>
             </div>
         </div>
-
     </div>
+
+          {/* Key Metrics Cards */}
+      <div className="grid grid-cols-2 mx-auto w-[86vw] mt-6 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Calls</p>
+              <p className="text-2xl font-bold text-gray-800">{totalCalls}</p>
+            </div>
+            <div className="p-2 lg:p-3 rounded-lg bg-blue-500">
+              <Phone className="w-6 h-6 text-white" />
+            </div>
+          </div>
+          <div className="mt-4">
+            <p className="text-sm text-gray-600">Avg Duration: {formatDuration(avgCallDuration)}</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">WhatsApp Messages</p>
+              <p className="text-2xl font-bold text-gray-800">{totalWhatsApp}</p>
+            </div>
+            <div className="p-2 lg:p-3 rounded-lg bg-green-500">
+              <MessageSquare className="w-6 h-6 text-white" />
+            </div>
+          </div>
+          <div className="mt-4">
+            <p className="text-sm text-gray-600">Avg Response: {avgResponseTime.toFixed(2)}min</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Direction Clicks</p>
+              <p className="text-2xl font-bold text-gray-800">{totalDirectionClicks}</p>
+            </div>
+            <div className="p-2 lg:p-3 rounded-lg bg-purple-500">
+              <MapPin className="w-6 h-6 text-white" />
+            </div>
+          </div>
+          <div className="mt-4">
+            <p className="text-sm text-gray-600">Most Active: Mobile</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Interactions</p>
+              <p className="text-2xl font-bold text-gray-800">{totalCalls + totalWhatsApp + totalDirectionClicks}</p>
+            </div>
+            <div className="p-2 lg:p-3 rounded-lg bg-orange-500">
+              <Activity className="w-6 h-6 text-white" />
+            </div>
+          </div>
+          <div className="mt-4">
+            <p className="text-sm text-gray-600">This week</p>
+          </div>
+        </div>
+      </div>
+
     <h1 className='text-3xl mt-6 text-center font-semibold'>Your Businesses</h1>
     {/* Businesses Table */}
       <div className="bg-white rounded-xl mt-3 w-[89%] mx-auto shadow-sm border border-gray-200">
