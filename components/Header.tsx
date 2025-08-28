@@ -54,9 +54,8 @@ export default function Header({
             
             <Link 
               href="/list-business"
-              className="hidden lg:flex items-center bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-2 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold group"
+              className="hidden lg:flex items-center bg-[#60CE80] text-white px-3 py-2 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 font-semibold group"
             >
-              <FileText className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
               <span>List Business</span>
             </Link>
 

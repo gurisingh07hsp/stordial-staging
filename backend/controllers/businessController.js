@@ -261,39 +261,40 @@ exports.getFeaturedBusinesses = async (req, res, next) => {
 exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
   try {
     
+    let query = {};
     let { location, category } = req.params;
     location = location.toLowerCase();
-    category = category.toLowerCase();
-
-    let {subcategory} = req.query;
-
-    console.log("subcategory : ", subcategory);
-
-    
-    let query = {};
 
     if (location && location !== 'all') {
       query.city = { $regex: location, $options: 'i' };
     }
 
-    if (category && category !== 'All Categories') {
-      query.category = { $regex: category, $options: 'i' };
+    if(category && category !== undefined){
+      query.subcategory = { $regex: category, $options: 'i'};
     }
 
-    if(subcategory && subcategory !== undefined){
-      query.subcategory = { $regex: subcategory, $options: 'i'};
-    }
-
-    const businesses = await Business.find(query)
+      let businesses = await Business.find(query)
       .populate('owner', 'name email')
       .sort({ rating: -1, reviews: -1 });
 
+      if(businesses.length <= 0 ){
+        category = category.toLowerCase();
+        delete query.subcategory;
+        if (category && category !== 'All Categories') {
+          query.category = { $regex: category, $options: 'i' };
+        }
+      
+        businesses = await Business.find(query)
+        .populate('owner', 'name email')
+        .sort({ rating: -1, reviews: -1 });
+      }
 
     res.status(200).json({
       success: true,
       count: businesses.length,
       businesses
     });
+    
   } catch (error) {
     next(error);
   }

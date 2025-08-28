@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Star, Phone, MapPin, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
 import { Business } from '../../../types';
 import axios from 'axios';
-import { useSearchParams } from "next/navigation";
+// import { useSearchParams } from "next/navigation";
 interface CategoryPageProps {
   params: {
     location: string;
@@ -13,8 +13,8 @@ interface CategoryPageProps {
 }
 
 export default function CategoryPage({ params }: CategoryPageProps) {
-    const searchParams = useSearchParams();
-    const subcategory = searchParams.get("subcategory")?.replace(/-/g, ' ');
+    // const searchParams = useSearchParams();
+    // const subcategory = searchParams.get("subcategory")?.replace(/-/g, ' ');
   const decodedLocation = decodeURIComponent(params.location.replace(/-/g, ' '));
   const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
 
@@ -24,7 +24,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   useEffect(() => {
     const getBusinessesByCategotyAndLocation = async () => {
       try{
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}?subcategory=${subcategory}`, {withCredentials: true});
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}`, {withCredentials: true});
         if(response.status == 200){
           // setFilteredBusinesses(response.data.businesses);
           setFilteredBusinesses(
