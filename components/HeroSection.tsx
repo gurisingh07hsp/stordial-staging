@@ -127,6 +127,7 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
           setSuggestions(filteredSuggestions.slice(0.8));
         }
         else{
+        setShowSearchSuggestions(false)
         setSuggestions(['Restaurants','Hotels','Hospitals','Schools','Shopping','Automotive']);
       }
     }catch(error){
@@ -135,7 +136,7 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
   }
 
   return (
-    <section className="relative py-8 bg-white">
+    <section onClick={()=>setShowSearchSuggestions(false)} className="relative py-8 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-6">
           <h1 className="text-[35px] md:text-4xl font-bold text-gray-800 mb-3 leading-tight">
@@ -191,13 +192,13 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
             </div>
 
             {/* Search Input */}
-            <div className="relative flex-1 min-w-0">
+            <div onClick={(e) => e.stopPropagation()} className="relative flex-1 min-w-0">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="What are you looking for?"
                 onFocus={()=>setShowSearchSuggestions(true)}
-                onBlur={() => setShowSearchSuggestions(false)}
+                // onBlur={() => setShowSearchSuggestions(false)}
                 value={searchQuery}
                 onChange={(e) => fetchSuggestions(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"

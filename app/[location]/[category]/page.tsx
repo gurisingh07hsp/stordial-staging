@@ -142,7 +142,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
             </div>
             <Link 
               href="/"
-              className="text-[12px] lg:text-lg text-blue-600 hover:text-blue-800 font-medium"
+              className="text-[10px] lg:text-lg text-blue-600 hover:text-blue-800 font-medium"
             >
               ← Back to Home
             </Link>
@@ -228,7 +228,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
             {/* Filters and Sort */}
             <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-              <div className="flex flex-wrap items-center relative gap-4">
+              <div className="flex flex-wrap relative gap-2">
                 <div className="flex items-center space-x-4">
                   <label className="text-sm font-medium text-gray-700">Sort by:</label>
                   <select
@@ -260,7 +260,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 {(selectedServices.length > 0 || sortBy != 'rating' || sortByRatings != 'Rating') && (
                   <button
                     onClick={clearFilters}
-                    className="text-sm absolute right-3 text-red-600 hover:text-red-800"
+                    className="text-sm absolute right-3 top-10 lg:top-0 text-red-600 hover:text-red-800"
                   >
                     Clear Filters
                   </button>
@@ -276,7 +276,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                       <button
                         key={service}
                         onClick={() => handleServiceToggle(service)}
-                        className={`px-3 py-1 text-xs rounded-full border ${
+                        className={`px-2 py-1 text-xs rounded-full border ${
                           selectedServices.includes(service)
                             ? 'bg-blue-100 text-blue-800 border-blue-300'
                             : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
@@ -378,14 +378,22 @@ export default function CategoryPage({ params }: CategoryPageProps) {
             <div className="sticky top-8">
               {/* Featured Advertisement */}
               <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-                <div className="text-center mb-4">
+                {/* <div className="text-center mb-4">
                   <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                     <span className="text-blue-600 font-bold text-xl">AD</span>
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900">Featured Business</h3>
                   <p className="text-sm text-gray-600">Promote your business here</p>
-                </div>
-                <div className="space-y-3">
+                </div> */}
+
+                  <div>
+                    {/* <img src={businesses && businesses[0].images?.length > 0 && businesses[0]?.images[0]?.url} alt="" /> */}
+                    <div className='w-[95%] mx-auto h-40 flex justify-center items-center border rounded-lg'>
+                      <Camera className='w-8 h-8'/>
+                    </div>
+                  </div>
+
+                <div className="space-y-3 mt-2">
                   <div className="bg-gray-50 rounded p-3">
                     <h4 className="font-medium text-gray-900">Premium Listing</h4>
                     <p className="text-sm text-gray-600">Get more visibility with premium placement</p>

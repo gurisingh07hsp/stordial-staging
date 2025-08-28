@@ -623,7 +623,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Email</p>
-                    <a href={`mailto:${business.email}`} className="text-gray-800 font-semibold hover:text-blue-600 transition-colors">
+                    <a href={`mailto:${business.email}`} className="w-[230px] text-sm text-gray-800 font-semibold hover:text-blue-600 transition-colors">
                       {business.email}
                     </a>
                   </div>
