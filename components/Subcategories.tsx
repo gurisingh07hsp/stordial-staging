@@ -26,17 +26,17 @@ const Subcategories = () => {
 
   const handleClick = (subcategory: string) =>{
     const locationName = location?.replace(/\s+/g, '-');
-    const categoryName = category?.replace(/\s+/g, '-');
+    // const categoryName = category?.replace(/\s+/g, '-');
     const subname = subcategory.replace(/\s+/g, '-');
-    window.location.href = `/${locationName}/${categoryName}?subcategory=${subname}`;
+    window.location.href = `/${locationName}/${subname}`;
   } 
 
 
   return (
     <div className='h-[99vh] w-[90%] mx-auto'>
-      <h2 className='text-xl lg:ms-5 mt-5 font-bold'>Select Category</h2>
+      <h2 className='text-xl ms-2 lg:ms-3 mt-10 font-bold'>Select Category</h2>
       { location ?
-      <div className='flex mx-auto flex-wrap lg:justify-center w-full h-[90vh] overflow-y-auto lg:h-[80vh] lg:w-[100%] gap-5 mt-4'>
+      <div className='flex mx-auto flex-wrap w-full overflow-y-auto max-h-[90vh] lg:w-[100%] gap-2 mt-6 lg:mt-16'>
         {subcategories[category as keyof typeof subcategories].map((category, index)=> (
             <button key={index} onClick={()=>handleClick(category)} className='lg:w-64 w-44 text-start py-2 cursor-pointer hover:bg-[#ebebeb] rounded-md'>
                 <p className='ms-3'>{category}</p>
