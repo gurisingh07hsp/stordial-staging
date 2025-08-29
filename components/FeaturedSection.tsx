@@ -63,6 +63,9 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
                   <div className="absolute top-3 left-3 bg-yellow-500 text-white rounded-full px-2 py-1 shadow-sm">
                     <span className="text-xs font-semibold">Featured</span>
                   </div>
+                  <div className={`${business.verified ? 'block' : 'hidden'} absolute top-3 left-24 rounded-full shadow-sm`}>
+                    <img src="/verify.png" alt="" className='w-8 h-8' />
+                  </div>
                 </div>
                 
                 <div className="p-6">

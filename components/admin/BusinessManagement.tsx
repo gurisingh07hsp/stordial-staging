@@ -17,7 +17,7 @@ import {
   Clock,
   Image as ImageIcon,
   FileSpreadsheet,
-  Download
+  Download,
 } from 'lucide-react';
 import { Business, BusinessFormData,} from '../../types';
 import axios from 'axios';
@@ -99,6 +99,7 @@ export default function BusinessManagement() {
 
   const [isImporting, setIsImporting] = useState(false);
   const [featuredBusinesses, setFeaturedBusinesses] = useState<string[]>([]);
+  const [verifiedBusinesses, setVerifiedBusinesses] = useState<string[]>([]);
     const [is24x7, setIs24x7] = useState(false);
     const [message, setMessage] = useState('');
 
@@ -304,9 +305,9 @@ export default function BusinessManagement() {
   
     
   const subcategories = {
-    'Restaurants': ['Fine Dining Restaurants', 'Casual Dining Restaurants', 'Cafes', 'Fast Food Outlets', 'Food Courts', 'Bakeries & Confectioneries', 'Sweet Shops', 'Buffet Restaurants', 'Multi-Cuisine Restaurants', 'North Indian Restaurants', 'South Indian Restaurants','Chinese Restaurants','Punjabi Dhabas','Seafood Restaurants','Barbeque & Grill Restaurants','Biryani Outlets','Pizza Outlets','Burger Joints','Sandwich & Snacks Corners','Juice Bars & Shakes Parlours','Ice Cream Parlours','Pubs & Bars'],
+    'Restaurants': ['Fine Dining Restaurants', 'Cafes', 'Fast Food Outlets', 'Food Courts', 'Bakeries & Confectioneries', 'Sweet Shops', 'Buffet Restaurants', 'Multi-Cuisine Restaurants', 'North Indian Restaurants', 'South Indian Restaurants','Chinese Restaurants','Punjabi Dhabas','Seafood Restaurants','Barbeque & Grill Restaurants','Biryani Outlets','Pizza Outlets','Burger Joints','Sandwich & Snacks Corners','Juice Bars & Shakes Parlours','Ice Cream Parlours','Pubs & Bars'],
     'Hotels': ['Resort', 'Motel', 'Hostel', 'Luxury Hotel', 'Boutique Hotel', 'Guest House', 'Bed & Breakfast', 'Lodge', 'Capsule Hotel', 'Other'],
-    'Hospitals': ['General Hospital', 'Multi-Speciality Hospitals', 'Children’s Hospital', 'Super-Speciality Hospitals', 'Private Hospital', 'Public Hospital', 'Government Hospitals','Maternity Hospitals','Women’s Hospitals','Eye Hospitals','ENT Hospitals','Dental Hospitals','Orthopedic Hospitals','Cancer Hospitals','Heart Cardiac Hospitals','Neurology Hospitals','Kidney Urology Hospitals','Gastroenterology Hospitals','Pulmonology Chest Hospitals','Skin & Cosmetic Hospitals','Psychiatric Hospitals','Rehabilitation & Physiotherapy Centers','Ayurveda Hospitals','Homeopathy Hospitals','Veterinary Hospitals','Emergency & Trauma Care Hospitals','Surgical Hospitals','Day Care Hospitals','Nursing Homes','Charitable Trust Hospitals'],
+    'Hospitals': ['Multi-Speciality Hospitals', 'Children’s Hospital', 'Super-Speciality Hospitals', 'Private Hospital','Government Hospitals','Maternity Hospitals','Women’s Hospitals','Eye Hospitals','ENT Hospitals','Dental Hospitals','Orthopedic Hospitals','Cancer Hospitals','Heart Cardiac Hospitals','Neurology Hospitals','Kidney Urology Hospitals','Gastroenterology Hospitals','Pulmonology Chest Hospitals','Skin & Cosmetic Hospitals','Psychiatric Hospitals','Rehabilitation & Physiotherapy Centers','Ayurveda Hospitals','Homeopathy Hospitals','Veterinary Hospitals','Emergency & Trauma Care Hospitals','Day Care Hospitals','Nursing Homes','Charitable Trust Hospitals'],
     'Schools': ['Play Schools','Pre-Primary Schools','Primary School','Middle Schools', 'High School','Senior Secondary Schools','Government Schools','Private Schools', 'International School','CBSE Schools','ICSE Schools','IB International Baccalaureate Schools','IGCSE Cambridge Schools','Residential Boarding Schools','Montessori', 'Special Needs School'],
     'Shopping': ['Malls & Shopping Complexes', 'Supermarkets', 'Grocery Stores', 'Kirana Shops', 'Clothing Stores', 'Apparel Boutiques','Footwear Stores','Jewellery Shops','Watch Showrooms','Eyewear & Optical Stores','Electronics Stores','Mobile Phone Stores','Home Appliance Stores','Furniture Stores','Home Décor & Furnishing Shops','Kitchenware Stores','Toy Stores','Bookstores & Stationery Shops','Gift Shops','Handicrafts & Souvenir Shops','Sports Goods Stores','Cosmetic & Beauty Stores','Perfume Shops','Pet Shops','Baby Product Stores'],
     'Automotive': ['Car Dealers', 'Bike Dealers', 'Used Car Dealers', 'Used Bike Dealers', 'Car Repair & Service Centres', 'Bike Repair & Service Centres', 'Car Wash & Detailing','Car Accessories Shops','Bike Accessories Shops','Car Spare Parts Dealers','Bike Spare Parts Dealers','Tyre Shops','Battery Dealers','Car Insurance Providers','Bike Insurance Providers','Car Finance & Loan Providers','Bike Finance & Loan Providers','Car Rentals','Bike Rentals','Driving Schools','Vehicle Pollution Check Centres','Truck Dealers','Bus Dealers','Commercial Vehicle Service Centres','Auto Rickshaw Dealers & Services'],
@@ -336,7 +337,7 @@ export default function BusinessManagement() {
     'Banquet Halls': ['Wedding Halls', 'Conference Halls', 'Party Halls', 'Banquet Facilities', 'Other'],
     'Caterers': ['Wedding Catering', 'Corporate Catering', 'Buffet Catering', 'Specialty Cuisine Catering', 'Other'],
     'Photographers': ['Wedding Photographer', 'Event Photographer', 'Portrait Photographer', 'Product Photographer', 'Other'],
-    'Doctors': ['General Physician', 'Specialist', 'Surgeon', 'Family Doctor', 'Other'],
+    'Doctors': ['Pediatrician', 'Cardiologist', 'Dermatologist', 'Gynecologist Obstetrician', 'Orthopedic Doctor','Dentist','Neurologist','Psychiatrist','ENT Specialist Ear Nose Throat','Ophthalmologist Eye Specialist','Neurologist','Psychiatrist','Urologist','Nephrologist','Gastroenterologist','Endocrinologist','Rheumatologist','Surgeon','Plastic Surgeon','Physiotherapist','Homeopathy Doctor','Ayurvedic Doctor','Unani Doctor','Sexologist','Immunologist','Occupational Therapist','Speech Therapist'],
     'Clinics': ['Medical Clinic', 'Dental Clinic', 'Wellness Clinic', 'Physiotherapy Clinic', 'Other'],
     'Diagnostic Centres': ['Pathology Lab', 'Radiology Centre', 'Blood Test Centre', 'Health Check-up Centre', 'Other'],
     'Labs': ['Medical Lab', 'Research Lab', 'Industrial Lab', 'Testing Lab', 'Other'],
@@ -624,6 +625,18 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
         ? prev.filter(id => id !== businessId)
         : [...prev, businessId]
     );
+    fetchBusinesses();
+  };
+
+  const handleToggleVerified = async(businessId: string) => {
+      const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/admin/verified/${businessId}`, {}, {withCredentials: true} );
+      console.log(response.data);
+    setVerifiedBusinesses(prev => 
+      prev.includes(businessId) 
+        ? prev.filter(id => id !== businessId)
+        : [...prev, businessId]
+    );
+    fetchBusinesses();
   };
 
   const [page, setPage] = useState(1);
@@ -633,6 +646,7 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
     const fetchBusinesses = async () => {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/?page=${page}
         &limit=5&search=${searchQuery}&category=${selectedCategory}&${selectedStatus.toLowerCase()}=${true}`);
+        console.log(response.data);
       setBusinesses(response.data.businesses);
        setTotalPages(response.data.totalPages);
   };
@@ -860,6 +874,9 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                   Featured
                 </th>
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                  Verify
+                </th>
                 <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
@@ -930,6 +947,22 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                       {featuredBusinesses.includes(business._id) || business.featured ? 'Featured' : 'Not Featured'}
                     </button>
                   </td>
+
+                  <td>
+                    <button
+                      onClick={() => handleToggleVerified(business._id)}
+                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium transition-colors ${
+                        verifiedBusinesses.includes(business._id) || business.verified
+                          ? 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                      title={verifiedBusinesses.includes(business._id) || business.verified ? 'Remove from Verified' : 'Add to Verified'}
+                    >
+                      {verifiedBusinesses.includes(business._id) || business.verified ? 'Verified' : 'Not Verified'}
+                      <Check className={`w-3 h-3 ms-1 ${verifiedBusinesses.includes(business._id) || business.verified ? 'block' : 'hidden'}`} />
+                    </button>
+                  </td>
+
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-1 sm:space-x-2">
                       <button

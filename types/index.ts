@@ -14,6 +14,7 @@ export interface Business {
   image?: string;
   website?: string;
   featured?: boolean;
+  verified?: boolean;
   hours?: {
     [key: string]: { open: string; close: string; closed: boolean };
   };

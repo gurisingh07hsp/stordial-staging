@@ -90,7 +90,7 @@ const businessSchema = new mongoose.Schema({
   },
   verified: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   images: [{
     public_id: {
