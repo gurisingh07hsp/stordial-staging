@@ -1,10 +1,15 @@
 'use client';
 import React, { useState, useMemo, useEffect,Suspense } from 'react';
 import Link from 'next/link';
-import { Star, Phone, MapPin, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
+import { Star, Phone, MapPin, ChevronLeft, ChevronRight, Camera,} from 'lucide-react';
 import { Business } from '../../../types';
 import axios from 'axios';
-// import { useSearchParams } from "next/navigation";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Navigation } from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 interface CategoryPageProps {
   params: {
     location: string;
@@ -26,7 +31,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
       try{
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}`, {withCredentials: true});
         if(response.status == 200){
-          // setFilteredBusinesses(response.data.businesses);
           setFilteredBusinesses(
   response.data.businesses.sort((a: Business, b: Business) => {
     // Put featured businesses at the top
@@ -304,10 +308,11 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                       <div className="flex-1 ms-2">
                         <div className="flex items-center space-x-3 mb-2">
                           <h3 className="text-lg font-semibold text-gray-900">{business.name}</h3>
-                          {business.isClaimed && (
-                            <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                              Verified
-                            </span>
+                          {business.verified && (
+                            // <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                            //   Verified
+                            // </span>
+                            <img src="/verify.png" alt="" className='w-8 h-8' />
                           )}
                         </div>
                         
@@ -388,9 +393,47 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
                   <div>
                     {/* <img src={businesses && businesses[0].images?.length > 0 && businesses[0]?.images[0]?.url} alt="" /> */}
-                    <div className='w-[95%] mx-auto h-40 flex justify-center items-center border rounded-lg'>
+                    {/* <div className='w-[95%] mx-auto h-40 flex justify-center items-center border rounded-lg'>
                       <Camera className='w-8 h-8'/>
-                    </div>
+                    </div> */}
+                    <Swiper
+                      spaceBetween={30}
+                      // centeredSlides={true}
+                      loop={true}
+          
+                      autoplay={{
+                        delay: 2500,
+                        disableOnInteraction: false,
+                      }}
+                      pagination={{
+                        clickable: true,
+                      }}
+                      modules={[Autoplay, Navigation]}
+                      className="mySwiper h-[200px]"
+                    >
+                      <style jsx>{`
+                        :global(.swiper-pagination-bullet) {
+                          background-color: #e3e9f0; /* Tailwind gray-300 */
+                          width: 14px;
+                          height: 14px;
+                          opacity: 1;
+                          margin: 0 4px;
+                          border-radius: 9999px;
+                        }
+          
+                        :global(.swiper-pagination-bullet-active) {
+                          background-color: #079f9f; /* Tailwind orange-500 */
+                          width: 14px;
+                        }
+                      `}</style>
+                      {sortedBusinesses.filter((business)=>business.verified && business.featured).map((e,index)=> (
+                        <SwiperSlide key={index} className="h-full flex items-center justify-center">
+                          <div className="flex justify-center cursor-pointer transition-transform slick-padding rounded-lg">
+                            <img alt={`Slide ${index}`} loading="lazy" width="1200" height="1200" className='rounded-lg' src={e.images && e?.images[0]?.url}></img>
+                          </div>
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
                   </div>
 
                 <div className="space-y-3 mt-2">

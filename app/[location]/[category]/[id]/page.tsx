@@ -14,15 +14,20 @@ import {
   Camera,
   ChevronLeft,
   ChevronRight,
-  CheckCircle,
   Calendar,
   Users,
   Award,
-  Navigation,
+  // Navigation,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Business } from '../../../../types';
 import axios from 'axios';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Navigation } from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 
 interface BusinessPageProps {
@@ -204,14 +209,56 @@ export default function BusinessPage({ params }: BusinessPageProps) {
           <div className="relative h-60 lg:h-[350px] bg-gradient-to-br from-gray-100 to-gray-200">
             <div className="grid lg:grid-cols-3 space-x-2 p-4 h-full">
               <div className="">
-                { business && business.images && business.images.length > 0 ? (
-                  <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[600px] lg:h-80 w-full h-full rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center' />
-                ) : (
+                { business && business.images && business.images.length > 0 ? (<>
+                  <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[600px]  lg:h-80 w-full h-full rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 hidden lg:flex items-center justify-center' />
+                  {/* <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[600px]  lg:h-80 w-full h-full rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:hidden flex items-center justify-center' /> */}
+
+                  <Swiper
+                    spaceBetween={30}
+                    // centeredSlides={true}
+                    loop={true}
+        
+                    autoplay={{
+                      delay: 2500,
+                      disableOnInteraction: false,
+                    }}
+                    pagination={{
+                      clickable: true,
+                    }}
+                    modules={[Autoplay, Navigation]}
+                    className="mySwiper w-[80vw] h-[200px]"
+                  >
+                    <style jsx>{`
+                      :global(.swiper-pagination-bullet) {
+                        background-color: #e3e9f0; /* Tailwind gray-300 */
+                        width: 14px;
+                        height: 14px;
+                        opacity: 1;
+                        margin: 0 4px;
+                        border-radius: 9999px;
+                      }
+        
+                      :global(.swiper-pagination-bullet-active) {
+                        background-color: #079f9f; /* Tailwind orange-500 */
+                        width: 14px;
+                      }
+                    `}</style>
+                    {business && business.images.map((image,index)=> (
+                      <SwiperSlide key={index} onClick={() => openImageModal(index)} className="h-full flex items-center justify-center rounded-xl">
+                        <div className="flex lg:hidden justify-center cursor-pointer transition-transform slick-padding rounded-xl">
+                          <img alt={`Slide ${index}`} loading="lazy" className='w-full h-full rounded-xl' src={image.url}></img>
+                        </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+
+
+
+                </>) : (
                 <div 
                   className="lg:w-[480px] lg:h-80 w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
                   onClick={() => openImageModal(0)}
                 >
-                  {/* <div className="text-6xl">☕</div> */}
                    <Camera/>
                 </div>
                 )}
@@ -224,7 +271,6 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                   className="hidden lg:w-[480px] lg:h-80 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:flex items-center justify-center shadow-lg hover:shadow-xl"
                   onClick={() => openImageModal(1)}
                 >
-                  {/* <div className="text-6xl">☕</div> */}
                    <Camera/>
                 </div>
                 )}
@@ -268,11 +314,12 @@ export default function BusinessPage({ params }: BusinessPageProps) {
               <div className="flex-1">
                 <div className="flex items-center mb-4">
                   <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mr-4">{business.name}</h1>
-                  {business.isClaimed && (
-                    <div className="flex items-center bg-green-100 text-green-700 px-3 py-1 rounded-full">
-                      <CheckCircle className="w-4 h-4 mr-1" />
-                      <span className="text-sm font-medium">Verified</span>
-                    </div>
+                  {business.isClaimed || business.verified && (
+                    // <div className="flex items-center bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                    //   <CheckCircle className="w-4 h-4 mr-1" />
+                    //   <span className="text-sm font-medium">Verified</span>
+                    // </div>
+                    <img src="/verify.png" alt="" className='w-9 h-9' />
                   )}
                 </div>
                 
@@ -649,15 +696,23 @@ export default function BusinessPage({ params }: BusinessPageProps) {
             {/* Map Placeholder */}
             <div className="bg-white rounded-3xl shadow-xl p-6 border border-gray-200">
               <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
-                <Navigation className="w-6 h-6 mr-3 text-blue-600" />
+                {/* <Navigation className="w-6 h-6 mr-3 text-blue-600" /> */}
                 Location
               </h3>
-              <div className="bg-gradient-to-br from-gray-100 to-blue-100 rounded-2xl h-48 flex items-center justify-center">
-                <div className="text-center">
-                  <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+              <div className="rounded-2xl h-48 flex items-center justify-center">
+                {/* <div className="text-center rounded-lg"> */}
+                  {/* <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                   <p className="text-gray-600 font-medium">Interactive Map</p>
-                  <p className="text-gray-500 text-sm">Coming soon...</p>
-                </div>
+                  <p className="text-gray-500 text-sm">Coming soon...</p> */}
+                  <iframe
+                    width="100%"
+                    height="190"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    className='rounded-2xl'
+                    src={`https://www.google.com/maps?q=${encodeURIComponent(business.address)}&output=embed`}
+                  />
+                {/* </div> */}
               </div>
             </div>
           </div>
