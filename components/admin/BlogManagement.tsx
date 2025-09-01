@@ -15,6 +15,8 @@ import {
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast'
 import toast from 'react-hot-toast'
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
 
 interface BlogPost {
   title: string;
@@ -35,6 +37,7 @@ interface Blog {
 }
 
 export default function BlogManagement() {
+  const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedStatus, setSelectedStatus] = useState('All');
@@ -552,9 +555,19 @@ export default function BlogManagement() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
                   />
                 </div>
+
+                <div>
+                  <ReactQuill 
+                  theme="snow" 
+                  value={editingPost.content} 
+                  onChange={(value)=> setEditingPost({...editingPost, content: value})}
+                  className="h-24" 
+                  />
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <label className="block text-sm font-medium text-gray-700 lg:mt-10 mt-20 mb-1">Category</label>
                     <select
                      onChange={(e) => setEditingPost({...editingPost, category: e.target.value})}
                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
@@ -564,7 +577,7 @@ export default function BlogManagement() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <label className="block text-sm font-medium text-gray-700 lg:mt-10 mt-2 mb-1">Status</label>
                     <select
                     onChange={(e) => setEditingPost({...editingPost, status: e.target.value})}
                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">

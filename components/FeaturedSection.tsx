@@ -26,11 +26,11 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-4">
-            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-              <div className="w-4 h-4 bg-blue-600 rounded-sm"></div>
+          <div className="flex mx-auto items-center justify-center mb-4 py-1 rounded-2xl bg-blue-100 w-[280px]">
+            <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+              <div className="w-2 h-2 bg-blue-600 rounded-sm"></div>
             </div>
-            <h2 className="text-[30px] font-bold text-gray-800">Featured Businesses</h2>
+            <h2 className="text-[20px] font-bold text-gray-800">Featured Businesses</h2>
           </div>
           <p className="text-gray-600 max-w-2xl mx-auto">Discover our featured businesses - premium listings that have been handpicked for their exceptional quality and service. These businesses are trusted by our community.</p>
         </div>
@@ -39,7 +39,7 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
           {limitedBusinesses.map((business) => (
             <div 
               key={business.email} 
-              className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow cursor-pointer border border-gray-200 overflow-hidden group"
+              className="bg-white rounded-xl shadow-sm transition-shadow cursor-pointer border border-gray-200 overflow-hidden group"
             >
               <Link href={formatBusinessUrl(business)} className="block">
                 <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200">
@@ -63,8 +63,10 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
                   <div className="absolute top-3 left-3 bg-yellow-500 text-white rounded-full px-2 py-1 shadow-sm">
                     <span className="text-xs font-semibold">Featured</span>
                   </div>
-                  <div className={`${business.verified ? 'block' : 'hidden'} absolute top-3 left-24 rounded-full shadow-sm`}>
-                    <img src="/verify.png" alt="" className='w-8 h-8' />
+                  <div className={`${business.verified ? 'block' : 'hidden'} absolute top-4 left-24 rounded-full shadow-sm`}>
+                    <span className="bg-green-100 text-green-800 text-xs px-3 py-2 rounded-full">
+                      Verified
+                    </span>
                   </div>
                 </div>
                 
@@ -92,21 +94,21 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
                 </div>
               </Link>
               
-              <div className="px-6 pb-6">
-                <div className="flex items-center justify-between">
+              <div className="pb-6 ms-6">
+                <div className="flex items-center gap-x-4">
                   <button 
                     onClick={() => {
                       window.location.href = `tel:${business.phone}`;
                     }}
-                    className="flex items-center text-green-600 hover:text-green-700 transition-colors"
+                    className="flex items-center bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors"
                   >
-                    <Phone className="w-4 h-4 mr-1" />
+                    <Phone className="w-4 h-4 mr-2" />
                     <span className="text-sm font-medium">Call</span>
                   </button>
                   
                   <Link 
                     href={formatBusinessUrl(business)}
-                    className="flex items-center text-blue-600 hover:text-blue-700 transition-colors"
+                    className="flex items-center bg-zinc-100 rounded-lg px-4 p-2 border transition-colors"
                   >
                     <span className="text-sm font-medium">View Details</span>
                     <ExternalLink className="w-3 h-3 ml-1" />

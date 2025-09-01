@@ -4,7 +4,6 @@ exports.createBlog = async (req, res, next) => {
     try {
         
         const blog = await Blog.create(req.body);
-        console.log(blog);
         res.status(200).json({
             success: true,
             blog
@@ -36,6 +35,26 @@ exports.getBlogs = async (req,res,next) => {
     }
 }
 
+exports.getBlogById = async(req,res,next) => {
+    try{
+        const blog = await Blog.findById(req.params.id);
+
+        if(!blog) {
+            return res.status(404).json({
+                success: false,
+                message: 'Blog not Found'
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            blog
+        })
+    }catch(error){
+        next(error);
+    }
+}
+
 exports.editBlog = async (req,res,next) => {
     try{
         let blog = await Blog.findById(req.params.id);
@@ -43,7 +62,7 @@ exports.editBlog = async (req,res,next) => {
         if (!blog) {
             return res.status(404).json({
             success: false,
-            message: 'Blog not found'
+            message: 'Blog not Found'
             });
         }
     
