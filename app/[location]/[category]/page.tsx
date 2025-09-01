@@ -309,10 +309,9 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                         <div className="flex items-center space-x-3 mb-2">
                           <h3 className="text-lg font-semibold text-gray-900">{business.name}</h3>
                           {business.verified && (
-                            // <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                            //   Verified
-                            // </span>
-                            <img src="/verify.png" alt="" className='w-8 h-8' />
+                            <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                              Verified
+                            </span>
                           )}
                         </div>
                         

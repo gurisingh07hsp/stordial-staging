@@ -17,7 +17,7 @@ import {
   Calendar,
   Users,
   Award,
-  // Navigation,
+  CheckCircle
 } from 'lucide-react';
 import Link from 'next/link';
 import { Business } from '../../../../types';
@@ -315,11 +315,10 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                 <div className="flex items-center mb-4">
                   <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mr-4">{business.name}</h1>
                   {business.isClaimed || business.verified && (
-                    // <div className="flex items-center bg-green-100 text-green-700 px-3 py-1 rounded-full">
-                    //   <CheckCircle className="w-4 h-4 mr-1" />
-                    //   <span className="text-sm font-medium">Verified</span>
-                    // </div>
-                    <img src="/verify.png" alt="" className='w-9 h-9' />
+                    <div className="flex items-center bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                      <CheckCircle className="w-4 h-4 mr-1" />
+                      <span className="text-sm font-medium">Verified</span>
+                    </div>
                   )}
                 </div>
                 

@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { Megaphone, FileText, User, Menu, Home, LogOut, ShieldCheck, Info} from 'lucide-react';
+import { Megaphone,User, Menu, Home, LogOut, ShieldCheck, Info, PlusCircle} from 'lucide-react';
 import { User as UserType } from '../types';
 
 interface HeaderProps {
@@ -54,8 +54,9 @@ export default function Header({
             
             <Link 
               href="/list-business"
-              className="hidden lg:flex items-center bg-[#60CE80] text-white px-3 py-2 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 font-semibold group"
+              className="hidden lg:flex items-center px-3 py-2 bg-zinc-100 border rounded-lg transition-all duration-200 font-semibold group"
             >
+              <PlusCircle className='w-4 h-4 mr-1'/>
               <span>List Business</span>
             </Link>
 
@@ -186,7 +187,7 @@ export default function Header({
                 <Link href="/list-business"
                 className="flex items-center text-gray-600 hover:text-blue-600 transition-colors group px-4 py-2 rounded-lg hover:bg-gray-100"
                 >
-                  <FileText className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
+                  <PlusCircle className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
                   <span>List Business</span>
                 </Link>
               </li>

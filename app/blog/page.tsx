@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { useState, useEffect } from 'react';
 import { Camera } from 'lucide-react';
 import {Card, CardContent,  CardFooter,  CardHeader, } from "@/components/ui/card";
+// import Link from 'next/link';
 
 interface Blog {
   _id: string;
@@ -72,13 +73,13 @@ const BlogsPage = () => {
                 <p className="text-muted-foreground">{post.excerpt}</p>
               </CardContent>
               <CardFooter>
-                <p
-                //   href={post.url}
+                <button
+                  onClick={()=>window.location.href = `/blog/${post._id}`}
                   className="flex items-center text-foreground hover:underline"
                 >
                   Read more
                   <ArrowRight className="ml-2 size-4" />
-                </p>
+                </button>
               </CardFooter>
             </Card>
           ))}
