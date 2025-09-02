@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useEffect, useState } from 'react';
 import { 
   Search, 
@@ -23,6 +22,8 @@ interface BlogPost {
   excerpt: string;
   content: string;
   category: string;
+  seotitle: string;
+  metadescription: string;
   status: string;
 }
 
@@ -33,6 +34,8 @@ interface Blog {
   content: string;
   category: string;
   status: string;
+  seotitle: string;
+  metadescription: string;
   createdAt: Date;
 }
 
@@ -51,6 +54,8 @@ export default function BlogManagement() {
   content: "",
   category: "Business Trends",
   status: "Draft",
+  seotitle: "",
+  metadescription: ''
 });
 
   const [posts,setPosts] = useState<Blog[]>([]);
@@ -62,7 +67,7 @@ export default function BlogManagement() {
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory;
-    const matchesStatus = selectedStatus === 'All' || post.status === selectedStatus.toLowerCase();
+    const matchesStatus = selectedStatus === 'All' || post.status === selectedStatus;
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
@@ -92,6 +97,8 @@ export default function BlogManagement() {
           content: "",
           category: "Business Trends",
           status: "Draft",
+          seotitle: '',
+          metadescription: ''
         });
         setShowAddModal(false);
       }
@@ -196,6 +203,8 @@ export default function BlogManagement() {
       content: "",
       category: "Business Trends",
       status: "Draft",
+      seotitle: '',
+      metadescription: ''
     });
   }
   }, [showAddModal, showEditModal])
@@ -277,6 +286,120 @@ export default function BlogManagement() {
           </button>
         </div>
       </div>
+
+
+      <div className={`${(showAddModal || showEditModal) ? 'block' : 'hidden'} grid lg:grid-cols-2 w-full border rounded-xl`}>
+        <div className='bg-white rounded-s-xl w-[95%] mx-auto lg:mx-0'>
+            <div className='p-2'>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                {showAddModal ? 'Create New Post' : 'Edit Post'}
+              </h3>
+              <form onSubmit={(e)=>handleSubmit(e)} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                  <input
+                    type="text"
+                    value={editingPost.title}
+                    onChange={(e) => setEditingPost({...editingPost, title: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Excerpt</label>
+                  <textarea
+                    rows={2}
+                    value={editingPost.excerpt}
+                    onChange={(e) => setEditingPost({...editingPost, excerpt: e.target.value})} 
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  />
+                </div>
+
+                <div>
+                  <ReactQuill 
+                  theme="snow" 
+                  value={editingPost.content} 
+                  onChange={(value)=> setEditingPost({...editingPost, content: value})}
+                  className="h-24" 
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 lg:mt-10 mt-20 mb-1">Category</label>
+                    <select
+                     onChange={(e) => setEditingPost({...editingPost, category: e.target.value})}
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
+                      {categories.filter(c => c !== 'All').map(category => (
+                        <option key={category} value={category}>{category}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 lg:mt-10 mt-2 mb-1">Status</label>
+                    <select
+                    onChange={(e) => setEditingPost({...editingPost, status: e.target.value})}
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
+                      <option value="Draft">Draft</option>
+                      <option value="Published">Published</option>
+                      <option value="Archived">Archived</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 py-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowAddModal(false);
+                      setShowEditModal(false);
+                      // setEditingPost();
+                    }}
+                    className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                  >
+                    {showAddModal ? 'Create Post' : 'Update Post'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div className='bg-white rounded-r-xl'>
+            <div className='p-4'>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                SEO Settings
+              </h3>
+              <form>
+                <div className='bg-zinc-50 pb-7 pt-4 px-4 rounded-xl border'>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">SEO Title</label>
+                  <input
+                    type="text"
+                    placeholder='SEO Optimized title...'
+                    value={editingPost.seotitle}
+                    onChange={(e) => setEditingPost({...editingPost, seotitle: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  />
+                </div>
+                <div className='bg-zinc-50 pb-7 pt-4 px-4 rounded-xl mt-8 border'>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
+                  <textarea
+                    rows={4}
+                    placeholder='Brief description for search engines...'
+                    value={editingPost.metadescription}
+                    onChange={(e) => setEditingPost({...editingPost, metadescription: e.target.value})} 
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  />
+                </div>
+              </form>
+              </div>
+          </div>
+      </div>
+
+
 
       {/* Filters and Search */}
       <div className="bg-white rounded-xl w-full shadow-sm p-4 sm:p-6 border border-gray-200">
@@ -529,7 +652,7 @@ export default function BlogManagement() {
       </div>
 
       {/* Add/Edit Post Modal */}
-      {(showAddModal || showEditModal) && (
+      {/* {(showEditModal) && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-10 mx-auto p-4 sm:p-5 border w-full max-w-sm sm:max-w-md lg:max-w-lg shadow-lg rounded-md bg-white">
             <div className="mt-3">
@@ -610,7 +733,7 @@ export default function BlogManagement() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 } 

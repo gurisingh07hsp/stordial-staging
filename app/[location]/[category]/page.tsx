@@ -18,8 +18,6 @@ interface CategoryPageProps {
 }
 
 export default function CategoryPage({ params }: CategoryPageProps) {
-    // const searchParams = useSearchParams();
-    // const subcategory = searchParams.get("subcategory")?.replace(/-/g, ' ');
   const decodedLocation = decodeURIComponent(params.location.replace(/-/g, ' '));
   const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
 
@@ -191,8 +189,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                         </div>
                       </div>
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">{premiumAds[currentAdIndex]?.name}</h3>
-                      {/* <p className="text-lg font-medium text-blue-600 mb-2">{premiumAds[currentAdIndex].}</p> */}
-                      <p className="text-gray-600 mb-4">{premiumAds[currentAdIndex]?.address}</p>
+                      <p className="lg:block hidden text-gray-600 mb-4">{premiumAds[currentAdIndex]?.address}</p>
                     </div>
                     {premiumAds && premiumAds[currentAdIndex].images && premiumAds[currentAdIndex].images.length > 0 ? (
                       <img src={premiumAds[currentAdIndex].images && premiumAds[currentAdIndex].images[0].url} alt="" className="w-32 h-24 rounded-lg"/>
@@ -309,7 +306,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                         <div className="flex items-center space-x-3 mb-2">
                           <h3 className="text-lg font-semibold text-gray-900">{business.name}</h3>
                           {business.verified && (
-                            <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                            <span className="bg-[#60CE80] font-bold text-white text-xs px-2 py-1 rounded-full">
                               Verified
                             </span>
                           )}
@@ -353,14 +350,14 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                       <div className="flex lg:flex-col flex-row justify-center items-center space-x-2 lg:space-y-2">
                         <button
                           onClick={() => handleCall(business.phone)}
-                          className="flex items-center space-x-2 bg-green-600 text-white px-4 lg:ms-2 lg:px-9 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                          className="flex items-center space-x-2 bg-blue-600 text-white px-4 lg:ms-2 lg:px-9 py-2 rounded-lg transition-colors"
                         >
                           <Phone className="w-4 h-4" />
                           <span>Call</span>
                         </button>
                         <button
                           onClick={() => handleBusinessClick(business)}
-                          className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                          className="flex items-center space-x-2 bg-zinc-100 border px-4 py-2 rounded-lg transition-colors"
                         >
                           <span>View Details</span>
                         </button>

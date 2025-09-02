@@ -9,7 +9,7 @@ const reviewSchema = new mongoose.Schema({
   business: {
     type: mongoose.Schema.ObjectId,
     ref: 'Business',
-    required: true
+    // required: true
   },
   rating: {
     type: Number,
@@ -19,17 +19,18 @@ const reviewSchema = new mongoose.Schema({
   },
   comment: {
     type: String,
-    required: [true, 'Please enter your comment'],
+    // required: [true, 'Please enter your comment'],
+    default: '',
     maxLength: [500, 'Comment cannot exceed 500 characters']
   },
   images: [{
     public_id: {
       type: String,
-      required: true
+      // required: true
     },
     url: {
       type: String,
-      required: true
+      // required: true
     }
   }],
   helpful: [{

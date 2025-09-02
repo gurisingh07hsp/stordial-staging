@@ -167,7 +167,7 @@ const Loginpage = () => {
 
               <button
                 type="submit"
-                className="w-full bg-[#0765F2] text-white py-3 px-6 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="w-full bg-[#0765F2] text-white py-3 px-6 rounded-xl transition-all duration-200 font-semibold transform hover:scale-105"
               >
                 {isLogin ? 'Sign In' : 'Create Account'}
               </button>

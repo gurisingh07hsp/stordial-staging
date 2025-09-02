@@ -94,7 +94,7 @@ export default function Header({
             ) : (
               <button
                 onClick={()=>window.location.href = "/login"}
-                className="hidden lg:flex items-center bg-[#0765F2] text-white px-6 py-2 rounded-md hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg font-semibold group"
+                className="hidden lg:flex items-center bg-[#0765F2] text-white px-6 py-2 rounded-md transition-all duration-200 font-semibold group"
               >
                 <User className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
                 <span>Sign In</span>
