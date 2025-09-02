@@ -99,7 +99,7 @@ exports.getBusiness = async (req, res, next) => {
         path: 'reviews',
         // populate: {
         //   path: 'user',
-        //   // select: 'name avatar'
+        //   // select: 'name'
         // }
       });
 

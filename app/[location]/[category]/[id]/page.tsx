@@ -15,7 +15,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Calendar,
-  Users,
   Award,
   CheckCircle
 } from 'lucide-react';
@@ -173,8 +172,16 @@ export default function BusinessPage({ params }: BusinessPageProps) {
     
     return foodCategories.includes(business.category) || 
            foodSubcategories.includes(business.subcategory);
-          //  business.menu !== undefined;
   };
+
+  const giveRating = async(rating: number) => {
+    try{
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/reviews/new`, {rating,business}, {withCredentials: true});
+      console.log(response.data);
+    }catch{
+      console.log("error");
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
@@ -315,9 +322,9 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                 <div className="flex items-center mb-4">
                   <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mr-4">{business.name}</h1>
                   {business.isClaimed || business.verified && (
-                    <div className="flex items-center bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                    <div className="flex items-center bg-[#60CE80] text-white px-3 py-1 rounded-full">
                       <CheckCircle className="w-4 h-4 mr-1" />
-                      <span className="text-sm font-medium">Verified</span>
+                      <span className="text-sm font-bold">Verified</span>
                     </div>
                   )}
                 </div>
@@ -401,8 +408,8 @@ export default function BusinessPage({ params }: BusinessPageProps) {
               </div>
 
               {/* Quick Stats */}
-              <div className="lg:w-64 hidden lg:block space-y-4">
-                <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6">
+              <div className="">
+                {/* <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6">
                   <div className="flex items-center mb-3">
                     <Users className="w-5 h-5 text-blue-600 mr-2" />
                     <span className="font-semibold text-gray-800">Team Size</span>
@@ -416,6 +423,23 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                     <span className="font-semibold text-gray-800">Awards</span>
                   </div>
                   <p className="text-sm text-gray-600">{business.awards ? business.awards.length : 0} awards</p>
+                </div> */}
+                <div className='flex gap-x-2'>
+                  <div onClick={()=>giveRating(1)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl'>
+                    <Star className='text-zinc-600'/>
+                  </div>
+                  <div onClick={()=>giveRating(2)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl'>
+                    <Star className='text-zinc-600'/>
+                  </div>
+                  <div onClick={()=>giveRating(3)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl'>
+                    <Star className='text-zinc-600'/>
+                  </div>
+                  <div onClick={()=>giveRating(4)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl'>
+                    <Star className='text-zinc-600'/>
+                  </div>
+                  <div onClick={()=>giveRating(5)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl'>
+                    <Star className='text-zinc-600'/>
+                  </div>
                 </div>
               </div>
             </div>

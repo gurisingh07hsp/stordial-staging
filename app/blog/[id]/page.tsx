@@ -1,14 +1,6 @@
-"use client"
-import axios from 'axios';
 import React from 'react'
-import { useState, useEffect } from 'react'
 import { Calendar, Camera } from 'lucide-react';
-
-interface BlogPageProps{
-    params:{
-        id: string;
-    }
-}
+import { Metadata } from "next";
 
 interface Blogdata {
   _id: string;
@@ -17,36 +9,53 @@ interface Blogdata {
   content: string;
   category: string;
   status: string;
+  seotitle: string;
+  metadescription: string;
   createdAt: Date;
 }
 
-const Blog = ({params}: BlogPageProps) => {
-    const [blog,setBlog] = useState<Blogdata>();
-    const [loading, setLoading] =useState(true);
+interface BlogPageProps{
+    params:{
+        id: string;
+    }
+}
+
+async function getBlog(id: string): Promise<Blogdata> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/blogs/${id}`, {
+    cache: "no-store",
+  });
+
+  if (res.status !== 200) throw new Error("Failed to fetch blog");
+  const data = await res.json();
+  return data.blog;
+}
+
+export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
+  const decodedId = decodeURIComponent(params.id);
+  const blog = await getBlog(decodedId);
+
+  return {
+    title: blog.seotitle || blog.title,
+    description: blog.metadescription || blog.excerpt,
+  };
+}
+
+
+
+const Blog = async({params}: BlogPageProps) => {
 
     const decodedId = decodeURIComponent(params.id);
-
-    useEffect(()=>{
-        const getBlog = async() => {
-            try{
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/blogs/${decodedId}`);
-                if(response.status === 200){
-                    setBlog(response.data.blog);
-                    setLoading(false);
-                }
-            }catch{
-                console.log("error");
-            }
-        }
-
-        getBlog();
-    },[decodedId]);
+    let loading = true;
+    const blog = await getBlog(decodedId);
+    if(blog){
+        loading = false;
+    }
 
   return (
     <div className='w-[90vw] mx-auto'>
         {!loading ? (
             <>
-                <div className='w-[40%] flex justify-center items-center h-64 rounded-lg border mt-6'>
+                <div className='lg:w-[40%] w-[100%] flex justify-center items-center h-64 rounded-lg border mt-6'>
                     <Camera className='w-10 h-10'/>
                 </div>
                 <div className="flex items-center gap-x-6 font-bold text-sm mt-2 ms-3 text-gray-900">

@@ -22,6 +22,14 @@ const blogSchema = new mongoose.Schema({
     required: true,
     enum: ['Draft', 'Published', 'Archived']
   },
+  seotitle: {
+    type: String,
+    default: ''
+  },
+  metadescription: {
+    type: String,
+    default: ''
+  },
   createdAt: {
     type: Date,
     default: Date.now

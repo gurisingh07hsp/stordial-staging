@@ -64,13 +64,13 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
                     <span className="text-xs font-semibold">Featured</span>
                   </div>
                   <div className={`${business.verified ? 'block' : 'hidden'} absolute top-4 left-24 rounded-full shadow-sm`}>
-                    <span className="bg-green-100 text-green-800 text-xs px-3 py-2 rounded-full">
+                    <span className="bg-[#60CE80] text-white font-bold text-xs px-3 py-2 rounded-full">
                       Verified
                     </span>
                   </div>
                 </div>
                 
-                <div className="p-6">
+                <div className="px-6 py-3">
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="text-xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">{business.name}</h3>
                   </div>
@@ -81,16 +81,8 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
                     <span className="mx-2">•</span>
                     <span className="text-sm">{business.category.charAt(0).toUpperCase() + business.category.slice(1)} • {business.subcategory}</span>
                   </div>
-                  
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {business.services.slice(0, 3).map((service, index) => (
-                      <span key={index} className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-medium">
-                        {service}
-                      </span>
-                    ))}
-                  </div>
-                  
-                  <div className="text-gray-500 text-sm mb-4">{business.address}</div>
+      
+                  <div className="text-gray-500 text-sm">{business.address}</div>
                 </div>
               </Link>
               

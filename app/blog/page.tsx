@@ -14,6 +14,8 @@ interface Blog {
   content: string;
   category: string;
   status: string;
+  seotitle: string;
+  metadescription: string;
   createdAt: Date;
 }
 
