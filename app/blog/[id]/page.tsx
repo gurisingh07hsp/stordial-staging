@@ -1,5 +1,5 @@
 import React from 'react'
-import { Calendar, Camera } from 'lucide-react';
+import { Calendar, Camera, User} from 'lucide-react';
 import { Metadata } from "next";
 
 interface Blogdata {
@@ -11,6 +11,7 @@ interface Blogdata {
   status: string;
   seotitle: string;
   metadescription: string;
+  user: string;
   createdAt: Date;
 }
 
@@ -59,8 +60,10 @@ const Blog = async({params}: BlogPageProps) => {
                     <Camera className='w-10 h-10'/>
                 </div>
                 <div className="flex items-center gap-x-6 font-bold text-sm mt-2 ms-3 text-gray-900">
-                    <p>Updated on:</p>
-                    <div className='flex'>
+                    <div className='flex items-center'>
+                      <User className='w-4 h-4'/>
+                      <p className='ms-1'>{blog.user}</p>
+                    <p className='ms-6'>Updated on:</p>
                         <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-gray-400 flex-shrink-0" />
                         <span>{new Date(blog?.createdAt || '').toLocaleDateString()}</span>
                     </div>

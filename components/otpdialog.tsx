@@ -66,12 +66,28 @@ export default function OTPDialog({email}: OTPDialogProps) {
     }
   }
 
-  const handleResend = () => {
-    setMessage("OTP has been resent to your email or phone.")
-    setOtp(["", "", "", ""])
-    setTimeLeft(60)
-    setCanResend(false)
-    document.getElementById("otp-0")?.focus()
+  const handleResend = async(e: React.FormEvent) => {
+    // setMessage("OTP has been resent to your email or phone.")
+    // setOtp(["", "", "", ""])
+    // setTimeLeft(60)
+    // setCanResend(false)
+    // document.getElementById("otp-0")?.focus()
+    e.preventDefault();
+      try {
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/forgotpassword`, {email});
+        if(response.status == 200){
+          setMessage("OTP has been resent to your email.");
+          setOtp(["", "", "", ""])
+          setTimeLeft(60)
+          setCanResend(false)
+          document.getElementById("otp-0")?.focus()
+        }
+        else{
+          setMessage(response.data.message);
+        }
+      } catch(error) {
+        console.log(error);
+      }
   }
 
   const formatTime = (seconds: number) => {

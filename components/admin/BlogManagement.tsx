@@ -25,6 +25,7 @@ interface BlogPost {
   seotitle: string;
   metadescription: string;
   status: string;
+  user: string;
 }
 
 interface Blog {
@@ -36,6 +37,7 @@ interface Blog {
   status: string;
   seotitle: string;
   metadescription: string;
+  user: string;
   createdAt: Date;
 }
 
@@ -55,7 +57,8 @@ export default function BlogManagement() {
   category: "Business Trends",
   status: "Draft",
   seotitle: "",
-  metadescription: ''
+  metadescription: '',
+  user: 'Stordial Team'
 });
 
   const [posts,setPosts] = useState<Blog[]>([]);
@@ -98,7 +101,8 @@ export default function BlogManagement() {
           category: "Business Trends",
           status: "Draft",
           seotitle: '',
-          metadescription: ''
+          metadescription: '',
+          user: ''
         });
         setShowAddModal(false);
       }
@@ -204,7 +208,8 @@ export default function BlogManagement() {
       category: "Business Trends",
       status: "Draft",
       seotitle: '',
-      metadescription: ''
+      metadescription: '',
+      user: ''
     });
   }
   }, [showAddModal, showEditModal])
@@ -394,6 +399,17 @@ export default function BlogManagement() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
                   />
                 </div>
+                <div className='bg-zinc-50 rounded-xl mt-4 p-4 border'>
+                    <label className="block text-sm font-medium text-gray-700">Author</label>
+                    <select
+                    onChange={(e) => setEditingPost({...editingPost, user: e.target.value})}
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
+                      <option value="Stordial Team">Stordial Team</option>
+                      <option value="Admin">Admin</option>
+                      <option value="User 1">User 1</option>
+                      <option value="User 2">User 2</option>
+                    </select>
+                  </div>
               </form>
               </div>
           </div>

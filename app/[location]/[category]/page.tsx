@@ -178,7 +178,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               
               <div className="relative">
                 <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
-                  <div onClick={()=>handleBusinessClick(premiumAds[currentAdIndex])} className="flex items-center justify-between">
+                  <div onClick={()=>handleBusinessClick(premiumAds[currentAdIndex])} className="flex lg:flex-row flex-col lg:items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-start space-x-2 mb-2">
                         <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">PREMIUM</span>
@@ -192,9 +192,9 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                       <p className="lg:block hidden text-gray-600 mb-4">{premiumAds[currentAdIndex]?.address}</p>
                     </div>
                     {premiumAds && premiumAds[currentAdIndex].images && premiumAds[currentAdIndex].images.length > 0 ? (
-                      <img src={premiumAds[currentAdIndex].images && premiumAds[currentAdIndex].images[0].url} alt="" className="w-32 h-24 rounded-lg"/>
+                      <img src={premiumAds[currentAdIndex].images && premiumAds[currentAdIndex].images[0].url} alt="" className="lg:w-32 w-64 lg:h-24 h-28 rounded-lg"/>
                     ) : (
-                    <div className="w-32 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
+                    <div className="lg:w-32 w-64 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
                       <span className="text-2xl">🏨</span>
                     </div>
                     )}
@@ -314,8 +314,8 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                         
                         <div className="flex lg:flex-row flex-col lg:items-center space-y-2 space-x-4 mb-3">
                           <div className="flex items-center space-x-1">
-                            <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                            <span className="font-medium">{business.rating}</span>
+                            {/* <span className="font-medium flex items-center ">{business.rating} <Star className="w-4 h-4 text-yellow-400 fill-current" /></span> */}
+                            <div className={`flex items-center ${business.rating >=0 && business.rating <=2 ? 'bg-red-600' : business.rating >2 && business.rating <4 ? 'bg-yellow-500' : 'bg-green-600'} px-1 text-sm font-semibold rounded-sm text-white`}>{business.rating} <Star className='w-4 h-3 fill-white'/></div>
                             <span className="text-gray-500">({business.reviews} reviews)</span>
                           </div>
                         </div>

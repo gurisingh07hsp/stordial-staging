@@ -166,13 +166,13 @@ exports.forgotPassword = async(req, res, next) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'your email id',
-        pass: 'your pass',
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASS,
     },
   });
 
   const mailOptions = {
-    from: 'your email',
+    from: process.env.EMAIL,
     to: email,
     subject: 'Forget OTP Code',
     text: `Your OTP Code is - ${otp} Dont share the otp with anyone`,

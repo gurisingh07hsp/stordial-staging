@@ -14,17 +14,8 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="md:col-span-2">
-            {/* <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-xl">L</span>
-              </div>
-              <div>
-                <span className="text-2xl font-bold text-gray-800">Stordial</span>
-                <p className="text-sm text-gray-500">Find Local Businesses</p>
-              </div>
-            </div> */}
             <img src="/Stordial crop.png" alt="Logo" width={150} height={80}/>
-            <p className="text-gray-600 mb-6 max-w-md">
+            <p className="text-gray-600 mb-6 mt-4 max-w-md">
               Connect with the best local businesses in your area. From restaurants to services, 
               find what you need right in your neighborhood.
             </p>
@@ -100,12 +91,8 @@ export default function Footer() {
                 <MapPin className="w-4 h-4 mr-2" />
                 <span className="text-sm">123 Business St, City, State</span>
               </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Newsletter */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
+               <div className="mt-12 pt-8 border-t border-gray-200">
           <div className="max-w-md">
             <h3 className="font-semibold text-gray-800 mb-2">Stay Updated</h3>
             <p className="text-gray-600 text-sm mb-4">
@@ -123,6 +110,13 @@ export default function Footer() {
             </div>
           </div>
         </div>
+
+            </div>
+          </div>
+        </div>
+
+        {/* Newsletter */}
+       
 
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t border-gray-200">
