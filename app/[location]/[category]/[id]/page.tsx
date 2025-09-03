@@ -16,17 +16,20 @@ import {
   ChevronRight,
   Calendar,
   Award,
-  CheckCircle
+  CheckCircle,
+  User
 } from 'lucide-react';
 import Link from 'next/link';
 import { Business } from '../../../../types';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
+import { useAuth } from '@/contexts/AuthContext';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import toast from 'react-hot-toast';
 
 
 interface BusinessPageProps {
@@ -37,17 +40,41 @@ interface BusinessPageProps {
   };
 }
 
+interface Reviews {
+  user: {_id: string, name: string};
+  rating: number;
+  comment: string;
+}
+
 export default function BusinessPage({ params }: BusinessPageProps) {
+  const {user} = useAuth();
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [showImageModal, setShowImageModal] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [business, setBusiness] = useState<Business | null>(null);
   const [noBusiness, setNoBusiness] = useState(false);
   const [similarBusinesses, setSimilarBusinesses] = useState<Business[]>([]);
+  const [hovered, setHovered] = useState<number | null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
+  const [reviews, setReviews] = useState<Reviews[]>([]);
+  const [showReview, setshowReview] = useState(false);
+  const [comment,setComment] = useState('');
+
 
   const decodedLocation = decodeURIComponent(params.location.replace(/-/g, ' '));
   const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
   const decodedId = decodeURIComponent(params.id);
+
+
+  useEffect(()=>{
+    if(user && reviews){
+      reviews.forEach(e => {
+        if(e.user._id === user._id){
+          setSelected(e.rating);
+        }
+      });
+    }
+  },[user, reviews])
 
 
   const getSimilarBusinesses = async() => {
@@ -61,11 +88,24 @@ export default function BusinessPage({ params }: BusinessPageProps) {
       }
   }
 
+  const getReviews = async() => {
+    try{
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/reviews/${decodedId}`);
+      if(response.status === 200){
+        console.log(response.data);
+        setReviews(response.data.reviews);
+      }
+    }catch{
+      console.error("error");
+    }
+  }
+
   useEffect(() => {
     const getBusinessByName = async () => {
       try{
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}/id/${decodedId}`, {withCredentials: true});
         if(response.status == 200){
+          console.log(response.data);
           setBusiness(response.data.business);
         }
         else{
@@ -78,6 +118,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
       }
     }
     getBusinessByName();
+    getReviews();
     getSimilarBusinesses();
   }, [decodedId])
   
@@ -174,14 +215,48 @@ export default function BusinessPage({ params }: BusinessPageProps) {
            foodSubcategories.includes(business.subcategory);
   };
 
-  const giveRating = async(rating: number) => {
-    try{
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/reviews/new`, {rating,business}, {withCredentials: true});
-      console.log(response.data);
-    }catch{
-      console.log("error");
+
+
+  const stars = [1, 2, 3, 4, 5];
+
+  const giveRating = async(e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(selected, comment);
+    // try{
+    //   const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/reviews/new`, {selected,comment,business}, {withCredentials: true});
+    //   console.log(response.data);
+    //   setshowReveiw(false);
+    // }catch{
+    //   console.log("error");
+    // }
+      try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/reviews/new`,
+      {
+        selected,
+        comment,
+        business,
+      },
+      { withCredentials: true }
+    );
+    if(response.status == 200){
+      console.log("✅ Review submitted:", response.data);
+      setshowReview(false);
     }
+
+  } catch (err) {
+    const error = err as AxiosError<{ message?: string }>;
+    if (error.response?.data?.message) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("Something went wrong. Please try again.");
+    }
+    console.error("❌ Review error:", error);
   }
+  }
+
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
@@ -330,8 +405,8 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                 </div>
                 
                 <div className="flex flex-wrap items-center gap-4 mb-6">
-                  <div className="flex items-center bg-yellow-100 px-4 py-2 rounded-full">
-                    <Star className="w-5 h-5 text-yellow-500 fill-current mr-2" />
+                  <div className={`flex items-center ${business.rating >=0 && business.rating <=2 ? 'bg-red-400' : business.rating >2 && business.rating <4 ? 'bg-yellow-400' : 'bg-green-400'} px-4 py-2 rounded-full`}>
+                    <Star className="w-5 h-5 text-gray-800 mr-2" />
                     <span className="font-bold text-gray-800">{business.rating}</span>
                     <span className="text-gray-600 ml-1">({business.reviews} reviews)</span>
                   </div>
@@ -355,7 +430,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                   <div className='flex justify-center items-center gap-x-4'>
                   <a 
                     href={`tel:${business.phone}`}
-                    className="hidden bg-gradient-to-r from-green-500 to-green-600 text-white lg:px-8 px-4 py-3 rounded-xl hover:shadow-lg transition-all duration-300 lg:flex items-center font-semibold"
+                    className="hidden bg-blue-600 text-white lg:px-8 px-4 py-3 rounded-xl transition-all duration-300 lg:flex items-center font-semibold"
                   >
                     <Phone className="w-5 h-5 mr-2" />  
                     Call Now
@@ -365,12 +440,12 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                     href={`tel:${business.phone}`}
                     className="lg:hidden block"
                   >
-                    <div className='lg:hidden bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex justify-center items-center font-semibold'>
+                    <div className='lg:hidden bg-blue-600 text-white py-3 rounded-xl transition-all duration-300 flex justify-center items-center font-semibold'>
                       <Phone className="w-7 h-7" />
                     </div>
                     <p className='mt-1 font-semibold text-sm'>Call Now</p>  
                   </a>
-                  <button className="hidden bg-gradient-to-r from-green-500 to-green-600 text-white lg:px-8 px-4 py-3 rounded-xl hover:shadow-lg transition-all duration-300 lg:flex items-center font-semibold">
+                  <button className="hidden bg-zinc-50 lg:px-8 px-4 py-3 border rounded-xl transition-all duration-300 lg:flex items-center font-semibold">
                     <MessageSquare className="w-5 h-5 mr-2" />
                     WhatsApp
                   </button>
@@ -408,7 +483,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
               </div>
 
               {/* Quick Stats */}
-              <div className="">
+              <div>
                 {/* <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6">
                   <div className="flex items-center mb-3">
                     <Users className="w-5 h-5 text-blue-600 mr-2" />
@@ -424,23 +499,54 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                   </div>
                   <p className="text-sm text-gray-600">{business.awards ? business.awards.length : 0} awards</p>
                 </div> */}
-                <div className='flex gap-x-2'>
-                  <div onClick={()=>giveRating(1)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl'>
+                {/* <div className='flex gap-x-2'>
+                  <div onClick={()=>giveRating(1)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer'>
                     <Star className='text-zinc-600'/>
                   </div>
-                  <div onClick={()=>giveRating(2)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl'>
+                  <div onClick={()=>giveRating(2)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer'>
                     <Star className='text-zinc-600'/>
                   </div>
-                  <div onClick={()=>giveRating(3)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl'>
+                  <div onClick={()=>giveRating(3)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer'>
                     <Star className='text-zinc-600'/>
                   </div>
-                  <div onClick={()=>giveRating(4)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl'>
+                  <div onClick={()=>giveRating(4)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer'>
                     <Star className='text-zinc-600'/>
                   </div>
-                  <div onClick={()=>giveRating(5)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl'>
+                  <div onClick={()=>giveRating(5)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer'>
                     <Star className='text-zinc-600'/>
                   </div>
-                </div>
+                </div> */}
+                <div className="flex gap-x-2">
+      {stars.map((star) => (
+        <div
+          key={star}
+          onMouseEnter={() => setHovered(star)}
+          onMouseLeave={() => setHovered(null)}
+          onClick={() => {setSelected(star); setshowReview(true)}}
+          className={`${star <= (hovered ?? selected ?? 0)
+                ? "bg-yellow-500"
+                : "text-zinc-600"} p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer`}
+        >
+          <Star
+            className={
+              star <= (hovered ?? selected ?? 0)
+                ? "text-white fill-yellow-500"
+                : "text-zinc-600"
+            }
+          />
+        </div>
+      ))}
+    </div>
+    <form onSubmit={giveRating} className={showReview ? 'block' : 'hidden'}>
+      <textarea rows={5} placeholder='Tell us about your experience'
+       required className='border border-gray-800 w-full mt-2 p-2'
+       value={comment}
+       onChange={(e)=> setComment(e.target.value)}/>
+      <div className='relative mb-5 lg:mb-0'>
+        <button onClick={()=> setshowReview(false)} className='p-2 rounded-lg bg-zinc-100 border absolute right-20'>Cancel</button>
+        <input type="submit" value='Submit' className='bg-blue-600 p-2 rounded-lg text-white absolute right-1 cursor-pointer' />
+      </div>
+      </form>
               </div>
             </div>
           </div>
@@ -600,9 +706,26 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                 {activeTab === 'reviews' && (
                   <div>
                     <h3 className="text-xl font-semibold text-gray-800 mb-6">Customer Reviews</h3>
-                    <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-6">
+                    {/* <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-6">
                       <p className="text-gray-600">Reviews coming soon...</p>
-                    </div>
+                    </div> */}
+                    <div className='max-h-[75vh] overflow-y-auto hide-scrollbar'>
+                    {reviews.map((review,index)=>(
+                      <div key={index}>
+                      <div className='my-6'>
+                        <div className='flex gap-2 items-center'>
+                          <div className='p-3 rounded-full bg-blue-400'>
+                            <User className='w-4 h-4'/>
+                          </div>
+                          <span>{review.user.name}</span>
+                          <div className={`flex items-center ${review.rating >=0 && review.rating <=2 ? 'bg-red-600' : review.rating >2 && review.rating <4 ? 'bg-yellow-500' : 'bg-green-600'} px-1 text-sm font-semibold rounded-sm text-white`}>{review.rating} <Star className='w-4 h-3 fill-white'/></div>
+                        </div>
+                        <p className='mt-4 text-sm ms-4'>{review.comment}</p>
+                      </div>
+                      <hr />
+                      </div>
+                    ))}
+                  </div>
                   </div>
                 )}
               </div>
@@ -703,13 +826,13 @@ export default function BusinessPage({ params }: BusinessPageProps) {
               <div className="mt-8 space-y-4">
                 <a 
                   href={`tel:${business.phone}`}
-                  className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 px-6 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center justify-center font-semibold"
+                  className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center font-semibold"
                 >
                   <Phone className="w-5 h-5 mr-2" />
                   Call Now
                 </a>
                 
-                <button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-6 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center justify-center font-semibold">
+                <button className="w-full bg-zinc-50 border py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center font-semibold">
                   <MessageSquare className="w-5 h-5 mr-2" />
                   Send Message
                 </button>

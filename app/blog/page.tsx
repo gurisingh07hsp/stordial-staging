@@ -1,9 +1,9 @@
 "use client"
 import React from 'react'
 import axios from 'axios';
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Calendar } from "lucide-react";
 import { useState, useEffect } from 'react';
-import { Camera } from 'lucide-react';
+import { Camera, User } from 'lucide-react';
 import {Card, CardContent,  CardFooter,  CardHeader, } from "@/components/ui/card";
 // import Link from 'next/link';
 
@@ -16,6 +16,7 @@ interface Blog {
   status: string;
   seotitle: string;
   metadescription: string;
+  user: string;
   createdAt: Date;
 }
 
@@ -70,6 +71,13 @@ const BlogsPage = () => {
                   </a> */}
                     {post.title}
                 </h3>
+                <div className='flex'>
+                  <div className='flex'>
+                    <User className='mr-2'/>
+                    <span>{post.user}</span>
+                  </div>
+                  <span className='flex ms-6'><Calendar className='mr-2'/>{new Date(post?.createdAt || '').toLocaleDateString()}</span>
+                </div>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">{post.excerpt}</p>

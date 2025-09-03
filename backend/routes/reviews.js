@@ -6,63 +6,130 @@ const { isAuthenticated } = require('../middleware/auth');
 const review = require('../models/review');
 
 // Placeholder for review routes
-router.get('/', (req, res) => {
+router.get('/:id', async(req, res, next) => {
+  const reviews = await Review.find({business: req.params.id})
+    .populate('user', 'name')
+
+  if(!reviews){
+    res.status(400).json({
+      success: false,
+      message: 'Reviews not Found'
+    })
+  }
   res.status(200).json({
     success: true,
-    message: 'Reviews API - Coming soon'
+    reviews
   });
 });
 
 
-router.post('/new', isAuthenticated, async(req,res,next) => {
-  try{
+// router.post('/new', isAuthenticated, async(req,res,next) => {
+//   try{
+//     req.body.user = req.user._id;
+//     const rating = req.body.selected;
+//     const business = await Business.findById(req.body.business._id);
+//     if(!business){
+//       res.status(400).json({
+//         success: false,
+//         message: 'Business not Found'
+//       })
+//     }
+
+//     const isreview = await Review.findOne({ user: req.body.user, business: req.body.business._id });
+
+//     if(isreview){
+//       const re = business.rating - isreview.rating;
+//       business.rating = (re + rating)/business.reviews;
+//     }
+//     else{
+//       const r = business.rating + rating;
+//       const rev = r/(business.reviews + 1);
+
+//       business.rating = rev;
+//       business.reviews = business.reviews + 1;
+//     } 
+
+//     await business.save();
+
+
+//     const {comment} = req.body;
+//     console.log(rating, comment);
+//    const review = await Review.findOneAndUpdate(
+//     { user: req.body.user, business: req.body.business._id },
+//     { rating, comment },  // the fields you want to update
+//     {
+//       new: true,          // return the updated document
+//       upsert: true,       // create if not exists
+//       setDefaultsOnInsert: true
+//     }
+//   );
+
+// res.status(200).json({
+//   success: true,
+//   review,
+//   business
+// });
+//   }catch(error){
+//     next(error);
+//   }
+// })
+
+router.post('/new', isAuthenticated, async (req, res, next) => {
+  try {
     req.body.user = req.user._id;
-    console.log(typeof(req.body.rating));
+    const rating = req.body.selected;
+    const { comment } = req.body;
 
     const business = await Business.findById(req.body.business._id);
-    if(!business){
-      res.status(400).json({
+    if (!business) {
+      return res.status(400).json({
         success: false,
-        message: 'Business not Found'
-      })
+        message: 'Business not Found',
+      });
     }
 
-    const isreview = await Review.findOne({ user: req.body.user, business: req.body.business._id });
+    // Find existing review
+    const isreview = await Review.findOne({
+      user: req.body.user,
+      business: req.body.business._id,
+    });
 
-    if(isreview){
-      const re = business.rating - isreview.rating;
-      business.rating = (re + req.body.rating)/business.reviews;
-    }
-    else{
-      const r = business.rating + req.body.rating;
-      const rev = r/(business.reviews + 1);
+    // Current total rating sum
+    let totalRating = business.rating * business.reviews;
 
-      business.rating = rev;
+    if (isreview) {
+      // Update old review → adjust sum
+      totalRating = totalRating - isreview.rating + rating;
+    } else {
+      // New review
+      totalRating = totalRating + rating;
       business.reviews = business.reviews + 1;
-    } 
+    }
+
+    // Average with 1 decimal precision
+    business.rating = Math.round((totalRating / business.reviews) * 10) / 10;
 
     await business.save();
 
+    // Create or update review
+    const review = await Review.findOneAndUpdate(
+      { user: req.body.user, business: req.body.business._id },
+      { rating, comment },
+      {
+        new: true,
+        upsert: true,
+        setDefaultsOnInsert: true,
+      }
+    );
 
-    const {rating} = req.body;
-   const review = await Review.findOneAndUpdate(
-    { user: req.body.user, business: req.body.business._id },
-    { rating },  // the fields you want to update
-    {
-      new: true,          // return the updated document
-      upsert: true,       // create if not exists
-      setDefaultsOnInsert: true
-    }
-  );
-
-res.status(200).json({
-  success: true,
-  review,
-  business
-});
-  }catch(error){
+    res.status(200).json({
+      success: true,
+      review,
+      business,
+    });
+  } catch (error) {
     next(error);
   }
-})
+});
 
 module.exports = router; 
