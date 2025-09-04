@@ -21,6 +21,7 @@ export default function OTPDialog({email}: OTPDialogProps) {
   const [canResend, setCanResend] = useState(false)
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [newPassword, setNewPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   // Countdown timer
   useEffect(() => {
@@ -74,12 +75,14 @@ export default function OTPDialog({email}: OTPDialogProps) {
     // document.getElementById("otp-0")?.focus()
     e.preventDefault();
       try {
+        setLoading(true);
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/forgotpassword`, {email});
         if(response.status == 200){
           setMessage("OTP has been resent to your email.");
           setOtp(["", "", "", ""])
           setTimeLeft(60)
           setCanResend(false)
+          setLoading(false);
           document.getElementById("otp-0")?.focus()
         }
         else{
@@ -160,7 +163,7 @@ export default function OTPDialog({email}: OTPDialogProps) {
             onClick={handleResend}
             disabled={!canResend}
           >
-            {canResend ? "Send Again" : "Resend OTP"}
+            {canResend ? loading ? "Sending..." : "Send Again" : loading ? "Sending..." : "Resend OTP"}
             {!canResend && (
               <span className="text-xs text-muted-foreground">{formatTime(timeLeft)}</span>
             )}

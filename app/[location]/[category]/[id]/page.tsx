@@ -9,7 +9,7 @@ import {
   Globe, 
   MessageSquare,
   ArrowLeft,
-  Share2,
+  // Share2,
   X,
   Camera,
   ChevronLeft,
@@ -29,6 +29,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { Toaster } from 'react-hot-toast'
 import toast from 'react-hot-toast';
 
 
@@ -74,7 +75,10 @@ export default function BusinessPage({ params }: BusinessPageProps) {
         }
       });
     }
-  },[user, reviews])
+    else{
+      setSelected(0);
+    }
+  },[user, reviews,showReview])
 
 
   const getSimilarBusinesses = async() => {
@@ -222,13 +226,6 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   const giveRating = async(e: React.FormEvent) => {
     e.preventDefault();
     console.log(selected, comment);
-    // try{
-    //   const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/reviews/new`, {selected,comment,business}, {withCredentials: true});
-    //   console.log(response.data);
-    //   setshowReveiw(false);
-    // }catch{
-    //   console.log("error");
-    // }
       try {
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/reviews/new`,
@@ -260,7 +257,28 @@ export default function BusinessPage({ params }: BusinessPageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 4000, // auto-close after 4s
+          style: {
+            borderRadius: '8px',
+            background: '#333',
+            color: '#fff',
+          },
+          success: {
+            style: {
+              background: 'green',
+            },
+          },
+          error: {
+            style: {
+              background: 'red',
+            },
+          },
+        }}
+      />
       {/* Breadcrumbs */}
       <div className="bg-white/60 backdrop-blur-sm border-b border-gray-200">
         <div className="container mx-auto px-4 py-3">
@@ -426,45 +444,45 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex lg:flex-row flex-col lg:items-center items-start gap-4 mb-6">
+                <div className="flex lg:flex-row flex-col lg:items-center items-start gap-4 mb-2">
                   <div className='flex justify-center items-center gap-x-4'>
                   <a 
                     href={`tel:${business.phone}`}
-                    className="hidden bg-blue-600 text-white lg:px-8 px-4 py-3 rounded-xl transition-all duration-300 lg:flex items-center font-semibold"
+                    className="bg-blue-600 text-white lg:px-8 px-4 py-3 rounded-xl transition-all duration-300 flex items-center font-semibold"
                   >
                     <Phone className="w-5 h-5 mr-2" />  
                     Call Now
                   </a>
 
-                  <a 
+                  {/* <a 
                     href={`tel:${business.phone}`}
                     className="lg:hidden block"
                   >
                     <div className='lg:hidden bg-blue-600 text-white py-3 rounded-xl transition-all duration-300 flex justify-center items-center font-semibold'>
-                      <Phone className="w-7 h-7" />
+                      <Phone className="w-7 h-8" />
                     </div>
                     <p className='mt-1 font-semibold text-sm'>Call Now</p>  
-                  </a>
-                  <button className="hidden bg-zinc-50 lg:px-8 px-4 py-3 border rounded-xl transition-all duration-300 lg:flex items-center font-semibold">
+                  </a> */}
+                  <button className="bg-zinc-50 lg:px-8 px-4 py-3 border rounded-xl transition-all duration-300 flex items-center font-semibold">
                     <MessageSquare className="w-5 h-5 mr-2" />
                     WhatsApp
                   </button>
 
-                  <button className="lg:hidden rounded-xl flex flex-col justify-center items-center text-sm font-semibold">
+                  {/* <button className="lg:hidden rounded-xl flex flex-col justify-center items-center text-sm font-semibold">
                     <img src="https://akam.cdn.jdmagicbox.com/images/icons/iphone/newicon/whatsappIcn2308x48.png" width={57} height={55} alt="" />
                     WhatsApp
-                  </button>
-
+                  </button> */}
+{/* 
                   <button className="lg:hidden block">
                     <div className="lg:hidden block bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
                       <Share2 className="w-7 h-7" />
                     </div>
                     <p className='mt-1 font-semibold text-sm'>Share</p>
-                  </button>
+                  </button> */}
                   </div>
-                    <button className="hidden lg:block bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
+                    {/* <button className="hidden lg:block bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
                     <Share2 className="w-5 h-5" />
-                  </button>
+                  </button> */}
                   {/* <button className="bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
                     <Bookmark className="w-5 h-5" />
                   </button> */}
@@ -484,38 +502,6 @@ export default function BusinessPage({ params }: BusinessPageProps) {
 
               {/* Quick Stats */}
               <div>
-                {/* <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6">
-                  <div className="flex items-center mb-3">
-                    <Users className="w-5 h-5 text-blue-600 mr-2" />
-                    <span className="font-semibold text-gray-800">Team Size</span>
-                  </div>
-                  <p className="text-2xl font-bold text-blue-600">{business.teamSize} people</p>
-                </div>
-                
-                <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-6">
-                  <div className="flex items-center mb-3">
-                    <Award className="w-5 h-5 text-green-600 mr-2" />
-                    <span className="font-semibold text-gray-800">Awards</span>
-                  </div>
-                  <p className="text-sm text-gray-600">{business.awards ? business.awards.length : 0} awards</p>
-                </div> */}
-                {/* <div className='flex gap-x-2'>
-                  <div onClick={()=>giveRating(1)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer'>
-                    <Star className='text-zinc-600'/>
-                  </div>
-                  <div onClick={()=>giveRating(2)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer'>
-                    <Star className='text-zinc-600'/>
-                  </div>
-                  <div onClick={()=>giveRating(3)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer'>
-                    <Star className='text-zinc-600'/>
-                  </div>
-                  <div onClick={()=>giveRating(4)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer'>
-                    <Star className='text-zinc-600'/>
-                  </div>
-                  <div onClick={()=>giveRating(5)} className='p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer'>
-                    <Star className='text-zinc-600'/>
-                  </div>
-                </div> */}
                 <div className="flex gap-x-2">
       {stars.map((star) => (
         <div
@@ -571,7 +557,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`py-6 px-1 border-b-2 font-medium transition-colors ${
+                      className={`py-6 px-1 border-b-2 text-sm lg:text-[16px] font-medium transition-colors ${
                         activeTab === tab.id
                           ? 'border-blue-500 text-blue-600'
                           : 'border-transparent text-gray-500 hover:text-gray-700'
