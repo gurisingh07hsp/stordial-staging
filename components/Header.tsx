@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { useMemo } from "react";
 import Link from 'next/link';
 import { Megaphone,User, Menu, Home, LogOut, ShieldCheck, Info, PlusCircle} from 'lucide-react';
 import { User as UserType } from '../types';
@@ -18,21 +19,64 @@ export default function Header({
   user, 
   onLogout
 }: HeaderProps) {
+
+  const userSection = useMemo(() => {
+    if (!user) {
+      return (
+        <button
+          onClick={() => (window.location.href = "/login")}
+          className="hidden lg:flex items-center bg-[#0765F2] text-white px-6 py-2 rounded-md transition-all duration-200 font-semibold group"
+        >
+          <User className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
+          <span>Sign In</span>
+        </button>
+      );
+    }
+
+    return (
+      <div className="hidden lg:flex items-center space-x-4">
+        {user.email === "admin@stordial.com" && (
+          <Link
+            href="/admin"
+            className="text-blue-600 hover:text-blue-700 transition-colors font-medium bg-blue-50 px-3 py-2 rounded-lg hover:bg-blue-100"
+          >
+            Admin Panel
+          </Link>
+        )}
+
+        <div className="flex items-center space-x-3">
+          <Link
+            href="/dashboard"
+            className="flex items-center space-x-3 cursor-pointer border py-1 px-1 rounded-lg"
+          >
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-md">
+              <User className="w-4 h-4 text-white" />
+            </div>
+            <div className="hidden md:block">
+              <p className="text-sm font-semibold text-gray-800">{user.name}</p>
+              <p className="text-xs text-gray-500">{user.email}</p>
+            </div>
+          </Link>
+
+          <button
+            onClick={onLogout}
+            className="text-sm bg-red-600 text-white p-2 rounded-lg transition-colors font-medium flex items-center"
+          >
+            Logout
+            <LogOut className="w-[15px] h-[15px] ms-1" />
+          </button>
+        </div>
+      </div>
+    );
+  }, [user, onLogout]);
+
+
   return (
     <header className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-200 sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
-            {/* <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-              <span className="text-white font-bold text-xl">L</span>
-            </div>
-            <div>
-                <span className="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-200">
-                  Stordial
-                </span>
-                <p className="text-xs text-gray-500 -mt-1">Find Local Businesses</p>
-            </div> */}
             <img src="/Stordial crop.png" alt="Logo" className='w-[150px] h-[40px]' />
           </Link>
 
@@ -60,7 +104,9 @@ export default function Header({
               <span>List Business</span>
             </Link>
 
-            {user && user.email === 'admin@stordial.com' && (
+            {userSection}
+
+            {/* {user && user.email === 'admin@stordial.com' && (
                     <Link 
                       href="/admin"
                       className="text-blue-600 hover:text-blue-700 transition-colors font-medium bg-blue-50 px-3 py-2 rounded-lg hover:bg-blue-100"
@@ -69,7 +115,7 @@ export default function Header({
                     </Link>
                   )}
 
-                              {user ? (
+              {user ? (
               <div className="hidden lg:flex items-center space-x-4">              
                 <div className="flex items-center space-x-3">
                   <Link href="/dashboard" className="flex items-center space-x-3 cursor-pointer border py-1 px-1 rounded-lg">
@@ -99,7 +145,7 @@ export default function Header({
                 <User className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
                 <span>Sign In</span>
               </button>
-            )}
+            )} */}
 
           </div>
       

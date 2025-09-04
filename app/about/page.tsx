@@ -13,14 +13,15 @@ export default function AboutPage() {
 
         <div className="bg-white rounded-lg shadow-sm border p-8 mb-8">
           <h2 className="text-[30px] font-semibold text-gray-900 mb-6">Our Mission</h2>
-                      <p className="text-gray-600 mb-6 leading-relaxed">
-              Stordial is dedicated to helping communities discover and connect with the best local businesses in their area. 
-              We believe that strong local businesses are the backbone of vibrant communities, and we&apos;re committed to making it 
-              easier for people to find the services they need right in their neighborhood.
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              At Stordial, we make it easy for people in an area to find and connect with local businesses they
+              trust. We know that local businesses are central to strong communities, and we aim to make it
+              easier for everyone to access local services.
             </p>
-                      <p className="text-gray-600 leading-relaxed">
-              Whether you&apos;re looking for a great restaurant, reliable healthcare, professional services, or anything in between, 
-              Stordial provides comprehensive information, reviews, and contact details to help you make informed decisions.
+            <p className="text-gray-600 leading-relaxed">
+              Whether you are searching for a trending restaurant, trustworthy healthcare, a professional,
+              or any other local business, at Stordial, you access comprehensive information, customer reviews,
+              and contact details to make informed choices confidently.
             </p>
         </div>
 
@@ -30,19 +31,19 @@ export default function AboutPage() {
             <ul className="space-y-3 text-gray-600">
               <li className="flex items-start">
                 <span className="text-blue-600 mr-2">✓</span>
-                Discover local businesses with detailed information
+                Find local businesses to know more about
               </li>
               <li className="flex items-start">
                 <span className="text-blue-600 mr-2">✓</span>
-                Read authentic reviews from real customers
+                Read Genuine Reviews from Swimming Customers
               </li>
               <li className="flex items-start">
                 <span className="text-blue-600 mr-2">✓</span>
-                Get contact information and directions easily
+                Get access to contact details and directions fast
               </li>
               <li className="flex items-start">
                 <span className="text-blue-600 mr-2">✓</span>
-                Find businesses based on your location
+                Service and business locator
               </li>
             </ul>
           </div>
@@ -52,47 +53,50 @@ export default function AboutPage() {
             <ul className="space-y-3 text-gray-600">
               <li className="flex items-start">
                 <span className="text-green-600 mr-2">✓</span>
-                Increase your online visibility
+                Enhance your online profile and exposure
               </li>
               <li className="flex items-start">
                 <span className="text-green-600 mr-2">✓</span>
-                Connect with local customers
+                Get in front of and engage your local customers
               </li>
               <li className="flex items-start">
                 <span className="text-green-600 mr-2">✓</span>
-                Manage your business profile
+                Easily manage/update your business profile
               </li>
               <li className="flex items-start">
                 <span className="text-green-600 mr-2">✓</span>
-                Get customer reviews and feedback
+                Solicit customer feedback and reviews
               </li>
             </ul>
           </div>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border p-8">
-                      <h2 className="text-2xl font-semibold text-gray-900 mb-6">Why Choose Stordial?</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Why Choose Stordial?</h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🎯</span>
-              </div>
+              {/* <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4"> */}
+                {/* <span className="text-2xl">🎯</span> */}
+                 <img src="/icons/audience.png" alt="audience" className='w-20 h-20 mx-auto' />
+              {/* </div> */}
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Local Focus</h3>
-              <p className="text-gray-600">We focus on connecting you with businesses in your local community.</p>
+              <p className="text-gray-600">We connect you to Nearby businesses you can trust, and find something you need locally.</p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">⭐</span>
-              </div>
+              {/* <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"> */}
+                {/* <span className="text-2xl">⭐</span> */}
+                 <img src="/icons/rating.png" alt="audience" className='w-20 h-20 mx-auto' />
+              {/* </div> */}
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Verified Reviews</h3>
-              <p className="text-gray-600">All reviews are from verified customers to ensure authenticity.</p>
+              <p className="text-gray-600">Our reviews are from real users so you can be confident in your chosen services and businesses.</p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🔍</span>
-              </div>
+              {/* <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4"> */}
+                {/* <span className="text-2xl">🔍</span> */}
+                 <img src="/icons/search.png" alt="audience" className='w-20 h-20 mx-auto' />
+              {/* </div> */}
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Easy Search</h3>
-              <p className="text-gray-600">Find exactly what you need with our powerful search and filtering.</p>
+              <p className="text-gray-600">Find businesses, products, or services and quickly get accurate information and reliable details.</p>
             </div>
           </div>
         </div>

@@ -14,8 +14,8 @@ import {
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast'
 import toast from 'react-hot-toast'
-import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+import type { ReactQuillProps } from "react-quill";
 
 interface BlogPost {
   title: string;
@@ -42,7 +42,6 @@ interface Blog {
 }
 
 export default function BlogManagement() {
-  const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedStatus, setSelectedStatus] = useState('All');
@@ -60,11 +59,18 @@ export default function BlogManagement() {
   metadescription: '',
   user: 'Stordial Team'
 });
-
+  const [id,setId] = useState('');
   const [posts,setPosts] = useState<Blog[]>([]);
+  const [Quill, setQuill] = useState<React.ComponentType<ReactQuillProps> | null>(null);
 
   const categories = ['All', 'Business Trends', 'SEO', 'Customer Service', 'Marketing', 'Technology'];
   const statuses = ['All', 'Published', 'Draft', 'Archived'];
+
+    useEffect(() => {
+    import("react-quill").then((mod) => {
+      setQuill(() => mod.default);
+    });
+  }, []);
 
   const filteredPosts = posts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -102,7 +108,7 @@ export default function BlogManagement() {
           status: "Draft",
           seotitle: '',
           metadescription: '',
-          user: ''
+          user: 'Stordial Team'
         });
         setShowAddModal(false);
       }
@@ -111,7 +117,7 @@ export default function BlogManagement() {
     }
   }
 
-  const [id,setId] = useState('');
+
   const editBlog = async() => {
     try {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/blogs/${id}`, editingPost, {withCredentials:true});
@@ -209,11 +215,10 @@ export default function BlogManagement() {
       status: "Draft",
       seotitle: '',
       metadescription: '',
-      user: ''
+      user: 'Stordial Team'
     });
   }
-  }, [showAddModal, showEditModal])
-  
+  }, [showAddModal, showEditModal]);
 
 
   const getStatusColor = (status: string) => {
@@ -320,12 +325,20 @@ export default function BlogManagement() {
                 </div>
 
                 <div>
-                  <ReactQuill 
-                  theme="snow" 
-                  value={editingPost.content} 
-                  onChange={(value)=> setEditingPost({...editingPost, content: value})}
-                  className="h-24" 
-                  />
+                {/* <ReactQuill
+                  theme="snow"
+                  value={editingPost.content}
+  onChange={(value: string) => setEditingPost({ ...editingPost, content: value })}
+                  className="h-60"
+                /> */}
+                          {Quill && (
+            <Quill
+              theme="snow"
+              value={editingPost.content}
+              onChange={(val) => setEditingPost({...editingPost, content: val})}
+              className="h-60"
+            />
+          )}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">

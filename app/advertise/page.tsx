@@ -47,7 +47,7 @@ export default function AdvertisePage() {
       "Verified Badge",
       "Priority listing (always shown before Free/Standard)",
       "WhatsApp Click-to-Chat Button",
-      "Leads directly from customers (via whatsapp",
+      "Leads directly from customers (via whatsapp)",
       'Featured in homepage “Top Businesses”',
     ],
     description: "For large organizations with specific needs",
@@ -81,32 +81,35 @@ export default function AdvertisePage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-[35px] font-bold text-gray-900 mb-4">Advertise with Stordial</h1>
-          <p className="text-xl text-gray-600">Reach more customers and grow your business</p>
+          <p className="text-xl text-gray-600">Expand your business, reach more customers.</p>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border p-8 mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Why Advertise with Us?</h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">👥</span>
-              </div>
+              {/* <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4"> */}
+                {/* <span className="text-2xl">👥</span> */}
+                <img src="/icons/audience.png" alt="audience" className='w-20 h-20 mx-auto' />
+              {/* </div> */}
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Local Audience</h3>
-              <p className="text-gray-600">Connect with customers actively searching for local businesses</p>
+              <p className="text-gray-600"> Reach out to those actively searching for local businesses and services nearby.</p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">📈</span>
-              </div>
+              {/* <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"> */}
+                {/* <span className="text-2xl">📈</span> */}
+                 <img src="/icons/results.png" alt="audience" className='w-20 h-20 mx-auto' />
+              {/* </div> */}
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Measurable Results</h3>
-              <p className="text-gray-600">Track your performance with detailed analytics and insights</p>
+              <p className="text-gray-600">Use powerful analytics and insights to track your performance and see how your business grows!</p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🎯</span>
-              </div>
+              {/* <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4"> */}
+                {/* <span className="text-2xl">🎯</span> */}
+                 <img src="/icons/retargeting.png" alt="audience" className='w-20 h-20 mx-auto' />
+              {/* </div> */}
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Targeted Advertising</h3>
-              <p className="text-gray-600">Reach customers based on location, interests, and behavior</p>
+              <p className="text-gray-600">Targeted Advertising You can target your potential customers according to location, interests, and preferences and promote your business.</p>
             </div>
           </div>
         </div>
@@ -114,23 +117,27 @@ export default function AdvertisePage() {
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <h3 className="text-xl font-semibold text-gray-900 mb-4">Premium Listing</h3>
-            <p className="text-gray-600 mb-4">Get your business featured at the top of search results with enhanced visibility.</p>
+            {/* <p className="text-gray-600 mb-4">Get your business featured at the top of search results with enhanced visibility.</p> */}
             <ul className="space-y-2 text-gray-600">
+              <li className="flex items-center">
+                <span className="text-green-600 mr-2">✓</span>
+                Place your widget at the top of search results with high visibility and credibility.
+              </li>
               <li className="flex items-center">
                 <span className="text-green-600 mr-2">✓</span>
                 Featured placement in search results
               </li>
               <li className="flex items-center">
                 <span className="text-green-600 mr-2">✓</span>
-                Enhanced business profile
+                Enhanced and detailed business profile
               </li>
               <li className="flex items-center">
                 <span className="text-green-600 mr-2">✓</span>
-                Priority customer support
+                Priority access to customer support
               </li>
               <li className="flex items-center">
                 <span className="text-green-600 mr-2">✓</span>
-                Analytics and performance tracking
+                Performance insights and tracking
               </li>
             </ul>
             <button className="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
@@ -140,23 +147,23 @@ export default function AdvertisePage() {
 
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <h3 className="text-xl font-semibold text-gray-900 mb-4">Sponsored Results</h3>
-            <p className="text-gray-600 mb-4">Appear prominently when customers search for relevant services in your area.</p>
+            <p className="text-gray-600 mb-4">Get ahead of the competition, & be right in front of the customers when they search for businesses like you.</p>
             <ul className="space-y-2 text-gray-600">
               <li className="flex items-center">
                 <span className="text-green-600 mr-2">✓</span>
-                Sponsored placement in search
+                Sponsored placement in search results
               </li>
               <li className="flex items-center">
                 <span className="text-green-600 mr-2">✓</span>
-                Custom call-to-action buttons
+                Use CTA buttons to generate leads
               </li>
               <li className="flex items-center">
                 <span className="text-green-600 mr-2">✓</span>
-                Geographic targeting
+                Advanced geographic targeting
               </li>
               <li className="flex items-center">
                 <span className="text-green-600 mr-2">✓</span>
-                Performance optimization
+                Optimised performance for better results
               </li>
             </ul>
             <button className="mt-4 w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
