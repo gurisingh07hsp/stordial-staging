@@ -697,7 +697,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                       <div key={index}>
                       <div className='my-6'>
                         <div className='flex gap-2 items-center'>
-                          {user && user.avatar ? (
+                          {review.user && review.user.avatar ? (
                             <img src={review.user.avatar} alt="" className='w-8 h-8 rounded-full' />
                           ):(
                           <div className='p-3 rounded-full bg-blue-400'>
