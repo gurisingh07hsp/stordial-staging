@@ -24,10 +24,7 @@ exports.registerUser = async (req, res, next) => {
       email,
       phone,
       password,
-      avatar: {
-        public_id: 'sample_id',
-        url: 'sample_url'
-      }
+      avatar: '',
     });
 
     sendToken(user, 201, res);
@@ -35,6 +32,28 @@ exports.registerUser = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.googleLogin = async(req, res, next) => {
+    try {
+    const { name, email, image } = req.body;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        avatar: image || '',
+        role: "user",
+        authProvider: "google", // <-- new field
+      });
+    }
+    sendToken(user, 200, res);
+    // res.status(200).json({ success: true, user });
+  } catch (err) {
+    next(err);
+  }
+}
 
 // Login user
 exports.loginUser = async (req, res, next) => {

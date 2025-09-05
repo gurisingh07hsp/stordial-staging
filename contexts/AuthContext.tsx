@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { User } from '../types';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { useSession } from "next-auth/react";
 
 interface AuthContextType {
   user: User | null;
@@ -26,6 +27,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [message, setMessage] = useState('');
 
   const router = useRouter();
+  const { data: session } = useSession();
+
+  const googleRegister = async(session: any) => {
+    try{
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/googlelogin`, {
+          name: session.user.name,
+          email: session.user.email,
+          image: session.user.image,
+        }, {withCredentials: true});
+        if(res.status === 200){
+          setUser(res.data.user);
+          // console.log(res.data.user);
+        }
+    }catch{
+      console.log("Google Signin Error");
+    }
+  }
+
+    useEffect(() => {
+    if (session?.user) {
+      googleRegister(session);
+      console.log("session data : ", session);
+    }
+  }, [session]);
 
 
   useEffect(() => {

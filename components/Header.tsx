@@ -4,6 +4,8 @@ import { useMemo } from "react";
 import Link from 'next/link';
 import { Megaphone,User, Menu, Home, LogOut, ShieldCheck, Info, PlusCircle} from 'lucide-react';
 import { User as UserType } from '../types';
+import { signOut } from "next-auth/react";
+
 
 interface HeaderProps {
   onMenuToggle: () => void;
@@ -49,17 +51,17 @@ export default function Header({
             href="/dashboard"
             className="flex items-center space-x-3 cursor-pointer border py-1 px-1 rounded-lg"
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-md">
-              <User className="w-4 h-4 text-white" />
+            <div className={`w-8 h-8 ${user.avatar === '' && 'bg-gradient-to-br from-blue-500 to-purple-500'} rounded-full flex items-center justify-center`}>
+              <img src={user.avatar} alt=""  className={user && user.avatar !== '' ? 'block rounded-full' : 'hidden'}/>
+              <User className={`${user && user.avatar === '' ? 'block' : 'hidden'} w-4 h-4 text-white`}/>
             </div>
             <div className="hidden md:block">
               <p className="text-sm font-semibold text-gray-800">{user.name}</p>
               <p className="text-xs text-gray-500">{user.email}</p>
             </div>
           </Link>
-
           <button
-            onClick={onLogout}
+            onClick={()=>{onLogout(); signOut({ callbackUrl: "/" })}}
             className="text-sm bg-red-600 text-white p-2 rounded-lg transition-colors font-medium flex items-center"
           >
             Logout

@@ -14,8 +14,9 @@ import {
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast'
 import toast from 'react-hot-toast'
-import "react-quill/dist/quill.snow.css";
+import "quill/dist/quill.snow.css";
 import type { ReactQuillProps } from "react-quill";
+
 
 interface BlogPost {
   title: string;
@@ -26,6 +27,7 @@ interface BlogPost {
   metadescription: string;
   status: string;
   user: string;
+  image: string;
 }
 
 interface Blog {
@@ -38,8 +40,10 @@ interface Blog {
   seotitle: string;
   metadescription: string;
   user: string;
+  image: string;
   createdAt: Date;
 }
+
 
 export default function BlogManagement() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,6 +57,7 @@ export default function BlogManagement() {
   title: "",
   excerpt: "",
   content: "",
+  image: '',
   category: "Business Trends",
   status: "Draft",
   seotitle: "",
@@ -62,6 +67,10 @@ export default function BlogManagement() {
   const [id,setId] = useState('');
   const [posts,setPosts] = useState<Blog[]>([]);
   const [Quill, setQuill] = useState<React.ComponentType<ReactQuillProps> | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [isRun, setIsRun] = useState(false);
+
 
   const categories = ['All', 'Business Trends', 'SEO', 'Customer Service', 'Marketing', 'Technology'];
   const statuses = ['All', 'Published', 'Draft', 'Archived'];
@@ -104,12 +113,16 @@ export default function BlogManagement() {
           title: "",
           excerpt: "",
           content: "",
+          image: '',
           category: "Business Trends",
           status: "Draft",
           seotitle: '',
           metadescription: '',
           user: 'Stordial Team'
         });
+        setLoading(false);
+        setFile(null);
+        toast.success("Blog Updated Successfully");
         setShowAddModal(false);
       }
     } catch(error) {
@@ -125,6 +138,9 @@ export default function BlogManagement() {
         setId('');
         setShowEditModal(false);
         getposts();
+        setFile(null);
+        setLoading(false);
+        setIsRun(false);
         toast.success("Blog Updated Successfully");
       }
       else{
@@ -135,13 +151,60 @@ export default function BlogManagement() {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if(showEditModal){
+  useEffect(() => {
+  if (editingPost.image !== '' && isRun) {
+    if (!showEditModal) {
+      addBlog();
+    } else {
       editBlog();
     }
+  }
+}, [editingPost.image]);
+
+    const handleUpload = async () => {
+    if (!file) return alert("Please select a file");
+
+    const formData = new FormData();
+    formData.append("files", file);
+
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/uploadimages`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
+        }
+      );
+
+      console.log("Uploaded:", res.data);
+      setIsRun(true);
+      setEditingPost(prev => ({ ...prev, image: res.data.files[0].url}));
+
+    } catch (err) {
+      console.error(err);
+      alert("Upload failed");
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    if(showEditModal){
+      if(file){
+        handleUpload();
+      }
+      else{
+        editBlog();
+      }
+    }
     else{
-      addBlog();
+      if(file){
+        handleUpload();
+      }
+      else{
+        addBlog();
+      }
     }
   }
 
@@ -211,12 +274,16 @@ export default function BlogManagement() {
       title: "",
       excerpt: "",
       content: "",
+      image: '',
       category: "Business Trends",
       status: "Draft",
       seotitle: '',
       metadescription: '',
       user: 'Stordial Team'
     });
+    setFile(null);
+    setIsRun(false);
+    setLoading(false);
   }
   }, [showAddModal, showEditModal]);
 
@@ -229,6 +296,7 @@ export default function BlogManagement() {
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+
 
   return (
     <div className="space-y-3 sm:space-y-4">
@@ -304,7 +372,7 @@ export default function BlogManagement() {
               <h3 className="text-lg font-medium text-gray-900 mb-4">
                 {showAddModal ? 'Create New Post' : 'Edit Post'}
               </h3>
-              <form onSubmit={(e)=>handleSubmit(e)} className="space-y-4">
+              <form className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                   <input
@@ -325,25 +393,30 @@ export default function BlogManagement() {
                 </div>
 
                 <div>
-                {/* <ReactQuill
-                  theme="snow"
-                  value={editingPost.content}
-  onChange={(value: string) => setEditingPost({ ...editingPost, content: value })}
-                  className="h-60"
-                /> */}
-                          {Quill && (
-            <Quill
-              theme="snow"
-              value={editingPost.content}
-              onChange={(val) => setEditingPost({...editingPost, content: val})}
-              className="h-60"
-            />
-          )}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                  {Quill && (
+                    <Quill
+                      theme="snow"
+                      value={editingPost.content}
+                      onChange={(val) => setEditingPost({...editingPost, content: val})}
+                      className="h-60"
+                    />
+                  )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <label className="block lg:mt-14 mt-20 text-sm font-medium text-gray-700 mb-1">Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setFile(e.target.files?.[0] || null)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-3 sm:gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 lg:mt-10 mt-20 mb-1">Category</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                     <select
                      onChange={(e) => setEditingPost({...editingPost, category: e.target.value})}
                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
@@ -353,7 +426,7 @@ export default function BlogManagement() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 lg:mt-10 mt-2 mb-1">Status</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <select
                     onChange={(e) => setEditingPost({...editingPost, status: e.target.value})}
                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
@@ -362,25 +435,6 @@ export default function BlogManagement() {
                       <option value="Archived">Archived</option>
                     </select>
                   </div>
-                </div>
-                <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 py-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowAddModal(false);
-                      setShowEditModal(false);
-                      // setEditingPost();
-                    }}
-                    className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
-                  >
-                    {showAddModal ? 'Create Post' : 'Update Post'}
-                  </button>
                 </div>
               </form>
             </div>
@@ -391,7 +445,7 @@ export default function BlogManagement() {
               <h3 className="text-lg font-medium text-gray-900 mb-4">
                 SEO Settings
               </h3>
-              <form>
+              <form onSubmit={(e)=>handleSubmit(e)}>
                 <div className='bg-zinc-50 pb-7 pt-4 px-4 rounded-xl border'>
                   <label className="block text-sm font-medium text-gray-700 mb-1">SEO Title</label>
                   <input
@@ -423,6 +477,24 @@ export default function BlogManagement() {
                       <option value="User 2">User 2</option>
                     </select>
                   </div>
+                  <div className="flex flex-col mt-4 sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 py-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowAddModal(false);
+                      setShowEditModal(false);
+                    }}
+                    className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                  >
+                    {showAddModal ? loading ? 'Creating...' : 'Create Post' : loading ? 'Updating...' : 'Update Post'}
+                  </button>
+                </div>
               </form>
               </div>
           </div>

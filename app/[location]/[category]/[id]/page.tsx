@@ -42,7 +42,7 @@ interface BusinessPageProps {
 }
 
 interface Reviews {
-  user: {_id: string, name: string};
+  user: {_id: string, name: string, avatar: string};
   rating: number;
   comment: string;
 }
@@ -65,7 +65,6 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   const decodedLocation = decodeURIComponent(params.location.replace(/-/g, ' '));
   const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
   const decodedId = decodeURIComponent(params.id);
-
 
   useEffect(()=>{
     if(user && reviews){
@@ -96,7 +95,6 @@ export default function BusinessPage({ params }: BusinessPageProps) {
     try{
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/reviews/${decodedId}`);
       if(response.status === 200){
-        console.log(response.data);
         setReviews(response.data.reviews);
       }
     }catch{
@@ -109,7 +107,6 @@ export default function BusinessPage({ params }: BusinessPageProps) {
       try{
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}/id/${decodedId}`, {withCredentials: true});
         if(response.status == 200){
-          console.log(response.data);
           setBusiness(response.data.business);
         }
         else{
@@ -700,9 +697,13 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                       <div key={index}>
                       <div className='my-6'>
                         <div className='flex gap-2 items-center'>
+                          {user && user.avatar ? (
+                            <img src={review.user.avatar} alt="" className='w-8 h-8 rounded-full' />
+                          ):(
                           <div className='p-3 rounded-full bg-blue-400'>
                             <User className='w-4 h-4'/>
                           </div>
+                          )}
                           <span>{review.user.name}</span>
                           <div className={`flex items-center ${review.rating >=0 && review.rating <=2 ? 'bg-red-600' : review.rating >2 && review.rating <4 ? 'bg-yellow-500' : 'bg-green-600'} px-1 text-sm font-semibold rounded-sm text-white`}>{review.rating} <Star className='w-4 h-3 fill-white'/></div>
                         </div>

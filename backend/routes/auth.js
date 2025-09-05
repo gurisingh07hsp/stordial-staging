@@ -15,12 +15,12 @@ const {
   changePassword,
   forgotPassword,
   verifyOTP,
-  resetPassword
+  resetPassword,
+  googleLogin
 } = require('../controllers/authController');
-const { verify } = require('crypto');
 
-// router.route('/register').post(registerUser);
 router.post('/register', registerUser);
+router.post('/googlelogin', googleLogin);
 router.route('/login').post(loginUser);
 router.route('/logout').get(logout);
 router.route('/me').get(isAuthenticated, getUserProfile);

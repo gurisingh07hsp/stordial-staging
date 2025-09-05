@@ -1,5 +1,5 @@
 import React from 'react'
-import { Calendar, Camera, User} from 'lucide-react';
+import { Calendar, User} from 'lucide-react';
 import { Metadata } from "next";
 
 interface Blogdata {
@@ -7,6 +7,7 @@ interface Blogdata {
   title: string;
   excerpt: string;
   content: string;
+  image: string;
   category: string;
   status: string;
   seotitle: string;
@@ -28,6 +29,7 @@ async function getBlog(id: string): Promise<Blogdata> {
 
   if (res.status !== 200) throw new Error("Failed to fetch blog");
   const data = await res.json();
+  console.log(data);
   return data.blog;
 }
 
@@ -57,7 +59,8 @@ const Blog = async({params}: BlogPageProps) => {
         {!loading ? (
             <>
                 <div className='lg:w-[40%] w-[100%] flex justify-center items-center h-64 rounded-lg border mt-6'>
-                    <Camera className='w-10 h-10'/>
+                    {/* <Camera className='w-10 h-10'/> */}
+                    <img src={blog.image} alt="" className='object-cover w-full h-full rounded-lg' />
                 </div>
                 <div className="flex items-center gap-x-6 font-bold text-sm mt-2 ms-3 text-gray-900">
                     <div className='flex items-center'>

@@ -60,6 +60,7 @@ export interface User {
   email: string;
   phone: string;
   businessOwner: boolean;
+  avatar?: string;
 }
 
 interface imageData {
