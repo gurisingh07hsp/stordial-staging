@@ -22,23 +22,24 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    required: [true, 'Please enter your phone number']
+    // required: [true, 'Please enter your phone number']
   },
   password: {
     type: String,
-    required: [true, 'Please enter your password'],
+    required: function() {
+    return this.authProvider === "credentials";
+  },
     minLength: [6, 'Password should be greater than 6 characters'],
     select: false
   },
+  authProvider: {
+    type: String,
+    enum: ["credentials", "google"],
+    default: "credentials",
+  },
   avatar: {
-    public_id: {
-      type: String,
-      required: true
-    },
-    url: {
-      type: String,
-      required: true
-    }
+    type: String,
+    default: '',
   },
   role: {
     type: String,

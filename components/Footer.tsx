@@ -48,11 +48,6 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/businesses" className="text-gray-600 hover:text-blue-600 transition-colors">
-                  Browse Businesses
-                </Link>
-              </li>
-              <li>
                 <Link href="/list-business" className="text-gray-600 hover:text-blue-600 transition-colors">
                   List Your Business
                 </Link>
@@ -68,8 +63,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/help" className="text-gray-600 hover:text-blue-600 transition-colors">
-                  Help Center
+                <Link href="/career" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Career
                 </Link>
               </li>
             </ul>

@@ -8,7 +8,7 @@ const review = require('../models/review');
 // Placeholder for review routes
 router.get('/:id', async(req, res, next) => {
   const reviews = await Review.find({business: req.params.id})
-    .populate('user', 'name')
+    .populate('user', 'name avatar')
 
   if(!reviews){
     res.status(400).json({

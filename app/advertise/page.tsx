@@ -88,26 +88,17 @@ export default function AdvertisePage() {
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Why Advertise with Us?</h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
-              {/* <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4"> */}
-                {/* <span className="text-2xl">👥</span> */}
-                <img src="/icons/audience.png" alt="audience" className='w-20 h-20 mx-auto' />
-              {/* </div> */}
+              <img src="/icons/audience.png" alt="audience" className='w-14 h-14 mx-auto' />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Local Audience</h3>
               <p className="text-gray-600"> Reach out to those actively searching for local businesses and services nearby.</p>
             </div>
             <div className="text-center">
-              {/* <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"> */}
-                {/* <span className="text-2xl">📈</span> */}
-                 <img src="/icons/results.png" alt="audience" className='w-20 h-20 mx-auto' />
-              {/* </div> */}
+              <img src="/icons/results.png" alt="audience" className='w-14 h-14 mx-auto' />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Measurable Results</h3>
               <p className="text-gray-600">Use powerful analytics and insights to track your performance and see how your business grows!</p>
             </div>
             <div className="text-center">
-              {/* <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4"> */}
-                {/* <span className="text-2xl">🎯</span> */}
-                 <img src="/icons/retargeting.png" alt="audience" className='w-20 h-20 mx-auto' />
-              {/* </div> */}
+              <img src="/icons/retargeting.png" alt="audience" className='w-14 h-14 mx-auto' />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Targeted Advertising</h3>
               <p className="text-gray-600">Targeted Advertising You can target your potential customers according to location, interests, and preferences and promote your business.</p>
             </div>

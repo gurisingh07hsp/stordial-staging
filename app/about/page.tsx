@@ -75,26 +75,17 @@ export default function AboutPage() {
           <h2 className="text-2xl font-semibold text-gray-900 mb-6">Why Choose Stordial?</h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
-              {/* <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4"> */}
-                {/* <span className="text-2xl">🎯</span> */}
-                 <img src="/icons/audience.png" alt="audience" className='w-20 h-20 mx-auto' />
-              {/* </div> */}
+              <img src="/icons/audience.png" alt="audience" className='w-14 h-14 mx-auto' />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Local Focus</h3>
               <p className="text-gray-600">We connect you to Nearby businesses you can trust, and find something you need locally.</p>
             </div>
             <div className="text-center">
-              {/* <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"> */}
-                {/* <span className="text-2xl">⭐</span> */}
-                 <img src="/icons/rating.png" alt="audience" className='w-20 h-20 mx-auto' />
-              {/* </div> */}
+              <img src="/icons/rating.png" alt="audience" className='w-14 h-14 mx-auto' />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Verified Reviews</h3>
               <p className="text-gray-600">Our reviews are from real users so you can be confident in your chosen services and businesses.</p>
             </div>
             <div className="text-center">
-              {/* <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4"> */}
-                {/* <span className="text-2xl">🔍</span> */}
-                 <img src="/icons/search.png" alt="audience" className='w-20 h-20 mx-auto' />
-              {/* </div> */}
+                 <img src="/icons/search.png" alt="audience" className='w-14 h-14 mx-auto' />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Easy Search</h3>
               <p className="text-gray-600">Find businesses, products, or services and quickly get accurate information and reliable details.</p>
             </div>

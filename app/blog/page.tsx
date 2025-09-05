@@ -3,7 +3,7 @@ import React from 'react'
 import axios from 'axios';
 import { ArrowRight, Calendar } from "lucide-react";
 import { useState, useEffect } from 'react';
-import { Camera, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import {Card, CardContent,  CardFooter,  CardHeader, } from "@/components/ui/card";
 // import Link from 'next/link';
 
@@ -12,6 +12,7 @@ interface Blog {
   title: string;
   excerpt: string;
   content: string;
+  image: string;
   category: string;
   status: string;
   seotitle: string;
@@ -55,14 +56,14 @@ const BlogsPage = () => {
                     <div
                     className="transition-opacity border-b flex justify-center items-center h-full duration-200 fade-in hover:opacity-70"
                     >
-                    {/* <img
+                    <img
                         src={post.image}
                         alt={post.title}
-                        className="h-full w-full object-cover object-center"
-                    /> */}
-                        <div className='h-full w-full flex justify-center items-center object-cover object-center'>
+                        className="h-full w-full object-cover object-center rounded-t-lg"
+                    />
+                        {/* <div className='h-full w-full flex justify-center items-center object-cover object-center'>
                             <Camera className='w-10 h-10'/>
-                        </div>
+                        </div> */}
                     </div>
               </div>
               <CardHeader>

@@ -5,6 +5,7 @@ import { User, Mail, Phone, Lock } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext'
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { signIn} from "next-auth/react"; 
 import axios from 'axios';
 const Loginpage = () => {
   const { user, login, signup, message  } = useAuth();
@@ -197,7 +198,7 @@ const Loginpage = () => {
               </div>
               
               {/* Social Login Options */}
-              {/* <div className="mt-6">
+               <div className="mt-2">
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-gray-200" />
@@ -207,17 +208,17 @@ const Loginpage = () => {
                   </div>
                 </div>
                 
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  <button className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+                <div className="mt-2 gap-3">
+                  <button onClick={() => signIn("google", { callbackUrl: "/" })} className="flex items-center mx-auto justify-center px-10 py-2 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
                     <div className="w-5 h-5 mr-2">🔍</div>
                     <span className="text-sm font-medium">Google</span>
                   </button>
-                  <button className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+                  {/* <button className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
                     <div className="w-5 h-5 mr-2">📘</div>
                     <span className="text-sm font-medium">Facebook</span>
-                  </button>
+                  </button> */}
                 </div>
-              </div> */}
+              </div>
             </div>
           </div>
         </div>
