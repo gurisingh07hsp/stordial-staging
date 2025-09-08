@@ -38,7 +38,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }, {withCredentials: true});
         if(res.status === 200){
           setUser(res.data.user);
-          // console.log(res.data.user);
         }
     }catch{
       console.log("Google Signin Error");
@@ -48,7 +47,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
     if (session?.user) {
       googleRegister(session);
-      console.log("session data : ", session);
     }
   }, [session]);
 
