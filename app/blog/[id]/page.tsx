@@ -1,6 +1,7 @@
 import React from 'react'
 import { Calendar, User} from 'lucide-react';
 import { Metadata } from "next";
+import SimilarBlogs from '@/components/SimilarBlogs';
 
 interface Blogdata {
   _id: string;
@@ -29,9 +30,17 @@ async function getBlog(id: string): Promise<Blogdata> {
 
   if (res.status !== 200) throw new Error("Failed to fetch blog");
   const data = await res.json();
-  console.log(data);
   return data.blog;
 }
+
+async function getSimilarBlogs(category: string): Promise<Blogdata[]> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/blogs/category/${category}`,{
+    cache: 'no-store',});
+
+    if (res.status !== 200) throw new Error("Failed to fetch blogs");
+    const data = await res.json();
+    return data.blogs;
+  }
 
 export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
   const decodedId = decodeURIComponent(params.id);
@@ -50,32 +59,33 @@ const Blog = async({params}: BlogPageProps) => {
     const decodedId = decodeURIComponent(params.id);
     let loading = true;
     const blog = await getBlog(decodedId);
+    const similarBlogs = await getSimilarBlogs(blog.category); 
     if(blog){
         loading = false;
     }
 
   return (
-    <div className='w-[90vw] mx-auto'>
+    <div className='w-[97vw] mx-auto min-h-[100vh]'>
         {!loading ? (
-            <>
-                <div className='lg:w-[40%] w-[100%] flex justify-center items-center h-64 rounded-lg border mt-6'>
-                    {/* <Camera className='w-10 h-10'/> */}
-                    <img src={blog.image} alt="" className='object-cover w-full h-full rounded-lg' />
+            <div className='flex lg:flex-row flex-col gap-x-6 mt-6 w-full h-full'>
+              <div className='lg:w-[70vw] w-full border rounded-lg'>
+                <div className='w-[100%] flex justify-center items-center h-64 lg:h-96 rounded-t-lg'>
+                    <img src={blog.image} alt="" className='object-cover w-full h-full rounded-t-lg' />
                 </div>
-                <div className="flex items-center gap-x-6 font-bold text-sm mt-2 ms-3 text-gray-900">
+                <div className="flex items-center font-bold text-sm mt-4 ms-3 text-gray-900">
                     <div className='flex items-center'>
                       <User className='w-4 h-4'/>
                       <p className='ms-1'>{blog.user}</p>
-                    <p className='ms-6'>Updated on:</p>
-                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-gray-400 flex-shrink-0" />
+                      <p className='ms-10'>Updated on:</p>
+                        <Calendar className="w-3 h-3 ms-2 sm:w-4 sm:h-4 mr-1 text-gray-400 flex-shrink-0" />
                         <span>{new Date(blog?.createdAt || '').toLocaleDateString()}</span>
                     </div>
                 </div>
-                <h1 className='text-4xl font-bold mt-5'>{blog?.title}</h1>
-                <p className='text-[25px] mt-2'>{blog?.excerpt}</p>
+                <h1 className='text-4xl font-bold ms-3 mt-5'>{blog?.title}</h1>
+                <p className='text-[25px] mt-2 ms-3'>{blog?.excerpt}</p>
                 <div
                 className="
-                    my-6 space-y-4
+                    my-6 space-y-4 ms-3
                     [&_h1]:text-3xl [&_h1]:font-bold
                     [&_h2]:text-2xl [&_h2]:font-bold
                     [&_h3]:text-xl [&_h3]:font-semibold
@@ -94,13 +104,33 @@ const Blog = async({params}: BlogPageProps) => {
                 "
                 dangerouslySetInnerHTML={{ __html: blog?.content || "" }}
                 />
-            </>
+                </div>
+                <SimilarBlogs similarBlogs={similarBlogs} currentBlogId={blog._id} />
+                {/* <div className='lg:w-[25vw] w-full lg:mt-0 mt-10 border rounded-lg'>
+                  <h2 className='p-4 font-semibold text-lg'>Related Articles</h2>
+                  {similarBlogs.length > 1 ? similarBlogs.map((similarBlog, index)=>(
+                    <div key={index} onClick={()=> window.location.href = `/blog/${similarBlog._id}`} className={`${(similarBlog._id === blog._id || similarBlog.status === 'Published') ? 'hidden' : 'block'} px-4 mt-4`}>
+                      <h3 className='text-md font-semibold'>{similarBlog.title}</h3>
+                      <p className='mt-2 text-gray-500'>{similarBlog.excerpt.slice(0,70)}</p>
+                      <div className='flex items-center text-gray-500 mt-2'>
+                        <User className='w-3 h-3'/>
+                        <p className='ms-1 text-sm'>{blog.user}</p>
+                        <p className='ms-10 text-sm'>Updated on:</p>
+                        <Calendar className="w-3 h-3 ms-2 sm:w-4 sm:h-4 mr-1 text-sm flex-shrink-0" />
+                        <p className='text-sm'>{new Date(blog?.createdAt || '').toLocaleDateString()}</p>
+                    </div>
+                    <hr className='mt-4'/>
+                  </div>
+                  )) : (
+                    <p className='p-4 text-center mt-20'>No related articles found.</p>
+                  )}
+                </div> */}
+            </div>
         ) : (
             <div className='h-[100vh] flex justify-center items-center text-2xl'>
                 Loading...
             </div>
         )}
-        
     </div>
   )
 }

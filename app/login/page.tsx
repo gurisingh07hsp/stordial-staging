@@ -5,7 +5,8 @@ import { User, Mail, Phone, Lock } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext'
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { signIn} from "next-auth/react"; 
+import { signIn} from "next-auth/react";
+import { FcGoogle } from "react-icons/fc";
 import axios from 'axios';
 const Loginpage = () => {
   const { user, login, signup, message  } = useAuth();
@@ -62,42 +63,30 @@ const Loginpage = () => {
   return (
     <>
     {!user &&
-    <div className="fixed inset-0 bg-white flex items-center justify-center p-4">
-      <div className={`rounded-2xl ${!showForgot ? 'max-w-md' : ''} w-full  transform transition-all duration-300 animate-slideUp`}>
-        <div className={`relative ${!isLogin ? "lg:h-[86vh] mt-12" : ""} ${showForgot ? 'hidden' : 'block'}`}>
+    <div className="fixed inset-0 bg-[#f5f5f5] flex items-center justify-center p-4">
+      <div className={`rounded-2xl ${!showForgot ? 'max-w-md' : ''} w-full transform transition-all duration-300 animate-slideUp`}>
+        <div className={`relative ${showForgot ? 'hidden' : 'block'}`}>
           {/* Header with gradient background */}
-          <div className="rounded-t-2xl p-6 text-black border border-b-0">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold">
-                    {isLogin ? 'Welcome Back' : 'Join Stordial'}
-                  </h2>
-                  <p className=" text-sm">
-                    {isLogin ? 'Sign in to your account' : 'Create your account'}
-                  </p>
-                </div>
-              </div>
+          <div className="rounded-t-lg border border-b-0 bg-white px-6 py-4 text-black">
+            <div className="flex justify-center mt-2 items-center">
+              <img src="/Stordial crop.png" alt="" className='h-8' />
             </div>
           </div>
 
-          <div className="p-6 border rounded-b-2xl">
+          <div className="px-6 py-4 bg-white border border-t-0 rounded-b-lg shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-gray-700">
+                  {/* <label className="block text-sm font-semibold text-gray-700">
                     Full Name
-                  </label>
+                  </label> */}
                   <div className="relative">
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 focus:bg-white"
-                      placeholder="Enter your full name"
+                      placeholder="Name"
                       required
                     />
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -108,16 +97,16 @@ const Loginpage = () => {
               )}
 
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">
+                {/* <label className="block text-sm font-semibold text-gray-700">
                   Email Address
-                </label>
+                </label> */}
                 <div className="relative">
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 focus:bg-white"
-                    placeholder="Enter your email"
+                    placeholder="Email"
                     required
                   />
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -128,16 +117,16 @@ const Loginpage = () => {
 
               {!isLogin && (
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-gray-700">
+                  {/* <label className="block text-sm font-semibold text-gray-700">
                     Phone Number
-                  </label>
+                  </label> */}
                   <div className="relative">
                     <input
                       type="tel"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 focus:bg-white"
-                      placeholder="Enter your phone number"
+                      placeholder="Phone"
                       required
                     />
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -148,16 +137,16 @@ const Loginpage = () => {
               )}
 
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">
+                {/* <label className="block text-sm font-semibold text-gray-700">
                   Password
-                </label>
+                </label> */}
                 <div className="relative">
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 focus:bg-white"
-                    placeholder="Enter your password"
+                    placeholder="Password"
                     required
                   />
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -168,7 +157,7 @@ const Loginpage = () => {
 
               <button
                 type="submit"
-                className="w-full bg-[#0765F2] text-white py-3 px-6 rounded-xl transition-all duration-200 font-semibold transform hover:scale-105"
+                className="w-full bg-[#0765F2] text-white py-3 px-6 rounded-xl font-semibold"
               >
                 {isLogin ? 'Sign In' : 'Create Account'}
               </button>
@@ -178,9 +167,23 @@ const Loginpage = () => {
               {message}
             </p>}
 
-            <div className="mt-6 pt-2 border-t border-gray-100">
+              {/* Social Login Options */}
+               <div className="mt-2">
+                <div className="mt-2 gap-3">
+                  {/* <button onClick={() => signIn("google", { callbackUrl: "/" })} className="flex items-center mx-auto justify-center px-10 py-2 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+                    <div className="w-5 h-5 mr-2">🔍</div>
+                    <span className="text-sm font-medium">Google</span>
+                  </button> */}
+                  <button onClick={() => signIn("google", { callbackUrl: "/" })} className="w-full flex items-center justify-center py-2 font-semibold mx-auto border rounded-lg">
+                  <FcGoogle className="mr-2 size-5" />
+                  {isLogin ? 'Continue with Google' : 'Sign up with Google'}
+                </button>
+                </div>
+              </div>
+
+            <div className="mt-4 pt-2 border-gray-100">
               <div className="text-center">
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 mb-2">
                   {isLogin ? "Don't have an account? " : "Already have an account? "}
                   <button
                     onClick={() => setIsLogin(!isLogin)}
@@ -195,29 +198,6 @@ const Loginpage = () => {
                     Forgot password?
                   </button>
                 )}
-              </div>
-              
-              {/* Social Login Options */}
-               <div className="mt-2">
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-200" />
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">Or continue with</span>
-                  </div>
-                </div>
-                
-                <div className="mt-2 gap-3">
-                  <button onClick={() => signIn("google", { callbackUrl: "/" })} className="flex items-center mx-auto justify-center px-10 py-2 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                    <div className="w-5 h-5 mr-2">🔍</div>
-                    <span className="text-sm font-medium">Google</span>
-                  </button>
-                  {/* <button className="flex items-center justify-center px-4 py-2 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                    <div className="w-5 h-5 mr-2">📘</div>
-                    <span className="text-sm font-medium">Facebook</span>
-                  </button> */}
-                </div>
               </div>
             </div>
           </div>

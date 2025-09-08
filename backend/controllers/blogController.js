@@ -55,6 +55,25 @@ exports.getBlogById = async(req,res,next) => {
     }
 }
 
+exports.getBlogsByCategory = async(req, res, next) => {
+    try{
+        const {category} = req.params;
+        const blogs = await Blog.find({category: category});
+        if(!blogs || blogs.length === 0){
+            return res.status(404).json({
+                success: false,
+                message: 'No Articals are found'
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            blogs
+        });
+    }catch(error){
+        next(error);
+    }
+}
+
 exports.editBlog = async (req,res,next) => {
     try{
         let blog = await Blog.findById(req.params.id);
