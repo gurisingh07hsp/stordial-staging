@@ -27,8 +27,8 @@ export default function SimilarBlogs({
   similarBlogs = similarBlogs.filter(blog=> blog._id !== currentBlogId && blog.status === 'Published');
 
   return (
-    <div className="lg:w-[25vw] w-full lg:mt-0 mt-10 border rounded-lg">
-      <h2 className="p-4 font-semibold text-lg">Related Articles</h2>
+    <div className="lg:w-[25vw] h-[500px] w-full lg:mt-0 mt-10 border rounded-lg">
+      <h2 className="p-4 font-semibold text-lg">Related Blogs</h2>
       {similarBlogs.length > 0 ? (
         similarBlogs.map((similarBlog, index) => (
           <div

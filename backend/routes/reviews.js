@@ -22,58 +22,6 @@ router.get('/:id', async(req, res, next) => {
   });
 });
 
-
-// router.post('/new', isAuthenticated, async(req,res,next) => {
-//   try{
-//     req.body.user = req.user._id;
-//     const rating = req.body.selected;
-//     const business = await Business.findById(req.body.business._id);
-//     if(!business){
-//       res.status(400).json({
-//         success: false,
-//         message: 'Business not Found'
-//       })
-//     }
-
-//     const isreview = await Review.findOne({ user: req.body.user, business: req.body.business._id });
-
-//     if(isreview){
-//       const re = business.rating - isreview.rating;
-//       business.rating = (re + rating)/business.reviews;
-//     }
-//     else{
-//       const r = business.rating + rating;
-//       const rev = r/(business.reviews + 1);
-
-//       business.rating = rev;
-//       business.reviews = business.reviews + 1;
-//     } 
-
-//     await business.save();
-
-
-//     const {comment} = req.body;
-//     console.log(rating, comment);
-//    const review = await Review.findOneAndUpdate(
-//     { user: req.body.user, business: req.body.business._id },
-//     { rating, comment },  // the fields you want to update
-//     {
-//       new: true,          // return the updated document
-//       upsert: true,       // create if not exists
-//       setDefaultsOnInsert: true
-//     }
-//   );
-
-// res.status(200).json({
-//   success: true,
-//   review,
-//   business
-// });
-//   }catch(error){
-//     next(error);
-//   }
-// })
-
 router.post('/new', isAuthenticated, async (req, res, next) => {
   try {
     req.body.user = req.user._id;

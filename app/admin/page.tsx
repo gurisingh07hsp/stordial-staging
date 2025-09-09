@@ -6,6 +6,7 @@ import Dashboard from '../../components/admin/Dashboard';
 import BusinessManagement from '../../components/admin/BusinessManagement';
 import BlogManagement from '../../components/admin/BlogManagement';
 import SEOManagement from '../../components/admin/SEOManagement';
+import CareerManagement from '../../components/admin/CareerManagement';
 import Growth from '../../components/admin/Growth';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -55,6 +56,8 @@ export default function AdminPanel() {
         return <BlogManagement />;
       case 'seo':
         return <SEOManagement />;
+      case 'career':
+        return <CareerManagement />
       case 'growth':
         return <Growth />;
       case 'users':

@@ -65,10 +65,10 @@ const Blog = async({params}: BlogPageProps) => {
     }
 
   return (
-    <div className='w-[97vw] mx-auto min-h-[100vh]'>
+    <div className='w-[90vw] mb-8 mx-auto'>
         {!loading ? (
-            <div className='flex lg:flex-row flex-col gap-x-6 mt-6 w-full h-full'>
-              <div className='lg:w-[70vw] w-full border rounded-lg'>
+            <div className='flex lg:flex-row flex-col gap-x-10 mt-6 w-full'>
+              <div className='lg:w-[65vw] w-full border min-h-[100vh] rounded-lg'>
                 <div className='w-[100%] flex justify-center items-center h-64 lg:h-96 rounded-t-lg'>
                     <img src={blog.image} alt="" className='object-cover w-full h-full rounded-t-lg' />
                 </div>
@@ -106,25 +106,6 @@ const Blog = async({params}: BlogPageProps) => {
                 />
                 </div>
                 <SimilarBlogs similarBlogs={similarBlogs} currentBlogId={blog._id} />
-                {/* <div className='lg:w-[25vw] w-full lg:mt-0 mt-10 border rounded-lg'>
-                  <h2 className='p-4 font-semibold text-lg'>Related Articles</h2>
-                  {similarBlogs.length > 1 ? similarBlogs.map((similarBlog, index)=>(
-                    <div key={index} onClick={()=> window.location.href = `/blog/${similarBlog._id}`} className={`${(similarBlog._id === blog._id || similarBlog.status === 'Published') ? 'hidden' : 'block'} px-4 mt-4`}>
-                      <h3 className='text-md font-semibold'>{similarBlog.title}</h3>
-                      <p className='mt-2 text-gray-500'>{similarBlog.excerpt.slice(0,70)}</p>
-                      <div className='flex items-center text-gray-500 mt-2'>
-                        <User className='w-3 h-3'/>
-                        <p className='ms-1 text-sm'>{blog.user}</p>
-                        <p className='ms-10 text-sm'>Updated on:</p>
-                        <Calendar className="w-3 h-3 ms-2 sm:w-4 sm:h-4 mr-1 text-sm flex-shrink-0" />
-                        <p className='text-sm'>{new Date(blog?.createdAt || '').toLocaleDateString()}</p>
-                    </div>
-                    <hr className='mt-4'/>
-                  </div>
-                  )) : (
-                    <p className='p-4 text-center mt-20'>No related articles found.</p>
-                  )}
-                </div> */}
             </div>
         ) : (
             <div className='h-[100vh] flex justify-center items-center text-2xl'>

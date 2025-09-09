@@ -1,46 +1,47 @@
 'use client';
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios';
 
 interface job {
+  _id: string;
   title: string;
-  location: string;
-  type: string,
-  description: string,
+  description: string;
+  type: string;
+  status: string;
+  createdAt: Date;
 }
 const Career = () => {
   const [showModal, setShowModal] = useState(false)
   const [selectedJob, setSelectedJob] = useState<job | null>(null)
   const [showSuccess, setShowSuccess] = useState(false)
-  const [showResumeModal, setShowResumeModal] = useState(false)
-  const [uploadSuccess, setUploadSuccess] = useState(false)
+  // const [showResumeModal, setShowResumeModal] = useState(false)
+  // const [uploadSuccess, setUploadSuccess] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     experience: '',
-    coverLetter: ''
+    coverletter: ''
   })
 
-  const jobs = [
-    {
-      title: "Frontend Developer",
-      location: "Remote",
-      type: "Full-time",
-      description: "Build responsive and modern web applications using React, Next.js, and Tailwind CSS.",
-    },
-    {
-      title: "Backend Engineer",
-      location: "Remote", 
-      type: "Full-time",
-      description: "Design scalable APIs and work with Node.js, Express, and MongoDB.",
-    },
-    {
-      title: "UI/UX Designer",
-      location: "Remote",
-      type: "Contract",
-      description: "Create beautiful, user-friendly interfaces and contribute to product design.",
-    },
-  ]
+  const [jobs, setJobs] = useState<job[]>([]);
+
+
+    const getjobs = async() => {
+    try{
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/jobs/`);
+        if(response.status === 200){
+            setJobs(response.data.jobs);
+            console.log(response.data);
+        }
+    }catch(error){
+        console.log(error);
+    }
+  }
+
+  useEffect(()=>{
+    getjobs();
+  },[])
 
   const handleApplyClick = (job: job) => {
     setSelectedJob(job)
@@ -55,35 +56,54 @@ const Career = () => {
     })
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     // Simulate form submission
     if (formData.name && formData.email && formData.phone && formData.experience) {
-      setShowSuccess(true)
-      setTimeout(() => {
-        setShowModal(false)
-        setShowSuccess(false)
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          experience: '',
-          coverLetter: ''
-        })
-      }, 2000)
+      try{
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/jobs/apply/${selectedJob?._id}`, formData);
+        if(response.status === 200){
+          setShowSuccess(true)
+          setTimeout(() => {
+            setShowModal(false)
+            setShowSuccess(false)
+            setFormData({
+              name: '',
+              email: '',
+              phone: '',
+              experience: '',
+              coverletter: ''
+            })
+          }, 2000)
+        }
+      }catch(error){
+        console.log(error);
+      }
+      // setShowSuccess(true)
+      // setTimeout(() => {
+      //   setShowModal(false)
+      //   setShowSuccess(false)
+      //   setFormData({
+      //     name: '',
+      //     email: '',
+      //     phone: '',
+      //     experience: '',
+      //     coverLetter: ''
+      //   })
+      // }, 2000)
     }
   }
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      // Simulate file upload
-      setUploadSuccess(true)
-      setTimeout(() => {
-        setShowResumeModal(false)
-        setUploadSuccess(false)
-      }, 2000)
-    }
-  }
+  // const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0]
+  //   if (file) {
+  //     // Simulate file upload
+  //     setUploadSuccess(true)
+  //     setTimeout(() => {
+  //       setShowResumeModal(false)
+  //       setUploadSuccess(false)
+  //     }, 2000)
+  //   }
+  // }
 
   const closeModal = () => {
     setShowModal(false)
@@ -93,14 +113,14 @@ const Career = () => {
       email: '',
       phone: '',
       experience: '',
-      coverLetter: ''
+      coverletter: ''
     })
   }
 
-  const closeResumeModal = () => {
-    setShowResumeModal(false)
-    setUploadSuccess(false)
-  }
+  // const closeResumeModal = () => {
+  //   setShowResumeModal(false)
+  //   setUploadSuccess(false)
+  // }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -132,9 +152,12 @@ const Career = () => {
               <h3 className="text-xl font-bold text-gray-900 mb-2">
                 {job.title}
               </h3>
-              <p className="text-sm text-gray-500 mb-2">{job.location}</p>
+              <p className="text-sm text-gray-500 mb-2">Remote</p>
               <span className="inline-block bg-blue-100 text-blue-600 px-3 py-1 text-sm rounded-full mb-4">
                 {job.type}
+              </span>
+              <span className={`ms-6 inline-block ${job.status == 'Open' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'} px-3 py-1 text-sm rounded-full mb-4`}>
+                {job.status}
               </span>
               <p className="text-gray-600 mb-4">{job.description}</p>
               <button 
@@ -149,7 +172,7 @@ const Career = () => {
       </section>
 
       {/* Call To Action */}
-      <section className="bg-gray-900 text-white py-16 text-center">
+      {/* <section className="bg-gray-900 text-white py-16 text-center">
         <h2 className="text-3xl font-bold mb-4">Didn&apos;t find your role?</h2>
         <p className="text-lg mb-6">
           We&apos;re always looking for passionate people. Send us your resume and
@@ -161,7 +184,7 @@ const Career = () => {
         >
           Send Resume
         </button>
-      </section>
+      </section> */}
 
       {/* Application Modal */}
       {showModal && (
@@ -252,7 +275,7 @@ const Career = () => {
                     </label>
                     <textarea
                       name="coverLetter"
-                      value={formData.coverLetter}
+                      value={formData.coverletter}
                       onChange={handleInputChange}
                       rows={4}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -294,7 +317,7 @@ const Career = () => {
       )}
 
       {/* Resume Upload Modal */}
-      {showResumeModal && (
+      {/* {showResumeModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl max-w-md w-full">
             <div className="p-6">
@@ -345,7 +368,7 @@ const Career = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   )
 }
