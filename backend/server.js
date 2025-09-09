@@ -36,6 +36,7 @@ app.use('/api/v1/reviews', require('./routes/reviews'));
 app.use('/api/v1/admin', require('./routes/admin'));
 app.use('/api/v1/places', require('./routes/places'));
 app.use('/api/v1/uploadimages', require('./routes/uploadimages'));
+app.use('/api/v1/jobs', require('./routes/jobs'));
 
 // Health check route
 app.get('/api/v1/health', (req, res) => {

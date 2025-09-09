@@ -13,7 +13,8 @@ import {
   LogOut,
   Menu,
   X,
-  TrendingUp
+  TrendingUp,
+  Briefcase
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -28,6 +29,7 @@ const navigationItems = [
   { id: 'businesses', label: 'Businesses', icon: Building2 },
   { id: 'blog', label: 'Blog', icon: FileText },
   { id: 'seo', label: 'SEO', icon: Search },
+  { id: 'career', label: 'Career', icon: Briefcase },
   { id: 'users', label: 'Users', icon: Users },
   { id: 'reviews', label: 'Reviews', icon: MessageSquare },
   { id: 'growth', label: 'Growth', icon: TrendingUp },
