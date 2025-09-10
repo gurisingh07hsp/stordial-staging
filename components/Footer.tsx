@@ -76,16 +76,16 @@ export default function Footer() {
             <div className="space-y-3">
               <div className="flex items-center text-gray-600">
                 <Mail className="w-4 h-4 mr-2" />
-                <span className="text-sm">support@stordial.com</span>
+                <span className="text-sm">info@stordial.com</span>
               </div>
               <div className="flex items-center text-gray-600">
                 <Phone className="w-4 h-4 mr-2" />
                 <span className="text-sm">+1 (555) 123-4567</span>
               </div>
-              <div className="flex items-center text-gray-600">
+              {/* <div className="flex items-center text-gray-600">
                 <MapPin className="w-4 h-4 mr-2" />
                 <span className="text-sm">123 Business St, City, State</span>
-              </div>
+              </div> */}
 
                <div className="mt-12 pt-8 border-t border-gray-200">
           <div className="max-w-md">

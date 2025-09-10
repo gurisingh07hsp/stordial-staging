@@ -14,7 +14,7 @@ import {
   Camera,
   ChevronLeft,
   ChevronRight,
-  Calendar,
+  // Calendar,
   Award,
   CheckCircle,
   User
@@ -130,7 +130,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center bg-white rounded-2xl p-8 shadow-xl max-w-md">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">Business Not Found</h1>
-                          <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 mb-6">
                   This business in {decodedCategory} category in {decodedLocation} could not be found.
                 </p>
           <div className="space-y-3">
@@ -385,7 +385,6 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                     className="w-[48%] h-[48%] bg-gradient-to-br from-green-100 to-blue-100 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
                     onClick={() => openImageModal(index + 2)}
                   >
-                    {/* <div className="text-2xl">☕</div> */}
                      <Camera/>
                   </div>
                   ))}
@@ -406,61 +405,57 @@ export default function BusinessPage({ params }: BusinessPageProps) {
           </div>
 
           {/* Business Info */}
-          <div className="p-8">
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+          <div className="px-8 py-4 lg:py-8">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 lg:gap-6">
               <div className="flex-1">
-                <div className="flex items-center mb-4">
-                  <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mr-4">{business.name}</h1>
+                <div className="flex items-center mb-2 lg:mb-4">
+                  <h1 className="text-[20px] lg:text-3xl font-bold text-gray-800 mr-4">{business.name}</h1>
                   {business.isClaimed || business.verified && (
-                    <div className="flex items-center bg-[#60CE80] text-white px-3 py-1 rounded-full">
+                    <div className="lg:flex hidden items-center bg-[#60CE80] text-white px-3 py-1 rounded-full">
                       <CheckCircle className="w-4 h-4 mr-1" />
                       <span className="text-sm font-bold">Verified</span>
                     </div>
                   )}
                 </div>
                 
-                <div className="flex flex-wrap items-center gap-4 mb-6">
-                  <div className={`flex items-center ${business.rating >=0 && business.rating <=2 ? 'bg-red-400' : business.rating >2 && business.rating <4 ? 'bg-yellow-400' : 'bg-green-400'} px-4 py-2 rounded-full`}>
+                <div className="flex flex-wrap items-center gap-2 lg:gap-4 mb-2 lg:mb-6">
+                  <div className={`flex items-center ${business.rating >=0 && business.rating <=2 ? 'bg-red-600' : business.rating >2 && business.rating <4 ? 'bg-yellow-500' : 'bg-green-600'} px-4 py-1 lg:py-2 rounded-full`}>
                     <Star className="w-5 h-5 text-gray-800 mr-2" />
-                    <span className="font-bold text-gray-800">{business.rating}</span>
-                    <span className="text-gray-600 ml-1">({business.reviews} reviews)</span>
+                    <span className="font-bold lg:text-base text-sm text-gray-800">{business.rating}</span>
+                    <span className="text-gray-600 lg:text-base text-sm ml-1">({business.reviews} reviews)</span>
                   </div>
+                  {business.isClaimed || business.verified && (
+                    <div className="flex lg:hidden items-center bg-[#60CE80] text-white px-3 py-1 rounded-full">
+                      <CheckCircle className="w-4 h-4 mr-1" />
+                      <span className="font-bold text-sm">Verified</span>
+                    </div>
+                  )}
                   {/* <div className="flex items-center bg-green-100 text-green-700 px-4 py-2 rounded-full">
                     <Clock className="w-4 h-4 mr-2" />
                     <span className="text-sm font-medium">Opens in 15 mins</span>
                   </div> */}
-                  <div className="flex items-center bg-blue-100 text-blue-700 px-4 py-2 rounded-full">
+                  {/* <div className="flex items-center bg-blue-100 text-blue-700 px-4 py-2 rounded-full">
                     <Calendar className="w-4 h-4 mr-2" />
                     <span className="text-sm font-medium">{business.yearsInBusiness} Years</span>
-                  </div>
+                  </div> */}
                 </div>
 
-                <div className="flex items-center text-gray-600 mb-6">
+                <div className="flex items-center text-gray-600 mb-2 lg:mb-6">
                   <MapPin className="w-5 h-5 mr-2" />
                   <span className="font-medium">{business.city.charAt(0).toUpperCase() + business.city.slice(1)} • {business.category.charAt(0).toUpperCase() + business.category.slice(1)} • {business.subcategory}</span>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex lg:flex-row flex-col lg:items-center items-start gap-4 mb-2">
-                  <div className='flex justify-center items-center gap-x-4'>
+                <div className="flex lg:flex-row flex-col lg:items-center items-start lg:gap-4 lg:mb-2">
+                  <div className='flex justify-center items-center gap-x-2 lg:gap-x-4'>
                   <a 
                     href={`tel:${business.phone}`}
-                    className="bg-blue-600 text-white lg:px-8 px-4 py-3 rounded-xl transition-all duration-300 flex items-center font-semibold"
+                    className="bg-blue-600 text-white lg:px-8 px-4 py-3 lg:text-base text-sm rounded-xl transition-all duration-300 flex items-center font-semibold"
                   >
-                    <Phone className="w-5 h-5 mr-2" />  
+                    <Phone className="lg:w-5 w-4 h-4 lg:h-5 mr-2" />  
                     Call Now
                   </a>
-
-                  {/* <a 
-                    href={`tel:${business.phone}`}
-                    className="lg:hidden block"
-                  >
-                    <div className='lg:hidden bg-blue-600 text-white py-3 rounded-xl transition-all duration-300 flex justify-center items-center font-semibold'>
-                      <Phone className="w-7 h-8" />
-                    </div>
-                    <p className='mt-1 font-semibold text-sm'>Call Now</p>  
-                  </a> */}
-                  <button className="bg-zinc-50 lg:px-8 px-4 py-3 border rounded-xl transition-all duration-300 flex items-center font-semibold">
+                  <button className="bg-zinc-50 lg:px-8 px-4 py-3 lg:text-base text-sm border rounded-xl transition-all duration-300 flex items-center font-semibold">
                     <MessageSquare className="w-5 h-5 mr-2" />
                     WhatsApp
                   </button>
@@ -508,7 +503,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
           onClick={() => {setSelected(star); setshowReview(true)}}
           className={`${star <= (hovered ?? selected ?? 0)
                 ? "bg-yellow-500"
-                : "text-zinc-600"} p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer`}
+                : "text-zinc-600"} p-2 lg:p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer`}
         >
           <Star
             className={
