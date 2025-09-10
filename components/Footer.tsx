@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { 
   Facebook, Twitter, Instagram, Linkedin, 
-  Youtube, Mail, Phone, MapPin 
+  Youtube, Mail, Phone,
 } from 'lucide-react';
 
 export default function Footer() {
