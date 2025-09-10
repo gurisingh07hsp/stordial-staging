@@ -17,8 +17,7 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  // origin: 'https://stordial-staging.vercel.app',
-  origin: 'http://localhost:3000',
+  origin: 'https://stordial-staging.vercel.app',
   credentials: true,
   methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization']
