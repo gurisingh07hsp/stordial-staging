@@ -520,7 +520,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
        required className='border border-gray-800 w-full mt-2 p-2'
        value={comment}
        onChange={(e)=> setComment(e.target.value)}/>
-      <div className='relative mb-5 lg:mb-0'>
+      <div className='relative mb-10 lg:mb-0'>
         <button onClick={()=> setshowReview(false)} className='p-2 rounded-lg bg-zinc-100 border absolute right-20'>Cancel</button>
         <input type="submit" value='Submit' className='bg-blue-600 p-2 rounded-lg text-white absolute right-1 cursor-pointer' />
       </div>
