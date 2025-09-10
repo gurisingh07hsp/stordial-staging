@@ -69,13 +69,13 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   useEffect(()=>{
     if(user && reviews){
       reviews.forEach(e => {
-        if(e.user._id === user._id){
+        if(e.user._id === user._id && !showReview){
           setSelected(e.rating);
         }
       });
     }
     else{
-      setSelected(0);
+        setSelected(0);
     }
   },[user, reviews,showReview])
 
@@ -323,7 +323,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                       clickable: true,
                     }}
                     modules={[Autoplay, Navigation]}
-                    className="mySwiper w-[80vw] h-[200px]"
+                    className="mySwiper w-[80vw] h-[200px] lg:h-0 lg:w-0"
                   >
                     <style jsx>{`
                       :global(.swiper-pagination-bullet) {
@@ -342,7 +342,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                     `}</style>
                     {business && business.images.map((image,index)=> (
                       <SwiperSlide key={index} onClick={() => openImageModal(index)} className="h-full flex items-center justify-center rounded-xl">
-                        <div className="flex lg:hidden justify-center cursor-pointer transition-transform slick-padding rounded-xl">
+                        <div className="flex lg:h-0 lg:w-0 justify-center cursor-pointer transition-transform slick-padding rounded-xl">
                           <img alt={`Slide ${index}`} loading="lazy" className='w-full h-full rounded-xl' src={image.url}></img>
                         </div>
                       </SwiperSlide>
@@ -419,10 +419,10 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                 </div>
                 
                 <div className="flex flex-wrap items-center gap-2 lg:gap-4 mb-2 lg:mb-6">
-                  <div className={`flex items-center ${business.rating >=0 && business.rating <=2 ? 'bg-red-600' : business.rating >2 && business.rating <4 ? 'bg-yellow-500' : 'bg-green-600'} px-4 py-1 lg:py-2 rounded-full`}>
-                    <Star className="w-5 h-5 text-gray-800 mr-2" />
-                    <span className="font-bold lg:text-base text-sm text-gray-800">{business.rating}</span>
-                    <span className="text-gray-600 lg:text-base text-sm ml-1">({business.reviews} reviews)</span>
+                  <div className={`flex items-center ${business.rating >=0 && business.rating <=2 ? 'bg-red-500' : business.rating >2 && business.rating <4 ? 'bg-yellow-500' : 'bg-green-600'} px-4 py-1 lg:py-2 rounded-full`}>
+                    <Star className="w-5 h-5 text-white mr-2" />
+                    <span className="font-bold lg:text-base text-sm text-white">{business.rating}</span>
+                    <span className="text-white lg:text-base text-sm ml-1">({business.reviews} reviews)</span>
                   </div>
                   {business.isClaimed || business.verified && (
                     <div className="flex lg:hidden items-center bg-[#60CE80] text-white px-3 py-1 rounded-full">
