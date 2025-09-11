@@ -64,6 +64,7 @@ export default function AdvertisePage() {
       "Verified Badge",
       "Top placement always (first 5 results)",
       "Banner advertisement on city/category page",
+      "WhatsApp Click-to-Chat Button",
       "Direct calls & leads reports",
       "Free support for updates",
       'Featured in homepage “Top Businesses”',
@@ -177,7 +178,7 @@ export default function AdvertisePage() {
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Get in Touch</h3>
               <div className="space-y-3 text-gray-600">
-                <p><strong>Email:</strong> advertise@stordial.com</p>
+                <p><strong>Email:</strong> info@stordial.com</p>
                 <p><strong>Phone:</strong> +1 (555) 123-4567</p>
                 <p><strong>Hours:</strong> Monday - Friday, 9 AM - 6 PM</p>
               </div>

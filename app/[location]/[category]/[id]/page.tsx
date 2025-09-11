@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { FaWhatsapp } from "react-icons/fa";
 import { 
   Phone, 
   MapPin, 
@@ -9,12 +10,13 @@ import {
   Globe, 
   MessageSquare,
   ArrowLeft,
-  // Share2,
+  Share2,
   X,
   Camera,
   ChevronLeft,
   ChevronRight,
   // Calendar,
+  Bookmark,
   Award,
   CheckCircle,
   User
@@ -60,11 +62,13 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   const [reviews, setReviews] = useState<Reviews[]>([]);
   const [showReview, setshowReview] = useState(false);
   const [comment,setComment] = useState('');
+  const [displayText, setDisplayText] = useState('');
 
 
   const decodedLocation = decodeURIComponent(params.location.replace(/-/g, ' '));
   const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
   const decodedId = decodeURIComponent(params.id);
+
 
   useEffect(()=>{
     if(user && reviews){
@@ -122,6 +126,28 @@ export default function BusinessPage({ params }: BusinessPageProps) {
     getReviews();
     getSimilarBusinesses();
   }, [decodedId])
+
+
+     useEffect(()=>{
+    if(business?.hours){
+      const now = new Date();
+      const today = new Date().toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
+      const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+
+      if (business.hours["24x7"]?.closed) {
+        setDisplayText("Open 24x7")
+      } else {
+        const todayHours = business.hours[today];
+        if (todayHours?.closed) {
+          setDisplayText("Closed Today")
+        } else if (currentTime > todayHours.close) {
+          setDisplayText("Closed Now")
+        } else {
+          setDisplayText(`Open ${todayHours.open} - ${todayHours.close}`)
+        }
+      }
+    } 
+   },[business])
   
   if (!business) {
     return (
@@ -250,8 +276,6 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   }
 
 
-
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <Toaster
@@ -301,7 +325,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
 
       <div className="container mx-auto mt-2 lg:mt-0 px-4 pb-12">
         {/* Hero Section */}
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-8">
+        <div className="bg-white rounded-3xl overflow-hidden mb-8">
           {/* Image Gallery */}
           <div className="relative h-60 lg:h-[350px] bg-gradient-to-br from-gray-100 to-gray-200">
             <div className="grid lg:grid-cols-3 space-x-2 p-4 h-full">
@@ -430,14 +454,10 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                       <span className="font-bold text-sm">Verified</span>
                     </div>
                   )}
-                  {/* <div className="flex items-center bg-green-100 text-green-700 px-4 py-2 rounded-full">
+                  <div className="flex items-center bg-green-100 text-green-700 px-4 py-1 lg:py-2 rounded-full">
                     <Clock className="w-4 h-4 mr-2" />
-                    <span className="text-sm font-medium">Opens in 15 mins</span>
-                  </div> */}
-                  {/* <div className="flex items-center bg-blue-100 text-blue-700 px-4 py-2 rounded-full">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    <span className="text-sm font-medium">{business.yearsInBusiness} Years</span>
-                  </div> */}
+                    <span className="text-sm font-medium">{displayText}</span>
+                  </div>
                 </div>
 
                 <div className="flex items-center text-gray-600 mb-2 lg:mb-6">
@@ -455,29 +475,40 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                     <Phone className="lg:w-5 w-4 h-4 lg:h-5 mr-2" />  
                     Call Now
                   </a>
-                  <button className="bg-zinc-50 lg:px-8 px-4 py-3 lg:text-base text-sm border rounded-xl transition-all duration-300 flex items-center font-semibold">
-                    <MessageSquare className="w-5 h-5 mr-2" />
+                  <button onClick={() =>
+                    window.open(`https://wa.me/${business.phone}?text=Hello%20I%20want%20to%20know%20more`,"_blank")}
+                    className="bg-zinc-50 lg:px-6 px-4 py-3 lg:text-base text-sm text-green-600 border rounded-xl transition-all duration-300 flex items-center font-semibold">
+                    {/* <MessageSquare className="w-5 h-5 mr-2" /> */}
+                    <FaWhatsapp className='size-6 mr-1 text-green-600'/>
                     WhatsApp
                   </button>
-
-                  {/* <button className="lg:hidden rounded-xl flex flex-col justify-center items-center text-sm font-semibold">
-                    <img src="https://akam.cdn.jdmagicbox.com/images/icons/iphone/newicon/whatsappIcn2308x48.png" width={57} height={55} alt="" />
-                    WhatsApp
-                  </button> */}
-{/* 
-                  <button className="lg:hidden block">
-                    <div className="lg:hidden block bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
-                      <Share2 className="w-7 h-7" />
-                    </div>
-                    <p className='mt-1 font-semibold text-sm'>Share</p>
-                  </button> */}
-                  </div>
-                    {/* <button className="hidden lg:block bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
+                </div>
+                <div className='mt-2 lg:mt-0'>
+                  <button
+                    onClick={() => {
+                      if (navigator.share) {
+                        navigator
+                          .share({
+                            title: document.title,
+                            text: "Check out this page!",
+                            url: window.location.href,
+                          })
+                          .catch((err) => console.log("Share failed:", err));
+                      } else {
+                        navigator.clipboard.writeText(window.location.href);
+                        alert("Link copied to clipboard!");
+                      }
+                    }}
+                    className="bg-gray-100 border text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
                     <Share2 className="w-5 h-5" />
-                  </button> */}
-                  {/* <button className="bg-gray-100 text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
+                  </button>
+
+                  <button
+                    onClick={() => {alert("Press Ctrl+D (Windows) or Cmd+D (Mac) to bookmark this page!");}}
+                    className="bg-gray-100 ms-2 border text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
                     <Bookmark className="w-5 h-5" />
-                  </button> */}
+                  </button>
+                  </div>
                 </div>
 
                 {/* Specialties */}
@@ -534,7 +565,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
+            <div className="bg-white rounded-3xl overflow-hidden">
               {/* Tab Navigation */}
               <div className="border-b border-gray-200">
                 <nav className="flex space-x-10 px-8 overflow-x-scroll hide-scrollbar">
@@ -715,7 +746,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
 
             {/* Similar Businesses */}
             <div>
-            { similarBusinesses && similarBusinesses.length > 1 && <div className="bg-white rounded-3xl shadow-xl mt-8 overflow-hidden">
+            { similarBusinesses && similarBusinesses.length > 1 && <div className="bg-white rounded-3xl mt-8 overflow-hidden">
               <div className="p-8">
                 <h3 className="text-2xl font-semibold text-gray-800 mb-6">Similar Businesses</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -752,7 +783,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* Contact Card */}
-            <div className="bg-white rounded-3xl shadow-xl p-6 border border-gray-200">
+            <div className="bg-white rounded-3xl p-6 border border-gray-200">
               <h3 className="text-xl font-semibold text-gray-800 mb-6">Contact Information</h3>
               
               <div className="space-y-6">
@@ -814,7 +845,13 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                   Call Now
                 </a>
                 
-                <button className="w-full bg-zinc-50 border py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center font-semibold">
+                <button
+                  onClick={() => {
+                    const message = "Hello, I need more information!";
+                    const url = `sms:${business.phone}?body=${encodeURIComponent(message)}`;
+                    window.location.href = url;
+                  }}
+                  className="w-full bg-zinc-50 border py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center font-semibold">
                   <MessageSquare className="w-5 h-5 mr-2" />
                   Send Message
                 </button>
@@ -822,16 +859,11 @@ export default function BusinessPage({ params }: BusinessPageProps) {
             </div>
 
             {/* Map Placeholder */}
-            <div className="bg-white rounded-3xl shadow-xl p-6 border border-gray-200">
+            <div className="bg-white rounded-3xl p-6 border border-gray-200">
               <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
-                {/* <Navigation className="w-6 h-6 mr-3 text-blue-600" /> */}
                 Location
               </h3>
               <div className="rounded-2xl h-48 flex items-center justify-center">
-                {/* <div className="text-center rounded-lg"> */}
-                  {/* <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-gray-600 font-medium">Interactive Map</p>
-                  <p className="text-gray-500 text-sm">Coming soon...</p> */}
                   <iframe
                     width="100%"
                     height="190"
@@ -840,7 +872,6 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                     className='rounded-2xl'
                     src={`https://www.google.com/maps?q=${encodeURIComponent(business.address)}&output=embed`}
                   />
-                {/* </div> */}
               </div>
             </div>
           </div>

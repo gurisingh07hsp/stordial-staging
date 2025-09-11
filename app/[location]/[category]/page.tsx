@@ -295,7 +295,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
             {sortedBusinesses.length > 0 ? (
               <div className="space-y-4">
                 {sortedBusinesses.map((business) => (
-                  <div key={business._id} className="bg-white rounded-lg shadow-sm border p-4 hover:shadow-md transition-shadow">
+                  <div key={business._id} className="bg-white rounded-lg border p-4">
                     <div className="flex lg:flex-row flex-col items-start justify-between">
                       <div className='flex'>
                       <div className='lg:w-32 w-24 h-[100px] flex justify-center items-center'>
@@ -367,7 +367,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 ))}
               </div>
             ) : (
-              <div className="bg-white rounded-lg shadow-sm border p-8 text-center">
+              <div className="bg-white rounded-lg border p-8 text-center">
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No businesses found</h3>
                 <p className="text-gray-600">Try adjusting your filters or search criteria.</p>
               </div>
@@ -378,7 +378,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           <div className="w-80 mx-auto mt-5 lg:mt-0 flex-shrink-0">
             <div className="sticky top-8">
               {/* Featured Advertisement */}
-              <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+              <div className="bg-white rounded-lg border p-6 mb-6">
                 {/* <div className="text-center mb-4">
                   <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                     <span className="text-blue-600 font-bold text-xl">AD</span>
@@ -451,7 +451,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               </div>
 
               {/* Quick Stats */}
-              <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+              <div className="bg-white rounded-lg border p-6 mb-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
@@ -474,7 +474,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               </div>
 
               {/* Related Categories */}
-              <div className="bg-white rounded-lg shadow-sm border p-6">
+              <div className="bg-white rounded-lg border p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Related Categories</h3>
                 <div className="space-y-2">
                   {['Restaurants', 'Hospitals', 'Schools', 'Shopping'].map((cat) => (
