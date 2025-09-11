@@ -347,7 +347,6 @@ const categoryOptions = categories.map(cat => ({
               <ArrowLeft className="w-5 h-5 mr-2" />
               Back
             </button>
-            <h1 className="text-xl font-semibold text-gray-800">List Your Business</h1>
             <div className="w-20"></div>
           </div>
         </div>
