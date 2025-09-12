@@ -325,7 +325,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
 
       <div className="container mx-auto mt-2 lg:mt-0 px-4 pb-12">
         {/* Hero Section */}
-        <div className="bg-white rounded-3xl overflow-hidden mb-8">
+        <div className="bg-white border rounded-3xl overflow-hidden mb-8">
           {/* Image Gallery */}
           <div className="relative h-60 lg:h-[350px] bg-gradient-to-br from-gray-100 to-gray-200">
             <div className="grid lg:grid-cols-3 space-x-2 p-4 h-full">
@@ -454,7 +454,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                       <span className="font-bold text-sm">Verified</span>
                     </div>
                   )}
-                  <div className="flex items-center bg-green-100 text-green-700 px-4 py-1 lg:py-2 rounded-full">
+                  <div className={`flex items-center ${displayText === 'Closed Now' || displayText === 'Closed Today' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'} px-4 py-1 lg:py-2 rounded-full`}>
                     <Clock className="w-4 h-4 mr-2" />
                     <span className="text-sm font-medium">{displayText}</span>
                   </div>
@@ -565,7 +565,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-3xl overflow-hidden">
+            <div className="bg-white border rounded-3xl overflow-hidden">
               {/* Tab Navigation */}
               <div className="border-b border-gray-200">
                 <nav className="flex space-x-10 px-8 overflow-x-scroll hide-scrollbar">
