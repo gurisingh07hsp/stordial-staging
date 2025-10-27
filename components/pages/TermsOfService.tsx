@@ -13,7 +13,7 @@ export default function TermsOfService() {
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Please read these terms carefully before using our platform. By using LocalConnect, you agree to these terms.
             </p>
-            <p className="text-sm text-gray-500 mt-4">Last updated: January 15, 2024</p>
+            <p className="text-sm text-gray-500 mt-4">Last updated: Oct 27, 2025</p>
           </div>
         </div>
       </section>
@@ -126,9 +126,8 @@ export default function TermsOfService() {
                 </p>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <p className="text-gray-800 font-medium">LocalConnect</p>
-                  <p className="text-gray-600">Email: legal@localconnect.com</p>
-                  <p className="text-gray-600">Phone: +1 (555) 123-4567</p>
-                  <p className="text-gray-600">Address: 123 Business Street, New York, NY 10001</p>
+                  <p className="text-gray-600">Email: info@stordial.com</p>
+                  <p className="text-gray-600">Phone: +91 75890-75361</p>
                 </div>
               </div>
             </div>

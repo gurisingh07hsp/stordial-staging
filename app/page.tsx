@@ -4,48 +4,12 @@ import HeroSection from '../components/HeroSection';
 import CategoryGrid from '../components/CategoryGrid';
 import FeaturedSection from '../components/FeaturedSection';
 import TrendingSection from '../components/TrendingSection';
-import BusinessModal from '../components/BusinessModal';
-import LocationBasedResults from '../components/LocationBasedResults';
 import { businesses } from '../data/mockData';
 import { Business } from '../types';
 import { Star,ArrowRight } from 'lucide-react';
-import { useAutoLocation } from '../hooks/useAutoLocation';
 import axios from 'axios';
 export default function HomePage() {
-  const [showBusinessModal, setShowBusinessModal] = useState(false);
-  const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
-  const [searchResults, setSearchResults] = useState<Business[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
   const [featuredBusinesses, setFeaturedBusinesses] = useState<Business[]>([]);
-
-  // Auto-detect user location
-  const { location: userLocation } = useAutoLocation();
-  
-  // Use userLocation to auto-populate search if needed
-  // Note: userLocation is used for future auto-population feature
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _userLocation = userLocation; // Suppress unused variable warning
-
-  const handleBusinessClick = (business: Business) => {
-    setSelectedBusiness(business);
-    setShowBusinessModal(true);
-  };
-
-  const handleSearch = async(query: string, location: string, category: string) => {
-    setIsSearching(true);
-    // Simulate search
-
-    try{
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${location}/category/${category}`, {withCredentials: true});
-        if(response.status == 200){
-          setSearchResults(response.data.businesses);
-          setIsSearching(false);
-        }
-      }catch(error){
-        console.error('Error fetching businesses: ', error);
-      }
-  };
-
   useEffect(() => {
     const getFeaturedBusinesses = async () => {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/featured`, {withCredentials: true});
@@ -55,14 +19,6 @@ export default function HomePage() {
     }
     getFeaturedBusinesses();
   }, []);
-
-  const handleCategoryClick = (categoryName: string) => {
-    const categoryBusinesses = businesses.filter(business => 
-      business.category.toLowerCase().includes(categoryName.toLowerCase()) ||
-      business.subcategory.toLowerCase().includes(categoryName.toLowerCase())
-    );
-    setSearchResults(categoryBusinesses);
-  };
 
   const scrollToSearch = () => {
     const searchSection = document.getElementById('search');
@@ -77,27 +33,11 @@ export default function HomePage() {
     <div className="bg-gray-50">
 
       <div id='search'></div>
-      <HeroSection 
-        onSearch={handleSearch}
+      <HeroSection
       />
 
-      {isSearching && (
-        <div className="text-center py-8 bg-white">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Searching...</p>
-        </div>
-      )}
-
-      {searchResults.length > 0 && !isSearching && (
-        <LocationBasedResults
-          businesses={searchResults}
-          selectedLocation={searchResults[0]?.city || ''}
-          onBusinessClick={handleBusinessClick}
-        />
-      )}
-
       <div id="categories">
-        <CategoryGrid onCategoryClick={handleCategoryClick} />
+        <CategoryGrid/>
       </div>
 
       {/* Featured Businesses Section */}
@@ -268,15 +208,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-
-
-      {showBusinessModal && selectedBusiness && (
-        <BusinessModal
-          business={selectedBusiness}
-          onClose={() => setShowBusinessModal(false)}
-        />
-      )}
 
 
     </div>

@@ -3,11 +3,8 @@
 import React from 'react';
 import { useAutoLocation } from '../hooks/useAutoLocation';
 
-interface CategoryGridProps {
-  onCategoryClick: (categoryName: string) => void;
-}
 
-export default function CategoryGrid({ onCategoryClick }: CategoryGridProps) {
+export default function CategoryGrid() {
   const { location: userLocation, isLoading: locationLoading } = useAutoLocation();
 
   const categories = [
@@ -43,8 +40,6 @@ export default function CategoryGrid({ onCategoryClick }: CategoryGridProps) {
       else{
         window.location.href = `/${location}/${category}`;
       }
-    } else {
-      onCategoryClick(categoryName);
     }
   };
 

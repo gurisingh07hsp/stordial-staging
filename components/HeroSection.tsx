@@ -7,17 +7,13 @@ import { useAutoLocation } from '../hooks/useAutoLocation';
 // import cities from "cities.json";
 import axios from 'axios';
 
-interface HeroSectionProps {
-  onSearch: (query: string, location: string, category: string) => void;
-}
-
 interface place_data {
   class: string;
   type: string;
   display_place: string;
 }
 
-export default function HeroSection({ onSearch }: HeroSectionProps) {
+export default function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
@@ -68,16 +64,6 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
 
   const handleLocationChange = async(e: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(e.target.value);
-    // const indianCities: string[] = (cities as City[])
-    // .filter((c) => c.country === "IN")
-    // .map((c) => c.name);
-
-
-    // const matches = indianCities.filter(city =>
-    //   city.toLowerCase().includes(location.toLowerCase())
-    // );
-    
-    // setFilteredCities(matches);
     if(e.target.value !== ' ' && e.target.value !== ''){ 
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/places/?input=${e.target.value}`);
       console.log(response.data);
@@ -249,7 +235,6 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
                 key={index}
                 onClick={() => {
                   setLocation(city);
-                  onSearch('', city, 'All Categories');
                 }}
                 className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-sm font-medium transition-colors"
               >

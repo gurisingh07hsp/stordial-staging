@@ -179,7 +179,7 @@ export default function AdvertisePage() {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Get in Touch</h3>
               <div className="space-y-3 text-gray-600">
                 <p><strong>Email:</strong> info@stordial.com</p>
-                <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+                <p><strong>Phone:</strong> +91 75890-75361</p>
                 <p><strong>Hours:</strong> Monday - Friday, 9 AM - 6 PM</p>
               </div>
             </div>

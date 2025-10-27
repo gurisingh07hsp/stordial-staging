@@ -80,12 +80,8 @@ export default function Footer() {
               </div>
               <div className="flex items-center text-gray-600">
                 <Phone className="w-4 h-4 mr-2" />
-                <span className="text-sm">+1 (555) 123-4567</span>
+                <span className="text-sm">+91 75890-75361</span>
               </div>
-              {/* <div className="flex items-center text-gray-600">
-                <MapPin className="w-4 h-4 mr-2" />
-                <span className="text-sm">123 Business St, City, State</span>
-              </div> */}
 
                <div className="mt-12 pt-8 border-t border-gray-200">
           <div className="max-w-md">
@@ -117,7 +113,7 @@ export default function Footer() {
         <div className="mt-8 pt-8 border-t border-gray-200">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm">
-              © 2024 Stordial. All rights reserved.
+              © 2025 Stordial. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/privacy" className="text-gray-500 hover:text-gray-700 text-sm">
@@ -125,9 +121,6 @@ export default function Footer() {
               </Link>
               <Link href="/terms" className="text-gray-500 hover:text-gray-700 text-sm">
                 Terms of Service
-              </Link>
-              <Link href="/cookies" className="text-gray-500 hover:text-gray-700 text-sm">
-                Cookie Policy
               </Link>
             </div>
           </div>
