@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, Phone, Send } from 'lucide-react';
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -142,7 +142,7 @@ export default function ContactUs() {
                   </div>
                   <div className="ml-4">
                     <h3 className="text-lg font-semibold text-gray-800">Email</h3>
-                    <p className="text-gray-600">support@localconnect.com</p>
+                    <p className="text-gray-600">info@stordial.com</p>
                     <p className="text-sm text-gray-500">We&apos;ll respond within 24 hours</p>
                   </div>
                 </div>
@@ -155,21 +155,8 @@ export default function ContactUs() {
                   </div>
                   <div className="ml-4">
                     <h3 className="text-lg font-semibold text-gray-800">Phone</h3>
-                    <p className="text-gray-600">+1 (555) 123-4567</p>
+                    <p className="text-gray-600">+91 75890-75361</p>
                     <p className="text-sm text-gray-500">Monday - Friday, 9AM - 6PM EST</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-purple-600" />
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-800">Office</h3>
-                    <p className="text-gray-600">123 Business Street<br />New York, NY 10001</p>
-                    <p className="text-sm text-gray-500">Visit us during business hours</p>
                   </div>
                 </div>
               </div>
@@ -208,24 +195,6 @@ export default function ContactUs() {
           </div>
         </div>
       </div>
-
-      {/* Map Section */}
-      <section className="bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">Find Our Office</h2>
-            <p className="text-gray-600">Visit us at our headquarters</p>
-          </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-            <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">Interactive Map Coming Soon</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 } 

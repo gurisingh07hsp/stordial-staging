@@ -8,6 +8,7 @@ import { Toaster } from 'react-hot-toast'
 import toast from 'react-hot-toast'
 import Select from "react-select";
 import { useTags } from '@/hooks/use-tags';
+import { useRouter } from 'next/navigation'
 import { 
   Edit, 
   Trash2, 
@@ -72,7 +73,7 @@ interface DirectionClickData {
 }
 
 const UserDashboard = () => {
-
+    const router = useRouter();
     const [businesses,setBusinesses] = useState<Business[]>([]);
     const [showAddModal, setShowAddModal] = useState(false);
     const [uploadedImages, setUploadedImages] = useState<File[]>([]);
@@ -257,6 +258,50 @@ const subcategories = {
         { key: 'sunday', label: 'Sun' },
         { key: '24x7', label: 'Open 24x7' }
       ];
+
+    const isLogin = async() => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/me`,
+        { withCredentials: true }
+      );
+
+      if (!response.data.success) {
+        router.push('/');
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        const message = error.response?.data?.message;
+        router.push('/');
+
+        if (status === 401) {
+          // If there is *no token*, it means first-time visitor — no redirect.
+          if (message === 'Please login to access this resource') {
+            // Check if user was already logged in before
+            if (user) {
+              // User existed → this is a logout or expired session
+              setUser(null);
+              router.push('/');
+            } else {
+              router.push('/');
+              // First-time visitor → silently ignore
+              setUser(null);
+            }
+          }
+        } else {
+          router.push('/');
+          console.error('Profile fetch failed:', message);
+        }
+      } else {
+        console.error('Unexpected error:', error);
+      }
+    }
+    }
+
+      useEffect(()=>{
+        isLogin();
+      },[]);
     
       useEffect(()=>{
         setFormData({...formData, hours: openingHours});
