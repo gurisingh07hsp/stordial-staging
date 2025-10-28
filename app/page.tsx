@@ -44,44 +44,6 @@ export default function HomePage() {
       <FeaturedSection businesses={featuredBusinesses} />
       <TrendingSection businesses={businesses} />
 
-      {/* How It Works Section */}
-      {/* <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">How Stordial Works</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Find and connect with local businesses in just a few simple steps
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MapPin className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Search</h3>
-              <p className="text-gray-600">Enter what you&apos;re looking for and your location to find nearby businesses</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Compare</h3>
-              <p className="text-gray-600">Browse reviews, ratings, and details to find the perfect match</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-purple-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Connect</h3>
-              <p className="text-gray-600">Contact businesses directly or visit their locations</p>
-            </div>
-          </div>
-        </div>
-      </section> */}
-
       {/* Statistics Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -92,25 +54,25 @@ export default function HomePage() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">10,000+</div>
-              <div className="text-gray-600">Local Businesses</div>
+              <div className="lg:text-4xl font-bold text-blue-600 mb-2">10,000+</div>
+              <div className="text-gray-600 text-sm lg:text-[16px]">Local Businesses</div>
             </div>
             
             <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 mb-2">50,000+</div>
-              <div className="text-gray-600">Happy Customers</div>
+              <div className="lg:text-4xl font-bold text-green-600 mb-2">50,000+</div>
+              <div className="text-gray-600 text-sm lg:text-[16px]">Happy Customers</div>
             </div>
             
             <div className="text-center">
-              <div className="text-4xl font-bold text-purple-600 mb-2">100%</div>
-              <div className="text-gray-600">Verified Reviews</div>
+              <div className="lg:text-4xl font-bold text-purple-600 mb-2">100%</div>
+              <div className="text-gray-600 text-sm lg:text-[16px]">Verified Reviews</div>
             </div>
             
             <div className="text-center">
-              <div className="text-4xl font-bold text-orange-600 mb-2">24/7</div>
-              <div className="text-gray-600">Customer Support</div>
+              <div className="lg:text-4xl font-bold text-orange-600 mb-2">24/7</div>
+              <div className="text-gray-600 text-sm lg:text-[16px]">Customer Support</div>
             </div>
           </div>
         </div>

@@ -135,7 +135,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-lg lg:text-3xl font-bold text-gray-900">
+              <h1 className="text-md md:w-full w-[55vw] lg:text-3xl font-bold text-gray-900">
                 {decodedCategory.charAt(0).toUpperCase() + decodedCategory.slice(1)} in {decodedLocation.charAt(0).toUpperCase() + decodedLocation.slice(1)}
               </h1>
               <p className="text-gray-600 mt-2">
@@ -144,7 +144,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
             </div>
             <Link 
               href="/"
-              className="text-[10px] lg:text-lg text-blue-600 hover:text-blue-800 font-medium"
+              className="text-[12px] lg:text-lg text-blue-600 hover:text-blue-800 font-medium"
             >
               ← Back to Home
             </Link>
@@ -194,7 +194,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                     {premiumAds && premiumAds[currentAdIndex].images && premiumAds[currentAdIndex].images.length > 0 ? (
                       <img src={premiumAds[currentAdIndex].images && premiumAds[currentAdIndex].images[0].url} alt="" className="lg:w-32 w-64 lg:h-24 h-28 rounded-lg"/>
                     ) : (
-                    <div className="lg:w-32 w-64 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
+                    <div className="lg:w-32 w-[100%] h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
                       <span className="text-2xl">🏨</span>
                     </div>
                     )}
@@ -228,7 +228,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
             </nav>
 
             {/* Filters and Sort */}
-            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div className="bg-white rounded-lg shadow-sm py-6 lg:px-6 px-2 mb-6">
               <div className="flex flex-wrap relative gap-2">
                 <div className="flex items-center space-x-4">
                   <label className="text-sm font-medium text-gray-700">Sort by:</label>
