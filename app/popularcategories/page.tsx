@@ -23,7 +23,7 @@ const PopularCategories = () => {
   'Shopping','Supermarkets','Grocery Stores','Clothing Stores','Electronics Stores','Mobile Stores',
   'Apparel Stores','Home Services','Repair Services','Maintenance Services', 'AC Repair Services',
   // Travel & Transport
-  'Travel Agencies','Tour Operators','Taxi Services','Car Rentals','Bike Rentals','Bus Services','Metro Services',
+  'Petrol Pumps','Travel Agencies','Tour Operators','Taxi Services','Car Rentals','Bike Rentals','Bus Services','Metro Services',
   // Financial & Government
   'Banks','Government Offices',
   // Religion & NGOs

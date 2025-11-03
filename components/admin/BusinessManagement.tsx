@@ -41,7 +41,7 @@ interface imageData {
 }
 
 interface ImportedBusiness {
-  rating: any;
+  rating: string;
   // Basic Info
   name: string;
   description: string;
