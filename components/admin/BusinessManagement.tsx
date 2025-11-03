@@ -41,6 +41,7 @@ interface imageData {
 }
 
 interface ImportedBusiness {
+  reviews: string;
   rating: string;
   // Basic Info
   name: string;
@@ -151,6 +152,13 @@ export default function BusinessManagement() {
       images: images,
       hours: openingHours
     });
+
+    const [uploadProgress, setUploadProgress] = useState({
+      current: 0,
+      total: 0,
+      isUploading: false
+    });
+
 
   
 
@@ -555,6 +563,7 @@ const filteredBusinesses = businesses;
         city: data.city,
         website: data.website,
         rating: data.rating,
+        reviews: data.reviews,
         hours,
       };
     });
@@ -569,34 +578,48 @@ const filteredBusinesses = businesses;
   const handleBulkImport = async() => {
     let count = 0;
     setIsImporting(true);
-    for(let i = 0; i < importPreview.length; i++)
-    {
-      const BusinessData = importPreview[i];
-      if(BusinessData.name && BusinessData.category && categories.includes(BusinessData.category) && BusinessData.subcategory
-       && BusinessData.address && BusinessData.city)
-        {
-          BusinessData.category = BusinessData.category.toLowerCase();
-          BusinessData.city = BusinessData.city.toLowerCase();
-          try{
-          const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, BusinessData ,{withCredentials: true});
-          if(response.status == 201){
-            console.log(response.data);
-            count++;
-          }
-          else{
-            console.log("error : ", response.data);
-            // setIsImporting(false);
-          }
-        }catch(error){
-          if (axios.isAxiosError(error)) {
-            toast.error('somthing went wrong');
-          } else {
-            toast.error('somthing went wrong');
-          }
-        }
+    const validBusinesses = importPreview.filter(business => 
+      business.name && 
+      business.category && 
+      categories.includes(business.category) && 
+      business.subcategory &&
+      business.address && 
+      business.city
+    );
 
+      setUploadProgress({
+      current: 0,
+      total: validBusinesses.length,
+      isUploading: true
+    });
+    for(let i = 0; i < validBusinesses.length; i++)
+    {
+      const BusinessData = validBusinesses[i];
+      BusinessData.category = BusinessData.category.toLowerCase();
+      BusinessData.city = BusinessData.city.toLowerCase();
+      try{
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, BusinessData ,{withCredentials: true});
+        if(response.status == 201){
+          console.log(response.data);
+          count++;
+          setUploadProgress(prev => ({
+          ...prev,
+          current: i + 1
+        }));
         }
+      }catch(error){
+        if (axios.isAxiosError(error)) {
+          toast.error('somthing went wrong');
+        } else {
+          toast.error('somthing went wrong');
+        }
+      }
     }
+
+     setUploadProgress(prev => ({
+      ...prev,
+      isUploading: false
+    }));
 
     if(count > 0)
     {
@@ -909,7 +932,7 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                         />
                       </div>
                       <div className="ml-3 sm:ml-4 min-w-0">
-                        <div className="text-sm font-medium text-gray-900 truncate">{business.name}</div>
+                        <div className="text-sm font-medium text-gray-900 break-words whitespace-normal">{business.name}</div>
                         <div className="text-xs sm:text-sm text-gray-500 truncate">{`${business?.description?.slice(0,25)}...`}</div>
                         <div className="sm:hidden text-xs text-gray-500">
                           {business.category} • {business.city}
@@ -997,7 +1020,7 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
       <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 py-3 border border-gray-200">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="text-xs sm:text-sm text-gray-700">
-            Showing <span className="font-medium">{page}</span> to <span className="font-medium">{filteredBusinesses.length}</span> of{' '}
+            Showing <span className="font-medium">{page}</span> to <span className="font-medium">{totalPages}</span> of{' '}
             <span className="font-medium">{businesses.length}</span> results
           </div>
           <div className="flex space-x-1 sm:space-x-2">
@@ -1552,6 +1575,34 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
           </div>
         </div>
       )}
+
+      {uploadProgress.isUploading && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+      <h3 className="text-lg font-semibold mb-4">Uploading Businesses</h3>
+      
+      <div className="mb-2">
+        <div className="flex justify-between text-sm text-gray-600 mb-1">
+          <span>Progress</span>
+          <span>{uploadProgress.current} / {uploadProgress.total}</span>
+        </div>
+        
+        <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+          <div 
+            className="bg-blue-600 h-full rounded-full transition-all duration-300 ease-out"
+            style={{ 
+              width: `${(uploadProgress.current / uploadProgress.total) * 100}%` 
+            }}
+          />
+        </div>
+      </div>
+      
+      <p className="text-sm text-gray-500 text-center mt-4">
+        Please wait while we upload your businesses...
+      </p>
+    </div>
+  </div>
+)}
     </div>
   );
 } 

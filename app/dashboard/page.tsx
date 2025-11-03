@@ -885,8 +885,8 @@ const subcategories = {
                         />
                       </div>
                       <div className="ml-3 sm:ml-4 min-w-0">
-                        <div className="text-sm font-medium text-gray-900 truncate">{business.name}</div>
-                        <div className="text-xs sm:text-sm text-gray-500 truncate">{`${business.description.slice(0,25)}...`}</div>
+                        <p className="text-sm font-medium text-gray-900 truncate max-w-80 break-words whitespace-normal">{business.name}</p>
+                        <div className="text-xs sm:text-sm text-gray-500 truncate">{`${business?.description?.slice(0,25)}...`}</div>
                         <div className="sm:hidden text-xs text-gray-500">
                           {business.category} • {business.city}
                         </div>
