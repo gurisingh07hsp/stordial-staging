@@ -5,7 +5,6 @@ const User = require('../models/user');
 exports.createBusiness = async (req, res, next) => {
   try {
     req.body.owner = req.user.id;
-
   const business = await Business.create(req.body);
 
 

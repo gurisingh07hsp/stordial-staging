@@ -41,6 +41,7 @@ interface imageData {
 }
 
 interface ImportedBusiness {
+  rating: any;
   // Basic Info
   name: string;
   description: string;
@@ -84,6 +85,10 @@ interface ImportedBusiness {
   sunday_open: string;
   sunday_close: string;
   sunday_closed: boolean;
+
+  _24x7_open: string;
+  _24x7_close: string;
+  _24x7_closed: boolean;
 }
 
 export default function BusinessManagement() {
@@ -528,13 +533,13 @@ const filteredBusinesses = businesses;
           friday: { open: data.friday_open, close: data.friday_close, closed: String(data.friday_closed).toLowerCase() === "true", },
           saturday: { open: data.saturday_open, close: data.saturday_close, closed: String(data.saturday_closed).toLowerCase() === "true", },
           sunday: { open: data.sunday_open, close: data.sunday_close, closed: String(data.sunday_closed).toLowerCase() === "true", },
-          "24x7": { open: "10:00", close: "15:00", closed: false },
+          "24x7": { open: "10:00", close: "15:00", closed: String(data._24x7_closed).toLowerCase() === "true" },
         };
 
         let services: string[] = [];
 
-        if (data.services !== '') {
-          services = data.services.split(',');
+        if (data?.services !== '') {
+          services = data?.services?.split(',');
         }
       
 
@@ -549,6 +554,7 @@ const filteredBusinesses = businesses;
         address: data.address,
         city: data.city,
         website: data.website,
+        rating: data.rating,
         hours,
       };
     });
@@ -571,7 +577,6 @@ const filteredBusinesses = businesses;
         {
           BusinessData.category = BusinessData.category.toLowerCase();
           BusinessData.city = BusinessData.city.toLowerCase();
-
           try{
           const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, BusinessData ,{withCredentials: true});
           if(response.status == 201){
@@ -905,7 +910,7 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                       </div>
                       <div className="ml-3 sm:ml-4 min-w-0">
                         <div className="text-sm font-medium text-gray-900 truncate">{business.name}</div>
-                        <div className="text-xs sm:text-sm text-gray-500 truncate">{`${business.description.slice(0,25)}...`}</div>
+                        <div className="text-xs sm:text-sm text-gray-500 truncate">{`${business?.description?.slice(0,25)}...`}</div>
                         <div className="sm:hidden text-xs text-gray-500">
                           {business.category} • {business.city}
                         </div>
