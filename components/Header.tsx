@@ -79,7 +79,7 @@ export default function Header({
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
-            <img src="/Stordial crop.png" alt="Logo" className='w-[150px] h-[40px]' />
+            <img src="/Stordial crop.png" alt="Logo" className='lg:w-[150px] lg:h-[40px] w-[120px]' />
           </Link>
 
           {/* Desktop Navigation */}

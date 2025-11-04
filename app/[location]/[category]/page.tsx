@@ -23,6 +23,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
 
   const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getBusinessesByCategotyAndLocation = async () => {
@@ -30,13 +31,12 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}`, {withCredentials: true});
         if(response.status == 200){
           setFilteredBusinesses(
-  response.data.businesses.sort((a: Business, b: Business) => {
-    // Put featured businesses at the top
-    if (a.featured === b.featured) return 0;
-    return a.featured ? -1 : 1;
-  })
-);
-
+            response.data.businesses.sort((a: Business, b: Business) => {
+              if (a.featured === b.featured) return 0;
+                return a.featured ? -1 : 1;
+            })
+          );
+          setLoading(false);
         }
       }catch(error){
         console.error('Error fetching businesses: ', error);
@@ -304,7 +304,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                       </div>
                       <div className="flex-1 ms-2">
                         <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="text-lg font-semibold text-gray-900">{business.name}</h3>
+                          <h3 className="text-lg font-semibold text-gray-900 max-w-[450px]">{business.name}</h3>
                           {business.verified && (
                             <span className="bg-[#60CE80] font-bold text-white text-xs px-2 py-1 rounded-full">
                               Verified
@@ -319,7 +319,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                             <span className="text-gray-500">({business.reviews} reviews)</span>
                           </div>
                         </div>
-                          <div className="flex items-center space-x-1 text-gray-500">
+                          <div className="flex items-center space-x-1 text-gray-500 max-w-[500px]">
                             <MapPin className="w-4 h-4" />
                             <span className="text-sm">{business.address}</span>
                           </div>
@@ -367,10 +367,16 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 ))}
               </div>
             ) : (
+              <>
+              {loading ? (
+                <div className='text-center w-full'>Loading...</div>
+              ) : (
               <div className="bg-white rounded-lg border p-8 text-center">
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No businesses found</h3>
                 <p className="text-gray-600">Try adjusting your filters or search criteria.</p>
               </div>
+              )}
+              </>
             )}
           </div>
 
