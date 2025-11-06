@@ -20,20 +20,17 @@ export default function Footer() {
               find what you need right in your neighborhood.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-blue-600 transition-colors">
+              <a href="https://www.facebook.com/stordial" className="text-gray-400 hover:text-blue-600 transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-blue-600 transition-colors">
+              <a href="https://x.com/stordial" className="text-gray-400 hover:text-blue-600 transition-colors">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-pink-600 transition-colors">
+              <a href="https://www.instagram.com/stordialofficial/" className="text-gray-400 hover:text-pink-600 transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-blue-700 transition-colors">
+              <a href="https://www.linkedin.com/company/stordial/" className="text-gray-400 hover:text-blue-700 transition-colors">
                 <Linkedin className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-red-600 transition-colors">
-                <Youtube className="w-5 h-5" />
               </a>
             </div>
           </div>
