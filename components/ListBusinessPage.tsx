@@ -280,7 +280,7 @@ const subcategories = {
   'Occupational Therapist': ['Workplace Injury Care', 'Hand Therapy', 'Other'],
   'Speech Therapist': ['Speech Delay Therapy', 'Voice Therapy', 'Other'],
   'Dietitian Nutritionist': ['Weight Loss Programs', 'Clinical Nutrition', 'Sports Nutrition', 'Other'],
-  'ATM': ['Cash Dispenser Only', 'Cash Recycler Machines', 'Multi function ATM', 'Smart ATM'],
+  'ATM': ['SBI Bank ATM', 'PNB Bank ATM', 'Indian Bank ATM', 'HDFC Bank ATM', 'ICIC Bank ATM', 'Axis Bank ATM'],
   'Other': ['Other']
 };
 
