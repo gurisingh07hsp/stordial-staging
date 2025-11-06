@@ -8,7 +8,12 @@ const PopularCategories = () => {
     const handleClick = (category: string) => {
         const locationPath = userLocation?.city.toLowerCase().replace(/\s+/g, '-');
         const categoryPath = category.toLowerCase().replace(/\s+/g, '-');
-        window.location.href = `/${locationPath}/${categoryPath}`;
+        if(categoryPath === 'atm'){
+          window.location.href = `/subcategories?location=${locationPath}&category=${categoryPath}`;
+        }
+        else{
+          window.location.href = `/${locationPath}/${categoryPath}`;
+        }
     }
     const popularCategories: string[] = [
    // Food & Stay
