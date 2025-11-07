@@ -208,6 +208,21 @@ const businessSchema = new mongoose.Schema({
     ref: 'User',
     // required: true
   },
+  analytics: {
+  totalCalls: { type: Number, default: 0 },
+  totalWhatsApp: { type: Number, default: 0 },
+  totalDirectionClicks: { type: Number, default: 0 },
+
+    // store daily logs (for weekly/monthly stats)
+    dailyStats: [
+      {
+        date: { type: Date, default: Date.now },
+        calls: { type: Number, default: 0 },
+        whatsapp: { type: Number, default: 0 },
+        directions: { type: Number, default: 0 }
+      }
+    ]
+  },
   createdAt: {
     type: Date,
     default: Date.now

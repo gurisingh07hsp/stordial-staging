@@ -22,7 +22,7 @@ const Subcategories = () => {
     'pharmacies': ['Retail Pharmacy', 'Hospital Pharmacy', 'Compounding Pharmacy', 'Online Pharmacy', 'Other'],
     'petrol pumps': ['Petrol Station', 'Diesel Station', 'CNG Station', 'EV Charging Station', 'Other'],
     'pet services': ['Pet Grooming', 'Pet Boarding', 'Pet Training', 'Pet Sitting', 'Veterinary Clinic', 'Other'],
-    'atm': ['SBI Bank ATM', 'PNB Bank ATM', 'Indian Bank ATM', 'HDFC Bank ATM', 'ICIC Bank ATM', 'Axis Bank ATM'],
+    'atm': ['SBI Bank ATM', 'PNB Bank ATM', 'Indian Bank ATM', 'HDFC Bank ATM', 'ICIC Bank ATM', 'Axis Bank ATM', 'Punjab and Sind Bank ATM','Bank of Baroda ATM', 'Bank of India ATM', 'Union Bank of India ATM','Canara Bank ATM', 'Bank of Maharashtra ATM','Central Bank of India ATM','Indian Overseas Bank ATM', 'Indian Bank ATM', 'UCO Bank ATM', 'Other'],
   }; 
 
   const handleClick = (subcategory: string) =>{

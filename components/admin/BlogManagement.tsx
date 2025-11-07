@@ -297,6 +297,21 @@ export default function BlogManagement() {
     }
   };
 
+  const handleReset = () => {
+     setEditingPost({
+      title: "",
+      excerpt: "",
+      content: "",
+      image: '',
+      category: "Business Trends",
+      status: "Draft",
+      seotitle: '',
+      metadescription: '',
+      user: 'Stordial Team'
+    });
+    setFile(null);
+  }
+
 
   return (
     <div className="space-y-3 sm:space-y-4">
@@ -483,6 +498,7 @@ export default function BlogManagement() {
                     onClick={() => {
                       setShowAddModal(false);
                       setShowEditModal(false);
+                      handleReset();
                     }}
                     className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
                   >

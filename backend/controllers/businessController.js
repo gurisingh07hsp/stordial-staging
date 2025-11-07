@@ -122,7 +122,7 @@ exports.getBusiness = async (req, res, next) => {
 
 exports.getBusinessById = async (req, res, next) => {
   try {
-    let { location, category, id } = req.params;
+    let { location, id } = req.params;
 
     location = location.toLowerCase();
 
@@ -296,6 +296,44 @@ exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
     
   } catch (error) {
     next(error);
+  }
+};
+
+exports.analytics = async (req, res) => {
+  try {
+    const { businessId, type } = req.params;
+    const business = await Business.findById(businessId);
+    if (!business) return res.status(404).json({ message: "Business not found" });
+
+    // Increment total count
+    if (type === "call") business.analytics.totalCalls += 1;
+    if (type === "whatsapp") business.analytics.totalWhatsApp += 1;
+    if (type === "direction") business.analytics.totalDirectionClicks += 1;
+
+    // Track daily stats
+    const today = new Date().toDateString();
+    const todayStat = business.analytics.dailyStats.find(
+      (s) => new Date(s.date).toDateString() === today
+    );
+
+    if (todayStat) {
+      if (type === "call") todayStat.calls += 1;
+      if (type === "whatsapp") todayStat.whatsapp += 1;
+      if (type === "direction") todayStat.directions += 1;
+    } else {
+      business.analytics.dailyStats.push({
+        date: new Date(),
+        calls: type === "call" ? 1 : 0,
+        whatsapp: type === "whatsapp" ? 1 : 0,
+        directions: type === "direction" ? 1 : 0,
+      });
+    }
+
+    await business.save();
+    res.json({ success: true, message: "Analytics updated" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
   }
 };
 

@@ -12,7 +12,8 @@ const {
   getBusinessesByCategoryAndLocation,
   toggleFeatured,
   toggleVerified,
-  getBusinessByUser
+  getBusinessByUser,
+  analytics
 } = require('../controllers/businessController');
 
 // Public routes
@@ -21,6 +22,7 @@ router.route('/featured').get(getFeaturedBusinesses);
 router.route('/location/:location/category/:category').get(getBusinessesByCategoryAndLocation);
 router.route('/:id').get(getBusiness);
 router.route('/location/:location/category/:category/id/:id').get(getBusinessById);
+router.route('/analytics/:businessId/:type').post(analytics);
 
 // Protected routes
 router.route('/new').post(isAuthenticated, createBusiness);
