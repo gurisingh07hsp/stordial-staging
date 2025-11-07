@@ -1,4 +1,19 @@
 export interface Business {
+  analytics?: {
+    totalCalls: number;
+    totalWhatsApp: number;
+    totalDirectionClicks: number;
+
+    // store daily logs (for weekly/monthly stats)
+    dailyStats: [
+      {
+        date: Date;
+        calls: number;
+        whatsapp: number;
+        directions: number;
+      }
+    ]
+  };
   _id: string;
   name: string;
   description: string;

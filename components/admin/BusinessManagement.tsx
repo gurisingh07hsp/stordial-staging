@@ -418,7 +418,7 @@ export default function BusinessManagement() {
     'Occupational Therapist': ['Workplace Injury Care', 'Hand Therapy', 'Other'],
     'Speech Therapist': ['Speech Delay Therapy', 'Voice Therapy', 'Other'],
     'Dietitian Nutritionist': ['Weight Loss Programs', 'Clinical Nutrition', 'Sports Nutrition', 'Other'],
-    'ATM': ['SBI Bank ATM', 'PNB Bank ATM', 'Indian Bank ATM', 'HDFC Bank ATM', 'ICIC Bank ATM', 'Axis Bank ATM'],
+    'ATM': ['SBI Bank ATM', 'PNB Bank ATM', 'Indian Bank ATM', 'HDFC Bank ATM', 'ICIC Bank ATM', 'Axis Bank ATM', 'Punjab and Sind Bank ATM','Bank of Baroda ATM', 'Bank of India ATM', 'Union Bank of India ATM','Canara Bank ATM', 'Bank of Maharashtra ATM','Central Bank of India ATM','Indian Overseas Bank ATM', 'Indian Bank ATM', 'UCO Bank ATM', 'Other'],
     'Other': ['Other']
   };
   
@@ -727,6 +727,29 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
     useEffect(()=>{
       setFormData({...formData, services: tags.map((e)=> e.label)});
     },[tags]);
+
+    const handleReset = () => {
+      setShowAddModal(false);
+      setIsEditing(false);
+      setUploadedImages([]);
+      setImages([]); 
+      setTags([])
+        setFormData({
+        name: '',
+        description: '',
+        category: '',
+        subcategory: '',
+        services: [],
+        phone: '',
+        email: '',
+        address: '',
+        city: '',
+        website: '',
+        images: images,
+        hours: openingHours // or empty if you want {}
+      });
+      setId('');
+    }
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -1051,7 +1074,7 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-medium text-gray-900">{`${isEditing ? "Edit Business" : "Add New Business"}`}</h3>
                 <button
-                  onClick={() => {setShowAddModal(false); setIsEditing(false); setUploadedImages([]); setImages([]); setTags([])}}
+                  onClick={handleReset}
                   className="text-gray-400 hover:text-gray-600"
                 >
                   <X className="w-6 h-6" />

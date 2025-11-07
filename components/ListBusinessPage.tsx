@@ -280,7 +280,7 @@ const subcategories = {
   'Occupational Therapist': ['Workplace Injury Care', 'Hand Therapy', 'Other'],
   'Speech Therapist': ['Speech Delay Therapy', 'Voice Therapy', 'Other'],
   'Dietitian Nutritionist': ['Weight Loss Programs', 'Clinical Nutrition', 'Sports Nutrition', 'Other'],
-  'ATM': ['SBI Bank ATM', 'PNB Bank ATM', 'Indian Bank ATM', 'HDFC Bank ATM', 'ICIC Bank ATM', 'Axis Bank ATM'],
+  'ATM': ['SBI Bank ATM', 'PNB Bank ATM', 'Indian Bank ATM', 'HDFC Bank ATM', 'ICIC Bank ATM', 'Axis Bank ATM', 'Punjab and Sind Bank ATM','Bank of Baroda ATM', 'Bank of India ATM', 'Union Bank of India ATM','Canara Bank ATM', 'Bank of Maharashtra ATM','Central Bank of India ATM','Indian Overseas Bank ATM', 'Indian Bank ATM', 'UCO Bank ATM', 'Other'],
   'Other': ['Other']
 };
 

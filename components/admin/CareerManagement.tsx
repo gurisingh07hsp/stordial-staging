@@ -181,6 +181,17 @@ const CareerManagement = () => {
 
   const jobApplications = selectedJob ? selectedJob.enteries : [];
 
+  const handleReset = () => {
+    setJobForm({
+      title: '',
+      description: '',
+      role: '',
+      type: '',
+      vacancies: '',
+      status: 'Open'
+    })
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Success Message */}
@@ -370,7 +381,7 @@ const CareerManagement = () => {
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Create New Job</h3>
                 <button
-                  onClick={() => setShowCreateModal(false)}
+                  onClick={() => {setShowCreateModal(false); handleReset();}}
                   className="text-gray-500 hover:text-gray-700 text-2xl"
                 >
                   ×
@@ -460,7 +471,7 @@ const CareerManagement = () => {
 
                 <div className="flex gap-3 pt-4">
                   <button
-                    onClick={() => setShowCreateModal(false)}
+                    onClick={() => {setShowCreateModal(false); handleReset();}}
                     className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
                   >
                     Cancel
@@ -486,7 +497,7 @@ const CareerManagement = () => {
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-bold text-gray-900">Edit Job: {selectedJob.title}</h3>
                 <button
-                  onClick={() => setShowEditModal(false)}
+                  onClick={() => {setShowEditModal(false); setSelectedJob(null); handleReset();}}
                   className="text-gray-500 hover:text-gray-700 text-2xl"
                 >
                   ×
@@ -527,17 +538,6 @@ const CareerManagement = () => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
-
-                  {/* <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                    <input
-                      type="text"
-                      name="location"
-                      value={jobForm.location}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div> */}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -585,7 +585,7 @@ const CareerManagement = () => {
 
                 <div className="flex gap-3 pt-4">
                   <button
-                    onClick={() => setShowEditModal(false)}
+                    onClick={() => {setShowEditModal(false); setSelectedJob(null); handleReset();}}
                     className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
                   >
                     Cancel

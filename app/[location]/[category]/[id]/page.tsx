@@ -208,8 +208,8 @@ export default function BusinessPage({ params }: BusinessPageProps) {
   const formatBusinessUrl = (business: { _id: string; name: string; category: string; city: string }) => {
     const location = business.city.toLowerCase().replace(/\s+/g, '-');
     const category = business.category.toLowerCase().replace(/\s+/g, '-');
-    const name = business.name.replace(/\s+/g, '-');
-    return `/${location}/${category}/${name}`;
+    const id = business._id;
+    return `/${location}/${category}/${id}`;
   };
 
   const openImageModal = (index: number) => {
@@ -470,13 +470,15 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                   <div className='flex justify-center items-center gap-x-2 lg:gap-x-4'>
                   <a 
                     href={`tel:${business.phone}`}
+                    onClick={()=> axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)}
                     className="bg-blue-600 text-white lg:px-8 px-4 py-3 lg:text-base text-sm rounded-xl transition-all duration-300 flex items-center font-semibold"
                   >
                     <Phone className="lg:w-5 w-4 h-4 lg:h-5 mr-2" />  
                     Call Now
                   </a>
                   <button onClick={() =>
-                    window.open(`https://wa.me/${business.phone}?text=Hello%20I%20want%20to%20know%20more`,"_blank")}
+                    {window.open(`https://wa.me/${business.phone}?text=Hello%20I%20want%20to%20know%20more`,"_blank");
+                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/whatsapp`);}}
                     className="bg-zinc-50 lg:px-6 px-4 py-3 lg:text-base text-sm text-green-600 border rounded-xl transition-all duration-300 flex items-center font-semibold">
                     {/* <MessageSquare className="w-5 h-5 mr-2" /> */}
                     <FaWhatsapp className='size-6 mr-1 text-green-600'/>
@@ -793,7 +795,7 @@ export default function BusinessPage({ params }: BusinessPageProps) {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Phone</p>
-                    <a href={`tel:${business.phone}`} className="text-gray-800 font-semibold hover:text-blue-600 transition-colors">
+                    <a href={`tel:${business.phone}`} onClick={()=>axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)} className="text-gray-800 font-semibold hover:text-blue-600 transition-colors">
                       {business.phone}
                     </a>
                   </div>
