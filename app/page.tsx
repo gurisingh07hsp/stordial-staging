@@ -92,15 +92,15 @@ export default function HomePage() {
             <div className="bg-gray-50 rounded-xl p-6">
               <div className="flex items-center mb-4">
                 <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold mr-3">
-                  S
+                  A
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-800">Sarah Johnson</div>
+                  <div className="font-semibold text-gray-800">Amit Sharma</div>
                   <div className="text-sm text-gray-500">Local Resident</div>
                 </div>
               </div>
               <p className="text-gray-600 mb-4">
-                &quot;Found the perfect coffee shop for my morning meetings. The reviews were spot on!&quot;
+                &quot;Stordial made it super easy for me to find the best plumber in my area. The contact details and reviews were accurate — problem solved within hours!&quot;
               </p>
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
@@ -112,15 +112,15 @@ export default function HomePage() {
             <div className="bg-gray-50 rounded-xl p-6">
               <div className="flex items-center mb-4">
                 <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-semibold mr-3">
-                  M
+                  P
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-800">Mike Chen</div>
-                  <div className="text-sm text-gray-500">Business Owner</div>
+                  <div className="font-semibold text-gray-800">Priya Mehta</div>
+                  <div className="text-sm text-gray-500">Small Business Owner</div>
                 </div>
               </div>
               <p className="text-gray-600 mb-4">
-                &quot;Stordial helped us reach more customers. Great platform for local businesses!&quot;
+                &quot;I listed my bakery on Stordial and started getting more local customers in just a few days. Great exposure for small businesses!&quot;
               </p>
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
@@ -132,15 +132,15 @@ export default function HomePage() {
             <div className="bg-gray-50 rounded-xl p-6">
               <div className="flex items-center mb-4">
                 <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold mr-3">
-                  E
+                  R
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-800">Emma Davis</div>
+                  <div className="font-semibold text-gray-800">Rohan Patel</div>
                   <div className="text-sm text-gray-500">Frequent User</div>
                 </div>
               </div>
               <p className="text-gray-600 mb-4">
-                &quot;Love how easy it is to find and compare local services. Saved me so much time!&quot;
+                &quot;I love how simple Stordial is to use. Whether I’m looking for electricians or car repair shops, I can compare ratings and call directly. Huge time-saver!&quot;
               </p>
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (

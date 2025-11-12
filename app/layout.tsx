@@ -10,8 +10,8 @@ import Script from "next/script";
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Stordial - Find Local Businesses',
-  description: 'Discover and connect with the best local businesses in your area. Find restaurants, hotels, services, and more.',
+  title: 'Find & Compare Local Businesses Near You | Stordial',
+  description: 'Discover trusted local businesses on Stordial. Compare ratings, read real reviews, and connect instantly with the best services near you.',
   verification: {
     google: "N61LeFw-PwRB43fxm7OGjrtbtUbA-XK3WS-Iw38gGq8",
   },
