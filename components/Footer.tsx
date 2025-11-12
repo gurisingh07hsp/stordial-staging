@@ -86,11 +86,11 @@ export default function Footer() {
             <p className="text-gray-600 text-sm mb-4">
               Get the latest updates about new businesses and local events.
             </p>
-            <div className="flex">
+            <div className="flex w-full">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-2 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="flex-1 px-2 py-2 border w-[70%] border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <button className="bg-[#0765F2] text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition-colors">
                 Subscribe
