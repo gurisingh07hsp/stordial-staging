@@ -3,15 +3,7 @@
 import React from 'react';
 
 import Link from 'next/link';
-
-interface Business {
-  _id: string;
-  name: string;
-  category: string;
-  city: string;
-  rating: number;
-  reviews: number;
-}
+import { Business } from '../types';
 
 interface TrendingSectionProps {
   businesses: Business[];
@@ -21,12 +13,14 @@ export default function TrendingSection({ businesses }: TrendingSectionProps) {
   const formatBusinessUrl = (business: Business) => {
     const location = business.city.toLowerCase().replace(/\s+/g, '-');
     const category = business.category.toLowerCase().replace(/\s+/g, '-');
-    const name = business.name.toLowerCase().replace(/\s+/g, '-');
-    return `/${location}/${category}/${name}`;
+    const id = business._id;
+    const url = `/${location}/${category}/${id}`;
+    return url;
   };
 
   // Limit to 8 businesses (2 rows of 4)
-  const limitedBusinesses = businesses.slice(0, 8);
+  const trandingBusinesses = businesses.filter((business)=> business.verified === true);
+  const limitedBusinesses = trandingBusinesses.slice(0, 8);
 
   return (
     <section className="py-16 bg-white">
