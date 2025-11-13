@@ -4,12 +4,12 @@ import HeroSection from '../components/HeroSection';
 import CategoryGrid from '../components/CategoryGrid';
 import FeaturedSection from '../components/FeaturedSection';
 import TrendingSection from '../components/TrendingSection';
-import { businesses } from '../data/mockData';
 import { Business } from '../types';
 import { Star,ArrowRight } from 'lucide-react';
 import axios from 'axios';
 export default function HomePage() {
   const [featuredBusinesses, setFeaturedBusinesses] = useState<Business[]>([]);
+  const [trandingBusinesses, setTradingBusinesses] = useState<Business[]>([]);
   useEffect(() => {
     const getFeaturedBusinesses = async () => {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/featured`, {withCredentials: true});
@@ -17,6 +17,17 @@ export default function HomePage() {
         setFeaturedBusinesses(response.data.businesses);
       }
     }
+    const getBusinesses = async() => {
+      try{
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/?locaton=${'all'}&category=${'all categories'}`);
+        if(response.status === 200){
+          setTradingBusinesses(response.data.businesses);
+        }
+      }catch(error){
+        console.error(error);
+      }
+    }
+    getBusinesses()
     getFeaturedBusinesses();
   }, []);
 
@@ -42,7 +53,7 @@ export default function HomePage() {
 
       {/* Featured Businesses Section */}
       <FeaturedSection businesses={featuredBusinesses} />
-      <TrendingSection businesses={businesses} />
+      <TrendingSection businesses={trandingBusinesses} />
 
       {/* Statistics Section */}
       <section className="py-16 bg-gray-50">
