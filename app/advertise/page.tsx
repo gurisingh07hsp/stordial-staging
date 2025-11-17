@@ -1,7 +1,11 @@
-'use client';
-
 import React from 'react';
 import { Pricing } from '@/components/pricing';
+
+export const metadata = {
+  title: "Advertise on Stordial",
+  description:
+    "Promote your business on Stordial and reach more local customers with targeted visibility designed to grow your brand and increase engagement.",
+};
 
 export default function AdvertisePage() {
 
