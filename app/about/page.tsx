@@ -1,6 +1,10 @@
-'use client';
-
 import React from 'react';
+
+export const metadata = {
+  title: "About Stordial Platform",
+  description:
+    "Learn how Stordial helps users discover trusted businesses while empowering local owners with better visibility and meaningful customer reach.",
+};
 
 export default function AboutPage() {
   return (

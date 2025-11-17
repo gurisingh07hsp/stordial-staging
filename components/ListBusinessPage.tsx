@@ -2,23 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { BusinessFormData, Business, User } from '../types';
+import { BusinessFormData} from '../types';
 import { ArrowLeft, Upload, Clock, MapPin, Phone, Image as ImageIcon, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Select from "react-select";
 import { useTags } from '@/hooks/use-tags';
-
-interface ListBusinessPageProps {
-  onBack: () => void;
-  allBusinesses: Business[];
-  onBusinessClick: (business: Business) => void;
-  onMenuToggle: () => void;
-  onAuthClick: () => void;
-  onListBusinessClick: () => void;
-  user: User | null;
-  onLogout: () => void;
-  onNavigate: (page: string) => void;
-}
 
 interface OpeningHours {
   [key: string]: {
@@ -33,9 +21,7 @@ interface imageData {
   public_id: string;
 }
 
-export default function ListBusinessPage({
-  onBack
-}: ListBusinessPageProps) {
+export default function ListBusinessPage() {
 
     const [openingHours, setOpeningHours] = useState<OpeningHours>({
     monday: { open: '09:00', close: '17:00', closed: false },
@@ -71,7 +57,7 @@ export default function ListBusinessPage({
   const [message, setMessage] = useState('');
   const [is24x7, setIs24x7] = useState(false);
 
-   const { user} = useAuth();
+   const {user} = useAuth();
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -93,6 +79,10 @@ export default function ListBusinessPage({
   const removeImage = (index: number) => {
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
   };
+
+  const onBack = ()=> {
+    window.history.back();
+  }
 
   const submitBusiness = async() => {
     formData.city = formData.city.toLowerCase();
