@@ -10,6 +10,7 @@ import Script from "next/script";
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.stordial.com"),
   title: 'Find & Compare Local Businesses Near You | Stordial',
   description: 'Discover trusted local businesses on Stordial. Compare ratings, read real reviews, and connect instantly with the best services near you.',
   verification: {
