@@ -5,6 +5,9 @@ export const metadata = {
   title: "Careers at Stordial",
   description:
     "Explore exciting opportunities at Stordial and build your career with a growing platform that connects local businesses and customers",
+    alternates:{
+    canonical: '/career'
+  }
 };
 
 const Career = () => {

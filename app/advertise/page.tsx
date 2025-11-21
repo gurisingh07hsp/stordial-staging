@@ -5,6 +5,9 @@ export const metadata = {
   title: "Advertise on Stordial",
   description:
     "Promote your business on Stordial and reach more local customers with targeted visibility designed to grow your brand and increase engagement.",
+    alternates:{
+    canonical: '/advertise'
+  }
 };
 
 export default function AdvertisePage() {

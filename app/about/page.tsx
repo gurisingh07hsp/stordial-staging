@@ -4,6 +4,9 @@ export const metadata = {
   title: "About Stordial Platform",
   description:
     "Learn how Stordial helps users discover trusted businesses while empowering local owners with better visibility and meaningful customer reach.",
+  alternates:{
+    canonical: '/about'
+  }
 };
 
 export default function AboutPage() {
