@@ -22,9 +22,6 @@ export async function generateMetadata({ params }: BusinessPageProps) {
     return {
       title: "Business Not Found | Stordial",
       description: "This business listing could not be found on Stordial.",
-      alternates:{
-        canonical: `/${location}/${category}`
-      } 
     };
   }
 
@@ -34,6 +31,9 @@ export async function generateMetadata({ params }: BusinessPageProps) {
   return {
     title: `${business.name} | ${business.category} in ${business.city}`,
     description: business.description || `Explore ${business.name} on Stordial`,
+    alternates:{
+      canonical: `/${location}/${category}/${business.name}`
+    } 
   };
 }
 

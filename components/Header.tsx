@@ -107,48 +107,6 @@ export default function Header({
             </Link>
 
             {userSection}
-
-            {/* {user && user.email === 'admin@stordial.com' && (
-                    <Link 
-                      href="/admin"
-                      className="text-blue-600 hover:text-blue-700 transition-colors font-medium bg-blue-50 px-3 py-2 rounded-lg hover:bg-blue-100"
-                    >
-                      Admin Panel
-                    </Link>
-                  )}
-
-              {user ? (
-              <div className="hidden lg:flex items-center space-x-4">              
-                <div className="flex items-center space-x-3">
-                  <Link href="/dashboard" className="flex items-center space-x-3 cursor-pointer border py-1 px-1 rounded-lg">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-md">
-                      <User className="w-4 h-4 text-white" />
-                    </div>
-                    <div className="hidden md:block">
-                      <p className="text-sm font-semibold text-gray-800">{user.name}</p>
-                      <p className="text-xs text-gray-500">{user.email}</p>
-                    </div>
-                  </Link>
-                  
-                  <button 
-                    onClick={onLogout}
-                    className="text-sm bg-red-600 text-white p-2 rounded-lg transition-colors font-medium flex items-center"
-                  >
-                    Logout
-                    <LogOut className="w-[15px] h-[15px] ms-1" />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <button
-                onClick={()=>window.location.href = "/login"}
-                className="hidden lg:flex items-center bg-[#0765F2] text-white px-6 py-2 rounded-md transition-all duration-200 font-semibold group"
-              >
-                <User className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
-                <span>Sign In</span>
-              </button>
-            )} */}
-
           </div>
       
             {/* Mobile Menu Button */}
@@ -169,9 +127,10 @@ export default function Header({
 
             {user &&
               <div onClick={()=> window.location.href = '/dashboard'} className='flex items-center space-x-3 p-4'>
-                <div className='w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-md'>
-                  <User className='w-6 h-6 text-white' />
-                </div>
+                 <div className={`w-8 h-8 ${user.avatar === '' && 'bg-gradient-to-br from-blue-500 to-purple-500'} rounded-full flex items-center justify-center`}>
+              <img src={user.avatar} alt=""  className={user && user.avatar !== '' ? 'block rounded-full' : 'hidden'}/>
+              <User className={`${user && user.avatar === '' ? 'block' : 'hidden'} w-4 h-4 text-white`}/>
+            </div>
                 <div>
                   <p className='text-sm font-semibold text-gray-800'>{user.name}</p>
                   <p className='text-xs text-gray-500'>{user.email}</p>
@@ -243,7 +202,7 @@ export default function Header({
               <li className='mb-2' onClick={onMenuToggle}>
                 {user &&
                  <button 
-                    onClick={onLogout}
+                    onClick={()=>{onLogout(); signOut({ callbackUrl: "/" })}}
                     className="text-gray-600 px-4 py-2 flex justify-center items-center"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
