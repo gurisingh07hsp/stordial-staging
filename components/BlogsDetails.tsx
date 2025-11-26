@@ -83,7 +83,7 @@ const BlogsDetails = () => {
                   </CardContent>
                   <CardFooter>
                     <button
-                      onClick={()=>window.location.href = `/blog/${post._id}`}
+                      onClick={()=>window.location.href = `/blog/${post.title.toLowerCase().replace(/\s+/g, '-') + '-' + post._id}`}
                       className="flex items-center text-foreground hover:underline"
                     >
                       Read more

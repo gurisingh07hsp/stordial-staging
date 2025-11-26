@@ -11,7 +11,7 @@ interface BusinessPageProps {
 export async function generateMetadata({ params }: BusinessPageProps) {
   const location = decodeURIComponent(params.location.replace(/-/g, " "));
   const category = decodeURIComponent(params.category.replace(/-/g, " "));
-  const id = params.id;
+  const id = params.id.split('-').filter(Boolean).pop();
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${location}/category/${category}/id/${id}`,
@@ -42,7 +42,8 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
 
   const location = decodeURIComponent(params.location.replace(/-/g, ' '));
   const category = decodeURIComponent(params.category.replace(/-/g, ' '));
-  const id = decodeURIComponent(params.id);
+  const id = params.id.split('-').filter(Boolean).pop();
+  // const id = decodeURIComponent(params.id);
 
 
 // Fetch business

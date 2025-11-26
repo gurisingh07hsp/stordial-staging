@@ -114,7 +114,8 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const handleBusinessClick = (business: Business) => {
     const locationPath = business.city.toLowerCase().replace(/\s+/g, '-');
     const categoryPath = business.category.toLowerCase().replace(/\s+/g, '-');
-    const id = business._id;
+    const name = business.name.replace(/\s+/g, '-');
+    const id = name + '-' + business._id;
     const url = `/${locationPath}/${categoryPath}/${id}`;
     window.location.href = url;
   };

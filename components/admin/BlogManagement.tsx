@@ -670,7 +670,7 @@ export default function BlogManagement() {
                         >
                           <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
-                        <button className="text-gray-600 hover:text-gray-900 p-1" title="View">
+                        <button onClick={()=>window.location.href = `/blog/${post.title.toLowerCase().replace(/\s+/g, '-') + '-' + post._id}`} className="text-gray-600 hover:text-gray-900 p-1" title="View">
                           <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
                         <button onClick={()=>handleDelete(post)} className="text-red-600 hover:text-red-900 p-1" title="Delete">
