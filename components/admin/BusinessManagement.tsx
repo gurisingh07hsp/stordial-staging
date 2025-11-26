@@ -465,7 +465,8 @@ const filteredBusinesses = businesses;
   const handleView = (business: Business) => {
       const locationPath = business.city.replace(/\s+/g, '-');
       const categoryPath = business.category.replace(/\s+/g, '-');
-      const id = business._id;
+      const name = business.name.replace(/\s+/g, '-');
+      const id = name + '-' + business._id;
       const url = `/${locationPath}/${categoryPath}/${id}`;
       window.location.href = url;
   }

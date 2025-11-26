@@ -44,7 +44,12 @@ async function getSimilarBlogs(category: string): Promise<Blogdata[]> {
 
 export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
   const decodedId = decodeURIComponent(params.id);
-  const blog = await getBlog(decodedId);
+      const maybeId = decodedId.split('-').pop();
+    if (!maybeId) {
+        throw new Error('Invalid blog id');
+    }
+    const id = maybeId;
+  const blog = await getBlog(id);
 
   return {
     title: blog.seotitle || blog.title,
@@ -57,10 +62,15 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
 const Blog = async({params}: BlogPageProps) => {
 
     const decodedId = decodeURIComponent(params.id);
+    const maybeId = decodedId.split('-').pop();
+    if (!maybeId) {
+        throw new Error('Invalid blog id');
+    }
+    const id = maybeId;
     let loading = true;
-    const blog = await getBlog(decodedId);
+    const blog = await getBlog(id);
     const similarBlogs = await getSimilarBlogs(blog.category); 
-    if(blog){
+    if (blog) {
         loading = false;
     }
 
