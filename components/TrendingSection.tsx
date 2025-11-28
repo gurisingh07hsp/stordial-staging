@@ -4,6 +4,7 @@ import React from 'react';
 
 import Link from 'next/link';
 import { Business } from '../types';
+import { generateSlug } from '@/hooks/generateSlug';
 
 interface TrendingSectionProps {
   businesses: Business[];
@@ -13,7 +14,7 @@ export default function TrendingSection({ businesses }: TrendingSectionProps) {
   const formatBusinessUrl = (business: Business) => {
     const location = business.city.toLowerCase().replace(/\s+/g, '-');
     const category = business.category.toLowerCase().replace(/\s+/g, '-');
-    const name = business.name.replace(/\s+/g, '-');
+    const name = generateSlug(business.name);
     const id = name + '-' + business._id;
     const url = `/${location}/${category}/${id}`;
     return url;

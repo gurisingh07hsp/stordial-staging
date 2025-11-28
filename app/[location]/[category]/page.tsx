@@ -10,6 +10,7 @@ import { Autoplay, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { generateSlug } from '@/hooks/generateSlug';
 interface CategoryPageProps {
   params: {
     location: string;
@@ -114,7 +115,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const handleBusinessClick = (business: Business) => {
     const locationPath = business.city.toLowerCase().replace(/\s+/g, '-');
     const categoryPath = business.category.toLowerCase().replace(/\s+/g, '-');
-    const name = business.name.replace(/\s+/g, '-');
+    const name = generateSlug(business.name);
     const id = name + '-' + business._id;
     const url = `/${locationPath}/${categoryPath}/${id}`;
     window.location.href = url;

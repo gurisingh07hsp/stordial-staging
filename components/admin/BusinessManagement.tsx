@@ -26,6 +26,7 @@ import { Toaster } from 'react-hot-toast'
 import toast from 'react-hot-toast'
 import Papa from "papaparse";
 import { useTags } from '@/hooks/use-tags';
+import { generateSlug } from '@/hooks/generateSlug';
 
 interface OpeningHours {
   [key: string]: {
@@ -465,7 +466,7 @@ const filteredBusinesses = businesses;
   const handleView = (business: Business) => {
       const locationPath = business.city.replace(/\s+/g, '-');
       const categoryPath = business.category.replace(/\s+/g, '-');
-      const name = business.name.replace(/\s+/g, '-');
+      const name = generateSlug(business.name);
       const id = name + '-' + business._id;
       const url = `/${locationPath}/${categoryPath}/${id}`;
       window.location.href = url;
