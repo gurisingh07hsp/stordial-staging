@@ -23,6 +23,7 @@ import {
   Building2, 
   MessageSquare,
 } from 'lucide-react';
+import { generateSlug } from '@/hooks/generateSlug'
 
 interface imageData {
   url: string;
@@ -408,7 +409,7 @@ const subcategories = {
     const handleView = (business: Business) => {
         const locationPath = business.city.replace(/\s+/g, '-');
         const categoryPath = business.category.replace(/\s+/g, '-');
-        const name = business.name.replace(/\s+/g, '-');
+        const name = generateSlug(business.name);
         const id = name + '-' + business._id;
         const url = `/${locationPath}/${categoryPath}/${id}`;
         window.location.href = url;

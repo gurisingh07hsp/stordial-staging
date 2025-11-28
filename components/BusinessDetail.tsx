@@ -31,6 +31,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { Toaster } from 'react-hot-toast'
 import toast from 'react-hot-toast';
+import { generateSlug } from '@/hooks/generateSlug';
 
 
 interface BusinessPageProps {
@@ -165,8 +166,10 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
   const formatBusinessUrl = (business: { _id: string; name: string; category: string; city: string }) => {
     const location = business.city.toLowerCase().replace(/\s+/g, '-');
     const category = business.category.toLowerCase().replace(/\s+/g, '-');
-    const id = business._id;
-    return `/${location}/${category}/${id}`;
+    const name = generateSlug(business.name);
+    const id = name + '-' + business._id;
+    const url = `/${location}/${category}/${id}`;
+    return window.location.href = url;
   };
 
   const openImageModal = (index: number) => {
