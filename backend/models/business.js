@@ -31,7 +31,7 @@ const businessSchema = new mongoose.Schema({
       'gastroenterologist','pulmonologist chest specialist','oncologist cancer specialist','endocrinologist',
       'rheumatologist','surgeon general','plastic surgeon','physiotherapist','homeopathy doctor','ayurvedic doctor',
       'unani doctor','sexologist','immunologist','geriatric specialist elderly care','occupational therapist',
-      'speech therapist','dietitian nutritionist','atm','other'
+      'speech therapist','dietitian nutritionist','atm','it company','institute','assistent','other'
     ]
   },
   subcategory: {
