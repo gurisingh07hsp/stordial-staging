@@ -32,9 +32,10 @@ export default function CategoryGrid() {
     }
     else if (userLocation && !locationLoading) {
       const location = userLocation.city.toLowerCase().replace(/\s+/g, '-');
-      const category = categoryName.toLowerCase().replace(/\s+/g, '-');
+      let category = categoryName.toLowerCase().replace(/\s+/g, '-');
       
       if(category === 'restaurants' || category === 'hospitals' || category === 'schools' || category === 'shopping' || category === 'automotive' || category === 'beauty' || category === 'fitness'){
+        category = categoryName.replace(/\s+/g, '-');
         window.location.href = `/subcategories?location=${location}&category=${category}`;
       }
       else{

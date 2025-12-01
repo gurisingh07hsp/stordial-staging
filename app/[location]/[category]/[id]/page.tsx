@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: BusinessPageProps) {
   const business = data.business;
 
   return {
-    title: `${business.name} | ${business.category} in ${business.city}`,
+    title: `${business.name} | ${business.subcategory} in ${business.city}`,
     description: business.description || `Explore ${business.name} on Stordial`,
     alternates:{
       canonical: `/${location}/${category}/${business.name}`
@@ -60,7 +60,6 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
     { cache: "no-store" }
   );
   const reviews = reviewsRes.ok ? (await reviewsRes.json()).reviews : [];
-
   // Fetch similar businesses
   const similarRes = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${location}/category/${category}`,

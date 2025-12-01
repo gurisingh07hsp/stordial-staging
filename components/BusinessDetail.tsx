@@ -83,7 +83,7 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
     else{
         setSelected(0);
     }
-  },[user, reviews,showReview]);
+  },[user, showReview]);
 
 
      useEffect(()=>{
@@ -289,7 +289,7 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
             <div className="grid lg:grid-cols-3 space-x-2 p-4 h-full">
               <div className="">
                 { business && business.images && business.images.length > 0 ? (<>
-                  <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[600px]  lg:h-80 w-full h-full rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 hidden lg:flex items-center justify-center' />
+                  <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[600px] object-cover lg:h-80 w-full h-full rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 hidden lg:flex items-center justify-center' />
                   {/* <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[600px]  lg:h-80 w-full h-full rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:hidden flex items-center justify-center' /> */}
 
                   <Swiper
@@ -344,7 +344,7 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
               </div>
               <div className="hidden lg:block">
                 { business && business.images && business.images.length > 1 ? (
-                  <img  onClick={() => openImageModal(1)} src={business?.images?.[1]?.url} alt="" className='hidden lg:w-[600px] lg:h-80 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:flex items-center justify-center' />
+                  <img  onClick={() => openImageModal(1)} src={business?.images?.[1]?.url} alt="" className='hidden lg:w-[600px] lg:h-80 object-cover rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:flex items-center justify-center' />
                 ) : (
                 <div
                   className="hidden lg:w-[480px] lg:h-80 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:flex items-center justify-center shadow-lg hover:shadow-xl"
@@ -620,7 +620,7 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
                     {business.images && business.images.length > 0 ? (
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {business.images.map((image, index) => (
-                          <img key={index} onClick={()=>openImageModal(index)} src={image.url} alt="" className='aspect-square rounded-xl cursor-pointer' />
+                          <img key={index} onClick={()=>openImageModal(index)} src={image.url} alt="" className='aspect-square object-contain rounded-xl cursor-pointer' />
                         ))}
                       </div>
                     ) : (
@@ -851,7 +851,7 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
             
             <div className="relative">
               {business && business.images && business.images.length > 0 ? (
-                <img className='rounded-3xl h-[400px] lg:h-[600px] w-full' src={business && business.images && business.images[selectedImageIndex].url} alt="" />
+                <img className='rounded-3xl object-contain h-[400px] lg:h-[600px] w-full' src={business && business.images && business.images[selectedImageIndex].url} alt="" />
               ) : (
               <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl h-[600px] w-full flex items-center justify-center shadow-2xl">
                 {/* <div className="text-gray-400 text-8xl">☕</div> */}

@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, MapPin, ArrowRight, ChevronDown } from 'lucide-react';
 import { popularCities } from '../data/mockData';
 import { useAutoLocation } from '../hooks/useAutoLocation';
+import { categories } from '@/hooks/categories';
 // import cities from "cities.json";
 import axios from 'axios';
 
@@ -85,24 +86,7 @@ export default function HeroSection() {
     setShowSearchSuggestions(false);
   }
 
-  const Categories: string[] = ['Restaurants','Hotels','Hospitals','Schools','Shopping','Automotive','Beauty','Spa',
-    'Fitness','Dentists','Lawyers','Real Estate','Banks','Pharmacies','Petrol Pumps','Pet Services','Home Services',
-    'Coaching Centres','Tuition Classes','Colleges','Universities','Government Offices','Travel Agencies',
-    'Tour Operators','Courier Services','Logistics Services','Event Management','Party Services','Wedding Services',
-    'Banquet Halls','Caterers','Photographers','Doctors','Clinics','Diagnostic Centres','Labs','Repair Services',
-    'Maintenance Services','Grocery Stores','Supermarkets','Sweet Shops','Bakeries','Clothing Stores',
-    'Apparel Stores','Mobile Stores','Electronics Stores','Cyber Cafes','Printing Services','Temples','Gurudwaras',
-    'Churches','Mosques','NGOs','Charitable Organizations','Public Transport Services','Bus Services','Taxi Services',
-    'Auto Services','Metro Services','Driving Schools','Car Rentals','Bike Rentals','Agricultural Services',
-    'Equipment Dealers','Hardware Stores','Building Material Suppliers','Cement Dealers','AC Dealers',
-    'AC Repair Services','AC Installation Services','General Physician','Pediatrician','Cardiologist',
-    'Dermatologist','Gynecologist Obstetrician','Orthopedic Doctor','ENT Specialist Ear Nose Throat',
-    'Ophthalmologist Eye Specialist','Dentist','Neurologist','Psychiatrist','Urologist','Nephrologist',
-    'Gastroenterologist','Pulmonologist (Chest Specialist)','Oncologist Cancer Specialist','Endocrinologist',
-    'Rheumatologist','Surgeon General','Plastic Surgeon','Physiotherapist','Homeopathy Doctor','Ayurvedic Doctor',
-    'Unani Doctor','Sexologist','Immunologist','Geriatric Specialist Elderly Care','Occupational Therapist',
-    'Speech Therapist','Dietitian Nutritionist','ATM'
-  ];
+  const Categories: string[] = categories;
   
   const fetchSuggestions = (value: string) => {
     try{
@@ -125,10 +109,10 @@ export default function HeroSection() {
     <section onClick={()=>setShowSearchSuggestions(false)} className="relative py-8 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-6">
-          <h1 className="text-[35px] md:text-4xl font-bold text-gray-800 mb-3 leading-tight">
+          <h1 className="text-[25px] md:text-4xl font-bold text-gray-800 mb-3 leading-tight">
             Find Local Businesses
             <br />
-            <span className="text-3xl md:text-4xl text-blue-600">That Deliver</span>
+            <span className="text-[25px] md:text-4xl text-blue-600">That Deliver</span>
           </h1>
           <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
             Discover and connect with the best local businesses in your area.

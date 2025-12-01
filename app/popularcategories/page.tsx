@@ -1,41 +1,42 @@
 "use client"
 import React from 'react'
 import { useAutoLocation } from '@/hooks/useAutoLocation';
+import { categories } from '@/hooks/categories';
 
 const PopularCategories = () => {
     const { location: userLocation} = useAutoLocation();
 
     const handleClick = (category: string) => {
         const locationPath = userLocation?.city.toLowerCase().replace(/\s+/g, '-');
-        const categoryPath = category.toLowerCase().replace(/\s+/g, '-');
-        if(categoryPath === 'atm'){
+        const categoryPath = category.replace(/\s+/g, '-');
+        // if(categoryPath === 'atm'){
           window.location.href = `/subcategories?location=${locationPath}&category=${categoryPath}`;
-        }
-        else{
-          window.location.href = `/${locationPath}/${categoryPath}`;
-        }
+        // }
+        // else{
+        //   window.location.href = `/${locationPath}/${categoryPath}`;
+        // }
     }
-    const popularCategories: string[] = [
-   // Food & Stay
-  'Restaurants','Hotels','Bakeries','Sweet Shops','Caterers','Banquet Halls','Party Services','Wedding Services',
-  'Event Management','Photographers',
-   // Health & Fitness
-  'Hospitals','Clinics','Doctors','Dentists','Diagnostic Centres','Labs','Pharmacies','Fitness','Spa','Beauty',
-  'Physiotherapist','Dietitian Nutritionist',
-   // Education
-  'Schools','Colleges','Universities','Coaching Centres','Tuition Classes','Driving Schools',
-  // Shopping & Services
-  'Shopping','Supermarkets','Grocery Stores','Clothing Stores','Electronics Stores','Mobile Stores',
-  'Apparel Stores','Home Services','Repair Services','Maintenance Services', 'AC Repair Services',
-  // Travel & Transport
-  'Petrol Pumps','Travel Agencies','Tour Operators','Taxi Services','Car Rentals','Bike Rentals','Bus Services','Metro Services',
-  // Financial & Government
-  'Banks','Government Offices',
-  // Religion & NGOs
-  'Temples','Gurudwaras','Churches','ATM','NGOs','Charitable Organizations'
-];
+     const popularCategories: string[] = categories;
+//    // Food & Stay
+//   'Restaurants','Hotels','Bakeries','Sweet Shops','Caterers','Banquet Halls','Party Services','Wedding Services',
+//   'Event Management','Photographers',
+//    // Health & Fitness
+//   'Hospitals','Clinics','Doctors','Dentists','Diagnostic Centres','Labs','Pharmacies','Fitness','Spa','Beauty',
+//   'Physiotherapist','Dietitian Nutritionist',
+//    // Education
+//   'Schools','Colleges','Universities','Coaching Centres','Tuition Classes','Driving Schools',
+//   // Shopping & Services
+//   'Shopping','Supermarkets','Grocery Stores','Clothing Stores','Electronics Stores','Mobile Stores',
+//   'Apparel Stores','Home Services','Repair Services','Maintenance Services', 'AC Repair Services',
+//   // Travel & Transport
+//   'Petrol Pumps','Travel Agencies','Tour Operators','Taxi Services','Car Rentals','Bike Rentals','Bus Services','Metro Services',
+//   // Financial & Government
+//   'Banks','Government Offices',
+//   // Religion & NGOs
+//   'Temples','Gurudwaras','Churches','ATM','NGOs','Charitable Organizations'
+// ];
   return (
-    <div className='h-[99vh] w-[85%] mx-auto'>
+    <div className='h-[99vh] w-[100%] mx-auto'>
       <h2 className='text-xl ms-3 mt-10 font-bold'>More Categories</h2>
       { userLocation?.city ?
       <div className='flex flex-wrap w-full max-h-[90vh] overflow-y-auto lg:w-[100%] gap-2 mt-8'>

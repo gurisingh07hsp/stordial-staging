@@ -42,6 +42,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
       }catch(error){
         console.error('Error fetching businesses: ', error);
       }
+      setLoading(false);
     }
     getBusinessesByCategotyAndLocation();
   }, [decodedLocation, decodedCategory])
@@ -114,7 +115,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
   const handleBusinessClick = (business: Business) => {
     const locationPath = business.city.toLowerCase().replace(/\s+/g, '-');
-    const categoryPath = business.category.toLowerCase().replace(/\s+/g, '-');
+    const categoryPath = business.subcategory.toLowerCase().replace(/\s+/g, '-');
     const name = generateSlug(business.name);
     const id = name + '-' + business._id;
     const url = `/${locationPath}/${categoryPath}/${id}`;
@@ -301,7 +302,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                     <div className="flex lg:flex-row flex-col items-start justify-between">
                       <div className='flex'>
                       <div className='lg:w-32 w-24 h-[100px] flex justify-center items-center'>
-                        <img src={business.images && business.images[0]?.url} alt="" className={`h-full rounded-lg ${business.images && business.images?.length > 0 ? 'block' : 'hidden'}`} />
+                        <img src={business.images && business.images[0]?.url} alt="" className={`h-full w-full object-contain rounded-lg ${business.images && business.images?.length > 0 ? 'block' : 'hidden'}`} />
                         <Camera className={`w-6 h-6 ${business.images && business.images.length > 0 ? 'hidden' : 'block'}`}/>
                       </div>
                       <div className="flex-1 ms-2">
