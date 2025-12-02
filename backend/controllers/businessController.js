@@ -272,25 +272,18 @@ exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
       query.city = { $regex: location, $options: 'i' };
     }
 
-    if(category && category !== undefined){
-      query.subcategory = { $regex: category, $options: 'i'};
+    // if(category && category !== undefined){
+    //   query.category = { $regex: category, $options: 'i'};
+    // }
+    category = category.toLowerCase();
+    if (category && category !== 'All Categories') {
+      query.category = { $regex: category, $options: 'i' };
     }
 
       let businesses = await Business.find(query)
       .populate('owner', 'name email')
       .sort({ rating: -1, reviews: -1 });
 
-      if(businesses.length <= 0 ){
-        category = category.toLowerCase();
-        delete query.subcategory;
-        if (category && category !== 'All Categories') {
-          query.category = { $regex: category, $options: 'i' };
-        }
-      
-        businesses = await Business.find(query)
-        .populate('owner', 'name email')
-        .sort({ rating: -1, reviews: -1 });
-      }
 
     res.status(200).json({
       success: true,
