@@ -73,6 +73,7 @@ export interface User {
   _id: string;
   name: string;
   email: string;
+  authProvider: string;
   phone: string;
   businessOwner: boolean;
   avatar?: string;
@@ -95,7 +96,7 @@ export interface BusinessFormData {
   name: string;
   description: string;
   category: string;
-  subcategory: string;
+  subcategory?: string;
   services: string[];
   phone: string;
   email: string;

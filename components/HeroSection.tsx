@@ -49,7 +49,7 @@ export default function HeroSection() {
     // onSearch(searchQuery, location, category);
     if (location && !locationLoading && searchQuery !== 'All Categories' && searchQuery !== '') {
       const locationPath = location.toLowerCase().replace(/\s+/g, '-');
-      const categoryPath = searchQuery.toLowerCase().replace(/\s+/g, '-');
+      const categoryPath = searchQuery.toLowerCase().replace(/\s+/g, '-').replace('/', '-');
       window.location.href = `/${locationPath}/${categoryPath}`;
     }
   };
@@ -97,7 +97,6 @@ export default function HeroSection() {
           setSuggestions(filteredSuggestions.slice(0.8));
         }
         else{
-        setShowSearchSuggestions(false)
         setSuggestions(['Restaurants','Hotels','Hospitals','Schools','Shopping','Automotive']);
       }
     }catch(error){

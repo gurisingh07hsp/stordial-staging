@@ -9,38 +9,17 @@ const PopularCategories = () => {
     const handleClick = (category: string) => {
         const locationPath = userLocation?.city.toLowerCase().replace(/\s+/g, '-');
         const categoryPath = category.replace(/\s+/g, '-');
-        // if(categoryPath === 'atm'){
-          window.location.href = `/subcategories?location=${locationPath}&category=${categoryPath}`;
-        // }
-        // else{
+        
+        window.location.href = `/subcategories?location=${locationPath}&category=${categoryPath}`;
         //   window.location.href = `/${locationPath}/${categoryPath}`;
-        // }
     }
      const popularCategories: string[] = categories;
-//    // Food & Stay
-//   'Restaurants','Hotels','Bakeries','Sweet Shops','Caterers','Banquet Halls','Party Services','Wedding Services',
-//   'Event Management','Photographers',
-//    // Health & Fitness
-//   'Hospitals','Clinics','Doctors','Dentists','Diagnostic Centres','Labs','Pharmacies','Fitness','Spa','Beauty',
-//   'Physiotherapist','Dietitian Nutritionist',
-//    // Education
-//   'Schools','Colleges','Universities','Coaching Centres','Tuition Classes','Driving Schools',
-//   // Shopping & Services
-//   'Shopping','Supermarkets','Grocery Stores','Clothing Stores','Electronics Stores','Mobile Stores',
-//   'Apparel Stores','Home Services','Repair Services','Maintenance Services', 'AC Repair Services',
-//   // Travel & Transport
-//   'Petrol Pumps','Travel Agencies','Tour Operators','Taxi Services','Car Rentals','Bike Rentals','Bus Services','Metro Services',
-//   // Financial & Government
-//   'Banks','Government Offices',
-//   // Religion & NGOs
-//   'Temples','Gurudwaras','Churches','ATM','NGOs','Charitable Organizations'
-// ];
   return (
-    <div className='h-[99vh] w-[100%] mx-auto'>
+    <div className='h-[99vh] lg:max-w-7xl mx-auto'>
       <h2 className='text-xl ms-3 mt-10 font-bold'>More Categories</h2>
       { userLocation?.city ?
       <div className='flex flex-wrap w-full max-h-[90vh] overflow-y-auto lg:w-[100%] gap-2 mt-8'>
-        {popularCategories.map((category, index)=> (
+        {popularCategories.slice(0,30).map((category, index)=> (
             <button key={index} onClick={()=>handleClick(category)} className='lg:w-52 w-44 text-start py-1 cursor-pointer hover:bg-[#ebebeb] rounded-md'>
                 <p className='ms-3'>{category}</p>
             </button>

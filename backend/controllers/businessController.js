@@ -5,6 +5,10 @@ const User = require('../models/user');
 exports.createBusiness = async (req, res, next) => {
   try {
     req.body.owner = req.user.id;
+    req.body.category = req.body.category.toLowerCase()
+      .replace(/[^a-z\s-]/g, '') // Remove special characters
+      .replace('-', ' ') // Replace spaces with hyphens
+      .trim();
   const business = await Business.create(req.body);
 
 
