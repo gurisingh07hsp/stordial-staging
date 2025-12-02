@@ -27,7 +27,7 @@ import toast from 'react-hot-toast'
 import Papa from "papaparse";
 import { useTags } from '@/hooks/use-tags';
 import { generateSlug } from '@/hooks/generateSlug';
-import { categories, subcategories } from '@/hooks/categories';
+import { categories} from '@/hooks/categories';
 
 interface OpeningHours {
   [key: string]: {
@@ -130,7 +130,6 @@ export default function BusinessManagement() {
     name: string;
     description: string;
     category: string;
-    subcategory: string;
     phone: string;
     email: string;
     address: string;
@@ -144,7 +143,6 @@ export default function BusinessManagement() {
       name: '',
       description: '',
       category: '',
-      subcategory: '',
       services: [],
       phone: '',
       email: '',
@@ -257,9 +255,9 @@ export default function BusinessManagement() {
       if(images.length > 0)
       {
         setFormData((prev) => ({
-        ...prev,
-        images: images,
-      }));
+          ...prev,
+          images: [...prev.images, ...images], // merge old + new
+        }));
       setIsSubmit(true);
       }
     },[images])
@@ -284,7 +282,6 @@ export default function BusinessManagement() {
       name: '',
       description: '',
       category: '',
-      subcategory: '',
       services: [],
       phone: '',
       email: '',
@@ -340,7 +337,7 @@ const filteredBusinesses = businesses;
 
   const handleView = (business: Business) => {
       const locationPath = business.city.replace(/\s+/g, '-');
-      const categoryPath = business.subcategory.replace(/\s+/g, '-');
+      const categoryPath = business.category.replace(/\s+/g, '-');
       const name = generateSlug(business.name);
       const id = name + '-' + business._id;
       const url = `/${locationPath}/${categoryPath}/${id}`;
@@ -397,7 +394,12 @@ const filteredBusinesses = businesses;
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
   };
 
-
+  const removeImageFormForm = (index: number) => {
+    setFormData((prev) => ({
+    ...prev,
+    images: prev.images.filter((_, i) => i !== index),
+    }));
+  }
 
   const handleBulkImportFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -432,7 +434,6 @@ const filteredBusinesses = businesses;
         name: data.name,
         description: data.description,
         category: data.category,
-        subcategory: data.subcategory,
         services: services,
         phone: data.phone,
         email: data.email,
@@ -459,7 +460,6 @@ const filteredBusinesses = businesses;
       business.name && 
       business.category && 
       categories.includes(business.category) && 
-      business.subcategory &&
       business.address && 
       business.city
     );
@@ -615,7 +615,6 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
         name: '',
         description: '',
         category: '',
-        subcategory: '',
         services: [],
         phone: '',
         email: '',
@@ -1001,23 +1000,12 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
       />
     </div>
 
-                  {formData.category && (
+                  {/* {formData.category && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Subcategory
                       </label>
-                      {/* <select
-                        value={formData.subcategory}
-                        required
-                        onChange={(e) => setFormData({...formData, subcategory: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      >
-                        <option value="">Select Subcategory</option>
-                        {subcategories[formData.category as keyof typeof subcategories]?.map(sub => (
-                          <option key={sub} value={sub}>{sub}</option>
-                        ))}
-                      </select> */}
-                                            <Select
+                      <Select
                         options={subcategories[formData.category as keyof typeof subcategories]?.map(
                           (sub) => ({ value: sub, label: sub })
                         )}
@@ -1034,7 +1022,7 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                         className="w-full"
                       />
                     </div>
-                  )}
+                  )} */}
 
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -1286,6 +1274,28 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                     ))}
                   </div>
                 )}
+
+                {formData.images.length > 0 && (
+                  <div className="grid grid-cols-4 gap-2">
+                    {formData.images.map((file, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={file.url}
+                          alt={`Upload ${index + 1}`}
+                          className="w-full h-16 object-contain rounded"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImageFormForm(index)}
+                          className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 transition-colors"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
               </div>
 
               {message && <p className={`${message == 'Business listing submitted successfully' || message == 'Business Edited successfully' ? 'text-green-500' : 'text-red-500'} text-center font-bold`}>{message}</p>}

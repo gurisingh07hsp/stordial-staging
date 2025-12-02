@@ -9,7 +9,7 @@ import toast from 'react-hot-toast'
 import Select from "react-select";
 import { useTags } from '@/hooks/use-tags';
 import { useRouter } from 'next/navigation'
-import { categories, subcategories } from '@/hooks/categories'
+import { categories } from '@/hooks/categories'
 import { 
   Edit, 
   Trash2, 
@@ -169,6 +169,13 @@ const UserDashboard = () => {
         const removeImage = (index: number) => {
           setUploadedImages(prev => prev.filter((_, i) => i !== index));
         };
+        
+        const removeImageFormForm = (index: number) => {
+          setFormData((prev) => ({
+          ...prev,
+          images: prev.images.filter((_, i) => i !== index),
+          }));
+        }
 
       const uploadimages = async() => {
         const formdata = new FormData();
@@ -232,9 +239,9 @@ const UserDashboard = () => {
         if(images.length > 0)
         {
           setFormData((prev) => ({
-          ...prev,
-          images: images,
-        }));
+            ...prev,
+            images: [...prev.images, ...images], // merge old + new
+          }));
         }
       },[images])
 
@@ -252,7 +259,6 @@ const UserDashboard = () => {
           name: '',
           description: '',
           category: '',
-          subcategory: '',
           services: [],
           phone: '',
           email: '',
@@ -283,7 +289,7 @@ const UserDashboard = () => {
 
     const handleView = (business: Business) => {
         const locationPath = business.city.replace(/\s+/g, '-');
-        const categoryPath = business.subcategory.replace(/\s+/g, '-');
+        const categoryPath = business.category.replace(/\s+/g, '-');
         const name = generateSlug(business.name);
         const id = name + '-' + business._id;
         const url = `/${locationPath}/${categoryPath}/${id}`;
@@ -784,22 +790,11 @@ const [analytics, setAnalytics] = useState<{ calls: number; whatsapp: number; di
       />
     </div>
 
-                  {formData.category && (
+                  {/* {formData.category && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Subcategory
                       </label>
-                      {/* <select
-                        value={formData.subcategory}
-                        required
-                        onChange={(e) => setFormData({...formData, subcategory: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      >
-                        <option value="">Select Subcategory</option>
-                        {subcategories[formData.category as keyof typeof subcategories]?.map(sub => (
-                          <option key={sub} value={sub}>{sub}</option>
-                        ))}
-                      </select> */}
                       <Select
                         options={subcategories[formData.category as keyof typeof subcategories]?.map(
                           (sub) => ({ value: sub, label: sub })
@@ -817,7 +812,7 @@ const [analytics, setAnalytics] = useState<{ calls: number; whatsapp: number; di
                         className="w-full"
                       />
                     </div>
-                  )}
+                  )} */}
 
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -1066,6 +1061,27 @@ const [analytics, setAnalytics] = useState<{ calls: number; whatsapp: number; di
                     ))}
                   </div>
                 )}
+
+                {formData.images.length > 0 && (
+                  <div className="grid grid-cols-4 gap-2">
+                    {formData.images.map((file, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={file.url}
+                          alt={`Upload ${index + 1}`}
+                          className="w-full h-16 object-contain rounded"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImageFormForm(index)}
+                          className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 transition-colors"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {message && <p className={`${message == 'Business listing submitted successfully' || message == 'Business Edited successfully' ? 'text-green-500' : 'text-red-500'} text-center font-bold`}>{message}</p>}
@@ -1127,7 +1143,9 @@ const [analytics, setAnalytics] = useState<{ calls: number; whatsapp: number; di
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
                   />
                 </div>
-                <p onClick={()=> setShowChangePassword(true)} className='text-sm text-blue-600 cursor-pointer hover:underline'>Change Password</p>
+                {user?.authProvider == 'credentials' && (
+                  <p onClick={()=> setShowChangePassword(true)} className='text-sm text-blue-600 cursor-pointer hover:underline'>Change Password</p>
+                )}
                 </> : (
                   <div className='flex flex-col'>
                     <label className='mt-4 text-sm'>Current Password</label>

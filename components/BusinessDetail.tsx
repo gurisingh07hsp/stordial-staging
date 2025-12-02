@@ -420,7 +420,7 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
 
                 <div className="flex items-center text-gray-600 mb-2 lg:mb-6">
                   <MapPin className="w-5 h-5 mr-2" />
-                  <span className="font-medium">{business.city.charAt(0).toUpperCase() + business.city.slice(1)} • {business.category.charAt(0).toUpperCase() + business.category.slice(1)} • {business.subcategory}</span>
+                  <span className="font-medium">{business.city.charAt(0).toUpperCase() + business.city.slice(1)} • {business.category.charAt(0).toUpperCase() + business.category.slice(1)}</span>
                 </div>
 
                 {/* Action Buttons */}
@@ -620,7 +620,7 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
                     {business.images && business.images.length > 0 ? (
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {business.images.map((image, index) => (
-                          <img key={index} onClick={()=>openImageModal(index)} src={image.url} alt="" className='aspect-square object-contain rounded-xl cursor-pointer' />
+                          <img key={index} onClick={()=>openImageModal(index)} src={image.url} alt="" className='aspect-square w-[100%] object-contain rounded-xl cursor-pointer' />
                         ))}
                       </div>
                     ) : (

@@ -8,7 +8,6 @@ import { useAuth } from '../contexts/AuthContext';
 import Select from "react-select";
 import { useTags } from '@/hooks/use-tags';
 import { categories } from '@/hooks/categories';
-import { subcategories } from '@/hooks/categories';
 
 interface OpeningHours {
   [key: string]: {
@@ -43,7 +42,7 @@ export default function ListBusinessPage() {
     name: '',
     description: '',
     category: '',
-    subcategory: '',
+    // subcategory: '',
     services: [],
     phone: '',
     email: '',
@@ -268,22 +267,11 @@ const categoryOptions = categories.map(cat => ({
       />
     </div>
 
-                  {formData.category && (
+                  {/* {formData.category && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Subcategory
                       </label>
-                      {/* <select
-                        value={formData.subcategory}
-                        required
-                        onChange={(e) => setFormData({...formData, subcategory: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      >
-                        <option value="">Select Subcategory</option>
-                        {subcategories[formData.category as keyof typeof subcategories]?.map(sub => (
-                          <option key={sub} value={sub}>{sub}</option>
-                        ))}
-                      </select> */}
                       <Select
                         options={subcategories[formData.category as keyof typeof subcategories]?.map(
                           (sub) => ({ value: sub, label: sub })
@@ -301,7 +289,7 @@ const categoryOptions = categories.map(cat => ({
                         className="w-full"
                       />
                     </div>
-                  )}
+                  )} */}
 
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
