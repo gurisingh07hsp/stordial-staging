@@ -25,6 +25,7 @@ import {
   MessageSquare,
 } from 'lucide-react';
 import { generateSlug } from '@/hooks/generateSlug'
+import MenuSection from '@/components/MenuSection'
 
 interface imageData {
   url: string;
@@ -76,7 +77,21 @@ const UserDashboard = () => {
         city: '',
         website: '',
         images: images,
-        hours: openingHours
+        hours: openingHours,
+        menu: {
+          categories: [{
+            name: '',
+            items: [{
+              name: '',
+              description: '',
+              price: '',
+              image: '',
+              popular: false,
+              spicy: false,
+              vegetarian: false,
+            }],
+          }],
+        }
     });
 
     const [userData, setUserData] = useState({
@@ -778,7 +793,7 @@ const [analytics, setAnalytics] = useState<{ calls: number; whatsapp: number; di
       <Select
         options={categoryOptions}
         required
-        value={categoryOptions.find(opt => opt.value === formData.category) || null}
+        value={categoryOptions.find(opt => opt.value.toLowerCase() === formData.category) || null}
         onChange={(selected) => setFormData({
           ...formData,
           category: selected?.value || "",
@@ -1015,6 +1030,9 @@ const [analytics, setAnalytics] = useState<{ calls: number; whatsapp: number; di
               </div>
             </div>
 
+            {/* Menu Section */}
+            <MenuSection formData={formData} setFormData={setFormData}/>
+
               {/* Media Upload - Compact */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-800 flex items-center">
@@ -1048,7 +1066,7 @@ const [analytics, setAnalytics] = useState<{ calls: number; whatsapp: number; di
                         <img
                           src={URL.createObjectURL(file)}
                           alt={`Upload ${index + 1}`}
-                          className="w-full h-16 object-contain rounded"
+                          className="w-full lg:h-32 h-20 object-cover rounded"
                         />
                         <button
                           type="button"
@@ -1069,7 +1087,7 @@ const [analytics, setAnalytics] = useState<{ calls: number; whatsapp: number; di
                         <img
                           src={file.url}
                           alt={`Upload ${index + 1}`}
-                          className="w-full h-16 object-contain rounded"
+                          className="w-full lg:h-32 h-20 object-cover rounded"
                         />
                         <button
                           type="button"
