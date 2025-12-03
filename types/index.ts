@@ -105,4 +105,18 @@ export interface BusinessFormData {
   website: string;
   images: imageData[];
   hours: OpeningHours;
+  menu?: {
+    categories: {
+      name: string;
+      items: {
+        name: string;
+        description: string;
+        price: string;
+        image?: string;
+        popular?: boolean;
+        spicy?: boolean;
+        vegetarian?: boolean;
+      }[];
+    }[];
+  };
 } 

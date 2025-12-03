@@ -28,6 +28,7 @@ import Papa from "papaparse";
 import { useTags } from '@/hooks/use-tags';
 import { generateSlug } from '@/hooks/generateSlug';
 import { categories} from '@/hooks/categories';
+import MenuSection from '@/components/MenuSection';
 
 interface OpeningHours {
   [key: string]: {
@@ -150,7 +151,21 @@ export default function BusinessManagement() {
       city: '',
       website: '',
       images: images,
-      hours: openingHours
+      hours: openingHours,
+      menu: {
+    categories: [{
+      name: '',
+      items: [{
+        name: '',
+        description: '',
+        price: '',
+        image: '',
+        popular: false,
+        spicy: false,
+        vegetarian: false,
+      }],
+    }],
+  }
     });
 
     const [uploadProgress, setUploadProgress] = useState({
@@ -289,7 +304,21 @@ export default function BusinessManagement() {
       city: '',
       website: '',
       images: images,
-      hours: openingHours // or empty if you want {}
+      hours: openingHours,
+      menu: {
+        categories: [{
+          name: '',
+          items: [{
+            name: '',
+            description: '',
+            price: '',
+            image: '',
+            popular: false,
+            spicy: false,
+            vegetarian: false,
+          }],
+        }],
+      }
     });
     setId('');
     }
@@ -988,7 +1017,7 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
       <Select
         options={categoryOptions}
         required
-        value={categoryOptions.find(opt => opt.value === formData.category) || null}
+        value={categoryOptions.find(opt => opt.value.toLowerCase() == formData.category) || null}
         onChange={(selected) => setFormData({
           ...formData,
           category: selected?.value || "",
@@ -1228,6 +1257,11 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                                 </div>
                               </div>
 
+
+              {/* Menu Section */}
+
+              <MenuSection formData={formData} setFormData={setFormData}/>
+
               {/* Media Upload - Compact */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-800 flex items-center">
@@ -1261,7 +1295,7 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                         <img
                           src={URL.createObjectURL(file)}
                           alt={`Upload ${index + 1}`}
-                          className="w-full h-16 object-contain rounded"
+                          className="w-full lg:h-32 h-20 object-cover rounded"
                         />
                         <button
                           type="button"
@@ -1282,7 +1316,7 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                         <img
                           src={file.url}
                           alt={`Upload ${index + 1}`}
-                          className="w-full h-16 object-contain rounded"
+                          className="w-full lg:h-32 h-20 object-cover rounded"
                         />
                         <button
                           type="button"

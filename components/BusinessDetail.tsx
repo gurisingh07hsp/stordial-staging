@@ -32,6 +32,7 @@ import 'swiper/css/navigation';
 import { Toaster } from 'react-hot-toast'
 import toast from 'react-hot-toast';
 import { generateSlug } from '@/hooks/generateSlug';
+import { isShowMenu } from '@/hooks/isShowMenu';
 
 
 interface BusinessPageProps {
@@ -40,11 +41,6 @@ interface BusinessPageProps {
     category: string;
     id: string;
   };
-  reviews: {
-  user: {_id: string, name: string, avatar: string};
-  rating: number;
-  comment: string;
-  }[];
   business: Business;
   similarBusinesses: Business[];
 }
@@ -54,7 +50,7 @@ interface Reviews {
   rating: number;
   comment: string;
 }
-const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, params }: BusinessPageProps) => {
+const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPageProps) => {
   const {user} = useAuth();
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -62,7 +58,7 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
   const [noBusiness] = useState(false);
   const [hovered, setHovered] = useState<number | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
-  const [reviews] = useState<Reviews[]>(initialReviews);
+  const [reviews, setReviews] = useState<Reviews[]>([]);
   const [showReview, setshowReview] = useState(false);
   const [comment,setComment] = useState('');
   const [displayText, setDisplayText] = useState('');
@@ -70,20 +66,37 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
 
   const decodedLocation = decodeURIComponent(params.location.replace(/-/g, ' '));
   const decodedCategory = decodeURIComponent(params.category.replace(/-/g, ' '));
+  const id = params.id.split('-').filter(Boolean).pop();
 
 
   useEffect(()=>{
     if(user && reviews){
       reviews.forEach(e => {
         if(e.user._id === user._id && !showReview){
-          setSelected(e.rating);
+          setSelected(e.rating || 0);
         }
       });
     }
     else{
         setSelected(0);
     }
-  },[user, showReview]);
+  },[user, reviews, showReview]);
+
+  const fetchReviwes = async() => {
+    try{
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/reviews/${id}`);
+      if(response.status == 200){
+        setReviews(response.data.reviews);
+      }
+
+    }catch(error){
+      console.log(error);
+    }
+  }
+
+  useEffect(()=> {
+    fetchReviwes();
+  },[]);
 
 
      useEffect(()=>{
@@ -169,7 +182,7 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
     const name = generateSlug(business.name);
     const id = name + '-' + business._id;
     const url = `/${location}/${category}/${id}`;
-    return window.location.href = url;
+    return url;
   };
 
   const openImageModal = (index: number) => {
@@ -192,14 +205,6 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
     if (selectedImageIndex !== null && business.images && business.images.length > 1) {
       setSelectedImageIndex(selectedImageIndex === 0 ? business.images.length - 1 : selectedImageIndex - 1);
     }
-  };
-
-  const shouldShowMenu = (business: Business) => {
-    const foodCategories = ['restaurants', 'cafes', 'bars', 'hotels', 'resorts', 'catering'];
-    const foodSubcategories = ['Coffee Shop', 'Bakery', 'Pizzeria', 'Sushi', 'Italian', 'Mexican', 'Chinese', 'Indian', 'Thai', 'American', 'French', 'Japanese', 'Korean', 'Mediterranean', 'Seafood', 'Steakhouse', 'BBQ', 'Food Truck', 'Deli', 'Ice Cream', 'Dessert'];
-    
-    return foodCategories.includes(business.category) || 
-           foodSubcategories.includes(business.subcategory);
   };
 
 
@@ -531,7 +536,7 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
                 <nav className="flex space-x-10 px-8 overflow-x-scroll hide-scrollbar">
                   {[
                     { id: 'overview', label: 'Overview', icon: '📋' },
-                    ...(shouldShowMenu(business) ? [{ id: 'menu', label: 'Menu', icon: '🍽️' }] : []),
+                    ...(isShowMenu(business.category) ? [{ id: 'menu', label: 'Menu', icon: '🍽️' }] : []),
                     { id: 'services', label: 'Services', icon: '🛠️' },
                     { id: 'hours', label: 'Hours', icon: '🕒' },
                     { id: 'photos', label: 'Photos', icon: '📸' },
@@ -631,7 +636,7 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
                   </div>
                 )}
 
-                {activeTab === 'menu' && shouldShowMenu(business) && business.menu && (
+                {activeTab === 'menu' && isShowMenu(business.category) && business.menu && (
                   <div>
                     <h3 className="text-xl font-semibold text-gray-800 mb-6">Our Menu</h3>
                     <div className="space-y-8">
@@ -719,7 +724,6 @@ const BusinessDetail = ({ business, reviews: initialReviews, similarBusinesses, 
                       {similarBusiness.images && similarBusiness.images.length > 0 ? (<img src={similarBusiness && similarBusiness.images && similarBusiness.images[0].url} alt="" className={`rounded-2xl h-48 mb-4 group-hover:shadow-lg transition-all duration-300`} />
                       ) : (
                         <div className={`bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl h-48 mb-4 flex items-center justify-center group-hover:shadow-lg transition-all duration-300`}>
-                        {/* <div className="text-4xl">☕</div> */}
                          <Camera/>
                       </div>
                       )}
