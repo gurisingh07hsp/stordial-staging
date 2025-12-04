@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: BusinessPageProps) {
   const business = data.business;
 
   return {
-    title: `${business.name} | ${business.subcategory} in ${business.city}`,
+    title: `${business.name} | ${business.category.charAt(0).toUpperCase() + business.category.slice(1)} in ${business.city.charAt(0).toUpperCase() + business.city.slice(1)}`,
     description: business.description || `Explore ${business.name} on Stordial`,
     alternates:{
       canonical: `/${location}/${category}/${business.name}`

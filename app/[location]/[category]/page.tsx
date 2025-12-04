@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: CategoryPageProps) {
   const category = decodeURIComponent(params.category.replace(/-/g, " "));
 
   return {
-    title: `${category} in ${location}`,
+    title: `${category.charAt(0).toUpperCase() + category.slice(1)} in ${location.charAt(0).toUpperCase() + location.slice(1)}`,
     alternates:{
       canonical: `/${location}/${category}`
     } 
