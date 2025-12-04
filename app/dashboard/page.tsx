@@ -185,11 +185,19 @@ const UserDashboard = () => {
           setUploadedImages(prev => prev.filter((_, i) => i !== index));
         };
         
-        const removeImageFormForm = (index: number) => {
-          setFormData((prev) => ({
-          ...prev,
-          images: prev.images.filter((_, i) => i !== index),
-          }));
+        const removeImageFormForm = async(index: number) => {
+          try{
+            const id = formData.images[index].public_id;
+            const result = await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/uploadimages/delete`, {data: {id}});
+            if(result.status == 200){
+              setFormData((prev) => ({
+                ...prev,
+                images: prev.images.filter((_, i) => i !== index),
+              }));
+            }
+          }catch(error){
+            console.log(error);
+          }
         }
 
       const uploadimages = async() => {
@@ -793,7 +801,7 @@ const [analytics, setAnalytics] = useState<{ calls: number; whatsapp: number; di
       <Select
         options={categoryOptions}
         required
-        value={categoryOptions.find(opt => opt.value.toLowerCase() === formData.category) || null}
+        value={categoryOptions.find(opt => opt.value === formData.category) || categoryOptions.find(opt => opt.value.toLowerCase() === formData.category)}
         onChange={(selected) => setFormData({
           ...formData,
           category: selected?.value || "",

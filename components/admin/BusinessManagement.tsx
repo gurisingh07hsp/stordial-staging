@@ -107,8 +107,8 @@ export default function BusinessManagement() {
   const [bulkImportFile, setBulkImportFile] = useState<File | null>(null);
 
   const [isImporting, setIsImporting] = useState(false);
-  const [featuredBusinesses, setFeaturedBusinesses] = useState<string[]>([]);
-  const [verifiedBusinesses, setVerifiedBusinesses] = useState<string[]>([]);
+  const [featuredBusinesses] = useState<string[]>([]);
+  const [verifiedBusinesses] = useState<string[]>([]);
     const [is24x7, setIs24x7] = useState(false);
     const [message, setMessage] = useState('');
 
@@ -186,6 +186,7 @@ export default function BusinessManagement() {
           setIsSubmitting(false);
           setMessage('Business Edited successfully');
           setTimeout(() => {
+            fetchBusinesses();
             setShowAddModal(false);
             setIsEditing(false);
             setUploadedImages([]);
@@ -212,6 +213,7 @@ export default function BusinessManagement() {
             setIsSubmit(false);
             setMessage('Business listing submitted successfully');
             setTimeout(()=>{
+              fetchBusinesses();
               setShowAddModal(false);
           },1000);
           }
@@ -423,11 +425,20 @@ const filteredBusinesses = businesses;
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
   };
 
-  const removeImageFormForm = (index: number) => {
-    setFormData((prev) => ({
-    ...prev,
-    images: prev.images.filter((_, i) => i !== index),
-    }));
+  const removeImageFormForm = async(index: number) => {
+    try{
+      const id = formData.images[index].public_id;
+      const result = await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/uploadimages/delete`, {data: {id}});
+      if(result.status == 200){
+        setFormData((prev) => ({
+        ...prev,
+        images: prev.images.filter((_, i) => i !== index),
+        }));
+      }
+    }catch(error){
+      console.log(error);
+    }
+
   }
 
   const handleBulkImportFile = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -555,23 +566,13 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
   const handleToggleFeatured = async(businessId: string) => {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/admin/featured/${businessId}`, {}, {withCredentials: true} );
       console.log(response.data);
-    setFeaturedBusinesses(prev => 
-      prev.includes(businessId) 
-        ? prev.filter(id => id !== businessId)
-        : [...prev, businessId]
-    );
     fetchBusinesses();
   };
 
   const handleToggleVerified = async(businessId: string) => {
       const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/admin/verified/${businessId}`, {}, {withCredentials: true} );
       console.log(response.data);
-    setVerifiedBusinesses(prev => 
-      prev.includes(businessId) 
-        ? prev.filter(id => id !== businessId)
-        : [...prev, businessId]
-    );
-    fetchBusinesses();
+      fetchBusinesses();
   };
 
   const [page, setPage] = useState(1);
@@ -1010,14 +1011,14 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                   </div>
 
 
-                  <div>
+            <div>
       <label className="block text-sm font-medium text-gray-700 mb-1">
         Category *
       </label>
       <Select
         options={categoryOptions}
         required
-        value={categoryOptions.find(opt => opt.value.toLowerCase() == formData.category) || null}
+        value={categoryOptions.find(opt => opt.value == formData.category) || categoryOptions.find(opt => opt.value.toLowerCase() == formData.category)}
         onChange={(selected) => setFormData({
           ...formData,
           category: selected?.value || "",
