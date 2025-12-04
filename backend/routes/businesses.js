@@ -9,6 +9,7 @@ const {
   updateBusiness,
   deleteBusiness,
   getFeaturedBusinesses,
+  getVerifiedBusinesses,
   getBusinessesByCategoryAndLocation,
   toggleFeatured,
   toggleVerified,
@@ -19,6 +20,7 @@ const {
 // Public routes
 router.route('/').get(getBusinesses);
 router.route('/featured').get(getFeaturedBusinesses);
+router.route('/verified').get(getVerifiedBusinesses);
 router.route('/location/:location/category/:category').get(getBusinessesByCategoryAndLocation);
 router.route('/:id').get(getBusiness);
 router.route('/location/:location/category/:category/id/:id').get(getBusinessById);

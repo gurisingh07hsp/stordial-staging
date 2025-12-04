@@ -17,9 +17,9 @@ export default function HomePage() {
         setFeaturedBusinesses(response.data.businesses);
       }
     }
-    const getBusinesses = async() => {
+    const getVerifiedBusinesses = async() => {
       try{
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/?locaton=${'all'}&category=${'all categories'}`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/verified`, {withCredentials: true});
         if(response.status === 200){
           setTradingBusinesses(response.data.businesses);
         }
@@ -27,7 +27,7 @@ export default function HomePage() {
         console.error(error);
       }
     }
-    getBusinesses()
+    getVerifiedBusinesses()
     getFeaturedBusinesses();
   }, []);
 

@@ -259,6 +259,23 @@ exports.getFeaturedBusinesses = async (req, res, next) => {
     next(error);
   }
 };
+// Get verified businesses
+exports.getVerifiedBusinesses = async (req, res, next) => {
+  try {
+    const businesses = await Business.find({ verified: true })
+      .populate('owner', 'name email')
+      .sort({ rating: -1, reviews: -1 })
+      .limit(8);
+
+    res.status(200).json({
+      success: true,
+      count: businesses.length,
+      businesses
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Get businesses by category and location
 exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
