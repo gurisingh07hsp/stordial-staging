@@ -307,11 +307,11 @@ const BusinessDetailByCategoryAndLocation = ({ params }: CategoryPageProps) => {
                       <div className="flex-1 ms-2">
                         <div className="flex items-center space-x-3 mb-2">
                           <h3 className="text-lg font-semibold text-gray-900 max-w-[450px]">{business.name}</h3>
-                          {business.verified && (
+                          {/* {business.verified && (
                             <span className="bg-[#60CE80] font-bold text-white text-xs px-2 py-1 rounded-full">
                               Verified
                             </span>
-                          )}
+                          )} */}
                         </div>
                         
                         <div className="flex lg:flex-row flex-col lg:items-center space-y-2 space-x-4 mb-3">
@@ -319,11 +319,19 @@ const BusinessDetailByCategoryAndLocation = ({ params }: CategoryPageProps) => {
                             {/* <span className="font-medium flex items-center ">{business.rating} <Star className="w-4 h-4 text-yellow-400 fill-current" /></span> */}
                             <div className={`flex items-center ${business.rating >=0 && business.rating <=2 ? 'bg-red-600' : business.rating >2 && business.rating <4 ? 'bg-yellow-500' : 'bg-green-600'} px-1 text-sm font-semibold rounded-sm text-white`}>{business.rating} <Star className='w-4 h-3 fill-white'/></div>
                             <span className="text-gray-500">({business.reviews} reviews)</span>
+                                                     {business.verified && (
+                            <span className="bg-[#60CE80] font-bold text-white text-xs px-2 py-1 rounded-full">
+                              Verified
+                            </span>
+                          )}
                           </div>
                         </div>
-                          <div className="flex items-center space-x-1 text-gray-500 max-w-[500px]">
+
+
+                          <div className="lg:flex hidden items-center space-x-1 text-gray-500 max-w-[500px]">
                             <MapPin className="w-4 h-4" />
                             <span className="text-sm">{business.address}</span>
+                            </div>
                           </div>
 
                         <div className="flex flex-wrap gap-2 mb-4 mt-2">
@@ -346,10 +354,15 @@ const BusinessDetailByCategoryAndLocation = ({ params }: CategoryPageProps) => {
                             <span className="text-sm text-gray-600">{business.specialties.join(', ')}</span>
                           </div>
                         )}
-                      </div>
+                     
                       </div>
 
-                      <div className="flex lg:flex-col flex-row justify-center items-center space-x-2 lg:space-y-2">
+                        <div className="flex lg:hidden mt-2 items-center space-x-1 text-gray-500 max-w-[500px]">
+                            <MapPin className="w-4 h-4" />
+                            <span className="text-sm">{business.address}</span>
+                          </div>
+
+                      <div className="flex lg:flex-col mt-2 flex-row justify-center items-center space-x-2 lg:space-y-2">
                         <button
                           onClick={() => handleCall(business.phone)}
                           className="flex items-center space-x-2 bg-blue-600 text-white px-4 lg:ms-2 lg:px-9 py-2 rounded-lg transition-colors"
