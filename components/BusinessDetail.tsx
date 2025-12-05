@@ -434,7 +434,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                   <a 
                     href={`tel:${business.phone}`}
                     onClick={()=> axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)}
-                    className="bg-blue-600 text-white lg:px-8 px-4 py-3 lg:text-base text-sm rounded-xl transition-all duration-300 flex items-center font-semibold"
+                    className="bg-blue-600 text-white lg:px-8 px-4 py-2 lg:text-base text-sm rounded-xl transition-all duration-300 flex items-center font-semibold"
                   >
                     <Phone className="lg:w-5 w-4 h-4 lg:h-5 mr-2" />  
                     Call Now
@@ -442,9 +442,9 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                   <button onClick={() =>
                     {window.open(`https://wa.me/${business.phone}?text=Hello%20I%20want%20to%20know%20more`,"_blank");
                     axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/whatsapp`);}}
-                    className="bg-zinc-50 lg:px-6 px-4 py-3 lg:text-base text-sm text-green-600 border rounded-xl transition-all duration-300 flex items-center font-semibold">
+                    className="bg-zinc-50 lg:px-6 px-4 py-2 lg:text-base text-sm text-green-600 border rounded-xl transition-all duration-300 flex items-center font-semibold">
                     {/* <MessageSquare className="w-5 h-5 mr-2" /> */}
-                    <FaWhatsapp className='size-6 mr-1 text-green-600'/>
+                    <FaWhatsapp className='size-5 mr-1 text-green-600'/>
                     WhatsApp
                   </button>
                 </div>
@@ -464,13 +464,13 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                         alert("Link copied to clipboard!");
                       }
                     }}
-                    className="bg-gray-100 border text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
+                    className="bg-gray-100 border text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-200 transition-all duration-300">
                     <Share2 className="w-5 h-5" />
                   </button>
 
                   <button
                     onClick={() => {alert("Press Ctrl+D (Windows) or Cmd+D (Mac) to bookmark this page!");}}
-                    className="bg-gray-100 ms-2 border text-gray-700 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all duration-300">
+                    className="bg-gray-100 ms-2 border text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-200 transition-all duration-300">
                     <Bookmark className="w-5 h-5" />
                   </button>
                   </div>
@@ -499,7 +499,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
           onClick={() => {setSelected(star); setshowReview(true)}}
           className={`${star <= (hovered ?? selected ?? 0)
                 ? "bg-yellow-500"
-                : "text-zinc-600"} p-2 lg:p-3 flex justify-center items-center border border-zinc-600 rounded-2xl cursor-pointer`}
+                : "text-zinc-600"} p-1 lg:p-2 flex justify-center items-center border border-zinc-600 rounded-lg lg:rounded-2xl cursor-pointer`}
         >
           <Star
             className={
