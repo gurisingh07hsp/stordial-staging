@@ -334,7 +334,7 @@ const BusinessDetailByCategoryAndLocation = ({ params }: CategoryPageProps) => {
                             </div>
                           </div>
 
-                        <div className="flex flex-wrap gap-2 mb-4 mt-2">
+                        <div className="lg:flex hidden flex-wrap gap-2 mb-4 mt-2">
                           {business.services.slice(0, 5).map((service, index) => (
                             <span
                               key={index}
