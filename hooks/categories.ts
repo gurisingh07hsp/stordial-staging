@@ -1,5 +1,5 @@
 export const categories: string[] = ['Restaurants','Hotels','Hospitals','Schools','Shopping','Automotive','Beauty','Spa',
-    'Fitness','Dentists','Lawyers','Real Estate','Banks','Pharmacies','Petrol Pumps','Pet Services','Home Services',
+    'Fitness','Dentists','Lawyers','Real Estate','Banks','Bus Stand','Pharmacies','Petrol Pumps','Pet Services','Home Services',
     'Coaching Centres','Tuition Classes','Colleges','Universities','Government Offices','Travel Agencies',
     'Tour Operators','Courier Services','Logistics Services','Event Management','Party Services','Wedding Services',
     'Banquet Halls','Caterers','Photographers','Doctors','Clinics','Diagnostic Centres','Labs','Repair Services',
