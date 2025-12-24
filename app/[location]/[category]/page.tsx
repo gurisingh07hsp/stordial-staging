@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: CategoryPageProps) {
   return {
     title: `${category.charAt(0).toUpperCase() + category.slice(1)} in ${location.charAt(0).toUpperCase() + location.slice(1)}`,
     alternates:{
-      canonical: `/${location}/${category}`
+      canonical: `/${location.replace(/\s+/g, "-")}/${category.replace(/\s+/g, "-")}`
     } 
   };
 }
