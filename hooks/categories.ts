@@ -77,7 +77,7 @@ export const categories: string[] = ['Restaurants','Hotels','Hospitals','Schools
     'Plastic Surgeon','Physiotherapist','Homeopathy Doctor','Ayurvedic Doctor','Unani Doctor','Sexologist',
     'Immunologist','Occupational Therapist','Speech Therapist','Medical Clinic', 'Dental Clinic', 'Wellness Clinic', 
     'Physiotherapy Clinic', 'Skin care clinic','Pathology Lab', 'Radiology Centre', 'Blood Test Centre', 
-    'Health Checkup Centre','Medical Lab', 'Research Lab', 'Industrial Lab', 'Testing Lab','Appliance Repair', 
+    'Health Checkup Centre','Medical Lab', 'Research Lab', 'Railway Station', 'Industrial Lab', 'Testing Lab','Appliance Repair', 
     'Electronics Repair', 'Furniture Repair', 'Watch Repair','Computer Laptop Repair','Building Maintenance', 
     'Garden Maintenance', 'Equipment Maintenance','Mini Mart','Organic Store','Discount Store','Traditional Sweets', 
     'Chocolate Shops', 'Bakery Sweets', 'Ice Cream Parlors','Cake Shop', 'Pastry Shop', 'Bread Shop', 'Artisan Bakery',
