@@ -8,7 +8,6 @@ import {
   Clock, 
   Globe, 
   MessageSquare,
-  ArrowLeft,
   Share2,
   X,
   Camera,
@@ -279,27 +278,25 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
       </div>
 
       {/* Back Button */}
-      <div className="hidden lg:block container mx-auto px-4 py-6">
+      {/* <div className="hidden lg:block container mx-auto px-4 py-6">
         <Link href="/" className="inline-flex items-center text-gray-600 hover:text-blue-600 transition-colors bg-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Search
         </Link>
-      </div>
+      </div> */}
 
       <div className="container mx-auto mt-2 lg:mt-0 px-4 pb-12">
         {/* Hero Section */}
-        <div className="bg-white border rounded-3xl overflow-hidden mb-8">
+        <div className="bg-white border rounded-lg mt-2 overflow-hidden pb-4 mb-8">
           {/* Image Gallery */}
-          <div className="relative h-60 lg:h-[350px] bg-gradient-to-br from-gray-100 to-gray-200">
+          {/* <div className="relative h-60 lg:h-[350px] bg-gradient-to-br from-gray-100 to-gray-200">
             <div className="grid lg:grid-cols-3 space-x-2 p-4 h-full">
               <div className="">
                 { business && business.images && business.images.length > 0 ? (<>
                   <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[600px] object-cover lg:h-80 w-full h-full rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 hidden lg:flex items-center justify-center' />
-                  {/* <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[600px]  lg:h-80 w-full h-full rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:hidden flex items-center justify-center' /> */}
 
                   <Swiper
                     spaceBetween={30}
-                    // centeredSlides={true}
                     loop={true}
         
                     autoplay={{
@@ -314,7 +311,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                   >
                     <style jsx>{`
                       :global(.swiper-pagination-bullet) {
-                        background-color: #e3e9f0; /* Tailwind gray-300 */
+                        background-color: #e3e9f0; Tailwind gray-300
                         width: 14px;
                         height: 14px;
                         opacity: 1;
@@ -323,7 +320,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                       }
         
                       :global(.swiper-pagination-bullet-active) {
-                        background-color: #079f9f; /* Tailwind orange-500 */
+                        background-color: #079f9f; Tailwind orange-500
                         width: 14px;
                       }
                     `}</style>
@@ -379,66 +376,198 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                 )}
                 <div className={`${business.images?.length == 4 ? 'lg:flex' : 'hidden'} w-[480px] ms-1 h-full gap-x-2`}>
                   <div 
-                    // key={item}
                     className="w-[98%] h-full bg-gray-300 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
-                    // onClick={() => openImageModal(index + 1)}
                   >
-                    {/* <div className="text-2xl">☕</div> */}
                     <Camera/>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
+
+          <section className="max-w-8xl mx-auto px-6 mt-8">
+            <div className="hidden md:grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-[500px] rounded-xl overflow-hidden">
+            <div onClick={() => openImageModal(0)} className="md:col-span-2 md:row-span-2 relative group cursor-pointer overflow-hidden rounded-xl">
+            <img alt={business.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt={business.name} src={business?.images?.[0]?.url}/>
+            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors"></div>
+            </div>
+
+            <div className="hidden md:block relative group cursor-pointer overflow-hidden rounded-xl">
+            { business && business.images && business.images.length > 1 ? (
+              <img alt="Lobby" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt={business.name} onClick={() => openImageModal(1)} src={business?.images?.[1]?.url}/>
+                ) : (
+                <div
+                  className="hidden w-full h-full border rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:flex items-center justify-center shadow-lg hover:shadow-xl"
+                >
+                   <Camera/>
+                </div>
+            )}
+            </div>
+
+            <div className="hidden md:block relative group cursor-pointer overflow-hidden rounded-xl">
+            { business && business.images && business.images.length > 2 ? (
+              <img alt="Lobby" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Clean modern hospital lobby interior" onClick={() => openImageModal(2)} src={business?.images?.[2]?.url}/>
+                ) : (
+                <div
+                  className="hidden w-full h-full border rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:flex items-center justify-center shadow-lg hover:shadow-xl"
+                >
+                   <Camera/>
+                </div>
+            )}
+            </div>
+
+            <div className="hidden md:block relative group cursor-pointer overflow-hidden rounded-xl">
+            { business && business.images && business.images.length > 3 ? (
+              <img alt="Lobby" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Clean modern hospital lobby interior" onClick={() => openImageModal(3)} src={business?.images?.[3]?.url}/>
+                ) : (
+                <div
+                  className="hidden w-full h-full border rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:flex items-center justify-center shadow-lg hover:shadow-xl"
+                >
+                   <Camera/>
+                </div>
+            )}
+            </div>
+
+            <div className="hidden md:block relative group cursor-pointer overflow-hidden rounded-xl">
+            { business && business.images && business.images.length > 4 ? (
+              <img alt="Lobby" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Clean modern hospital lobby interior" onClick={() => openImageModal(4)} src={business?.images?.[4]?.url}/>
+                ) : (
+                <div
+                  className="hidden w-full h-full border rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:flex items-center justify-center shadow-lg hover:shadow-xl"
+                >
+                   <Camera/>
+                </div>
+            )}
+            </div>
+            </div>
+
+              <div className="">
+                { business && business.images && business.images.length > 0 ? (<>
+                  {/* <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[600px] object-contain lg:h-80 w-full h-full rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 hidden lg:flex items-center justify-center' /> */}
+
+                  <Swiper
+                    spaceBetween={30}
+                    loop={true}
+        
+                    autoplay={{
+                      delay: 2500,
+                      disableOnInteraction: false,
+                    }}
+                    pagination={{
+                      clickable: true,
+                    }}
+                    modules={[Autoplay, Navigation]}
+                    className="mySwiper w-[80vw] h-[200px] lg:h-0 lg:w-0"
+                  >
+                    <style jsx>{`
+                      :global(.swiper-pagination-bullet) {
+                        background-color: #e3e9f0; Tailwind gray-300
+                        width: 14px;
+                        height: 14px;
+                        opacity: 1;
+                        margin: 0 4px;
+                        border-radius: 9999px;
+                      }
+        
+                      :global(.swiper-pagination-bullet-active) {
+                        background-color: #079f9f; Tailwind orange-500
+                        width: 14px;
+                      }
+                    `}</style>
+                    {business && business.images.map((image,index)=> (
+                      <SwiperSlide key={index} onClick={() => openImageModal(index)} className="h-full flex items-center justify-center rounded-xl">
+                        <div className="flex lg:h-0 lg:w-0 h-full w-full justify-center cursor-pointer transition-transform slick-padding rounded-xl">
+                          <img alt={`Slide ${index}`} loading="lazy" className='w-full h-full object-cover rounded-xl' src={image.url}></img>
+                        </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+
+
+
+                </>) : (
+                <div 
+                  className="lg:w-[480px] lg:h-80 w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
+                  onClick={() => openImageModal(0)}
+                >
+                   <Camera/>
+                </div>
+                )}
+              </div>
+          </section>
+
+
+          <section className="max-w-8xl mx-auto px-6 mt-8 flex flex-col md:flex-row justify-between items-start gap-6">
+<div className="flex-1">
+<div className="flex items-center gap-3 mb-2">
+  {business.isClaimed || business.verified && (
+  <span className="bg-[#8bfaa7] text-on-secondary-fixed text-[0.7rem] px-3 py-1 rounded-full font-label font-bold tracking-wider flex items-center gap-1 uppercase">
+  <span className="material-symbols-outlined text-sm"><CheckCircle size={14}/></span>
+    VERIFIED
+  </span>
+ )}
+<div className="flex items-center gap-1 text-on-surface">
+<span className="material-symbols-outlined text-yellow-500 text-lg"><Star fill='#eab308'/></span>
+<span className="font-headline font-bold">{business.rating}</span>
+<span className="text-on-surface-variant text-sm">({business.reviews} Reviews)</span>
+</div>
+<div className={`flex items-center ${displayText === 'Closed Now' || displayText === 'Closed Today' ? 'bg-red-100 text-red-700' : 'bg-[#8bfaa7] text-green-700'} px-4 py-1 lg:py-2 rounded-full`}>
+  <Clock className="w-4 h-4 mr-2" />
+  <span className="text-sm font-medium">{displayText}</span>
+</div>
+</div>
+<h1 className="text-4xl md:text-5xl font-headline font-extrabold text-on-surface tracking-tight leading-none mb-4">{business.name}</h1>
+<p className="text-on-surface-variant flex items-center text-lg max-w-2xl leading-relaxed">
+  <MapPin className="w-5 h-5 mr-2" />
+  {business.city.charAt(0).toUpperCase() + business.city.slice(1)} • {business.category.charAt(0).toUpperCase() + business.category.slice(1)}
+  </p>
+</div>
+            <div className='mt-2 lg:mt-0'>
+                  <button
+                    onClick={() => {
+                      if (navigator.share) {
+                        navigator
+                          .share({
+                            title: document.title,
+                            text: "Check out this page!",
+                            url: window.location.href,
+                          })
+                          .catch((err) => console.log("Share failed:", err));
+                      } else {
+                        navigator.clipboard.writeText(window.location.href);
+                        alert("Link copied to clipboard!");
+                      }
+                    }}
+                    className="bg-gray-100 border text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-200 transition-all duration-300">
+                    <Share2 fill='blue' className="w-5 h-5 text-blue-600" />
+                  </button>
+
+                  <button
+                    onClick={() => {alert("Press Ctrl+D (Windows) or Cmd+D (Mac) to bookmark this page!");}}
+                    className="bg-gray-100 ms-2 border text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-200 transition-all duration-300">
+                    <Bookmark fill='blue' className="w-5 h-5 text-blue-600" />
+                  </button>
+                  </div>
+</section>
 
           {/* Business Info */}
           <div className="px-8 py-4 lg:py-8">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 lg:gap-6">
               <div className="flex-1">
-                <div className="flex items-center mb-2 lg:mb-4">
-                  <h1 className="text-[20px] lg:text-3xl font-bold text-gray-800 mr-4">{business.name}</h1>
-                  {business.isClaimed || business.verified && (
-                    <div className="lg:flex hidden items-center bg-[#60CE80] text-white px-3 py-1 rounded-full">
-                      <CheckCircle className="w-4 h-4 mr-1" />
-                      <span className="text-sm font-bold">Verified</span>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="flex flex-wrap items-center gap-2 lg:gap-4 mb-2 lg:mb-6">
-                  <div className={`flex items-center ${business.rating >=0 && business.rating <=2 ? 'bg-red-500' : business.rating >2 && business.rating <4 ? 'bg-yellow-500' : 'bg-green-600'} px-4 py-1 lg:py-2 rounded-full`}>
-                    <Star className="w-5 h-5 text-white mr-2" />
-                    <span className="font-bold lg:text-base text-sm text-white">{business.rating}</span>
-                    <span className="text-white lg:text-base text-sm ml-1">({business.reviews} reviews)</span>
-                  </div>
-                  {business.isClaimed || business.verified && (
-                    <div className="flex lg:hidden items-center bg-[#60CE80] text-white px-3 py-1 rounded-full">
-                      <CheckCircle className="w-4 h-4 mr-1" />
-                      <span className="font-bold text-sm">Verified</span>
-                    </div>
-                  )}
-                  <div className={`flex items-center ${displayText === 'Closed Now' || displayText === 'Closed Today' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'} px-4 py-1 lg:py-2 rounded-full`}>
-                    <Clock className="w-4 h-4 mr-2" />
-                    <span className="text-sm font-medium">{displayText}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center text-gray-600 mb-2 lg:mb-6">
-                  <MapPin className="w-5 h-5 mr-2" />
-                  <span className="font-medium">{business.city.charAt(0).toUpperCase() + business.city.slice(1)} • {business.category.charAt(0).toUpperCase() + business.category.slice(1)}</span>
-                </div>
 
                 {/* Action Buttons */}
                 <div className="flex lg:flex-row flex-col lg:items-center items-start lg:gap-4 lg:mb-2">
                   <div className='flex justify-center items-center gap-x-2 lg:gap-x-4'>
-                  <a 
-                    href={`tel:${business.phone}`}
-                    onClick={()=> axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)}
-                    className="bg-blue-600 text-white lg:px-8 px-4 py-2 lg:text-base text-sm rounded-xl transition-all duration-300 flex items-center font-semibold"
-                  >
-                    <Phone className="lg:w-5 w-4 h-4 lg:h-5 mr-2" />  
-                    Call Now
-                  </a>
+                    {business.phone && (
+                      <>
+                      <a 
+                        href={`tel:${business.phone}`}
+                        onClick={()=> axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)}
+                        className="bg-blue-600 text-white lg:px-8 px-4 py-2 lg:text-base text-sm rounded-xl transition-all duration-300 flex items-center font-semibold"
+                      >
+                        <Phone className="lg:w-5 w-4 h-4 lg:h-5 mr-2" />  
+                        Call Now
+                      </a>
                   <button onClick={() =>
                     {window.open(`https://wa.me/${business.phone}?text=Hello%20I%20want%20to%20know%20more`,"_blank");
                     axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/whatsapp`);}}
@@ -447,8 +576,10 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                     <FaWhatsapp className='size-5 mr-1 text-green-600'/>
                     WhatsApp
                   </button>
+                  </>
+                    )}
                 </div>
-                <div className='mt-2 lg:mt-0'>
+                {/* <div className='mt-2 lg:mt-0'>
                   <button
                     onClick={() => {
                       if (navigator.share) {
@@ -473,7 +604,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                     className="bg-gray-100 ms-2 border text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-200 transition-all duration-300">
                     <Bookmark className="w-5 h-5" />
                   </button>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Specialties */}
@@ -530,17 +661,17 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-3">
-            <div className="bg-white border rounded-3xl overflow-hidden">
+            <div className="bg-white rounded-lg overflow-hidden">
               {/* Tab Navigation */}
               <div className="border-b border-gray-200">
                 <nav className="flex space-x-10 px-8 overflow-x-scroll hide-scrollbar">
                   {[
-                    { id: 'overview', label: 'Overview', icon: '📋' },
+                    { id: 'overview', label: 'Overview', },
                     ...(isShowMenu(business.category) ? [{ id: 'menu', label: 'Menu', icon: '🍽️' }] : []),
-                    { id: 'services', label: 'Services', icon: '🛠️' },
-                    { id: 'hours', label: 'Hours', icon: '🕒' },
-                    { id: 'photos', label: 'Photos', icon: '📸' },
-                    { id: 'reviews', label: 'Reviews', icon: '⭐' }
+                    { id: 'services', label: 'Services', },
+                    { id: 'hours', label: 'Hours', },
+                    { id: 'photos', label: 'Photos', },
+                    { id: 'reviews', label: 'Reviews' }
                   ].map((tab) => (
                     <button
                       key={tab.id}
@@ -551,7 +682,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                           : 'border-transparent text-gray-500 hover:text-gray-700'
                       }`}
                     >
-                      <span className="mr-2">{tab.icon}</span>
+                      {/* <span className="mr-2">{tab.icon}</span> */}
                       {tab.label}
                     </button>
                   ))}
@@ -711,7 +842,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
 
             {/* Similar Businesses */}
             <div>
-            { similarBusinesses && similarBusinesses.length > 1 && <div className="bg-white rounded-3xl mt-8 overflow-hidden">
+            { similarBusinesses && similarBusinesses.length > 1 && <div className="bg-white rounded-lg mt-8 overflow-hidden">
               <div className="p-8">
                 <h3 className="text-2xl font-semibold text-gray-800 mb-6">Similar Businesses</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -719,11 +850,11 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                     <Link 
                       key={similarBusiness._id}
                       href={formatBusinessUrl(similarBusiness)}
-                      className={`block group ${business._id  == similarBusiness._id ? 'hidden' : 'block'}`}
+                      className={`block border p-2 bg-[#f2f4f6] rounded-lg group ${business._id  == similarBusiness._id ? 'hidden' : 'block'}`}
                     >
                       {similarBusiness.images && similarBusiness.images.length > 0 ? (<img src={similarBusiness && similarBusiness.images && similarBusiness.images[0].url} alt="" className={`rounded-2xl h-48 mb-4 group-hover:shadow-lg transition-all duration-300`} />
                       ) : (
-                        <div className={`bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl h-48 mb-4 flex items-center justify-center group-hover:shadow-lg transition-all duration-300`}>
+                        <div className={`bg-white rounded-lg h-48 mb-4 flex items-center justify-center group-hover:shadow-lg transition-all duration-300`}>
                          <Camera/>
                       </div>
                       )}
@@ -747,7 +878,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* Contact Card */}
-            <div className="bg-white rounded-3xl p-6 border border-gray-200">
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
               <h3 className="text-xl font-semibold text-gray-800 mb-6">Contact Information</h3>
               
               <div className="space-y-6">
@@ -801,14 +932,15 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
               </div>
 
               <div className="mt-8 space-y-4">
-                <a 
-                  href={`tel:${business.phone}`}
-                  className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center font-semibold"
-                >
-                  <Phone className="w-5 h-5 mr-2" />
-                  Call Now
-                </a>
-                
+                {business.phone && (
+                  <>
+                  <a 
+                    href={`tel:${business.phone}`}
+                    className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center font-semibold"
+                  >
+                    <Phone className="w-5 h-5 mr-2" />
+                    Call Now
+                  </a>
                 <button
                   onClick={() => {
                     const message = "Hello, I need more information!";
@@ -819,11 +951,14 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                   <MessageSquare className="w-5 h-5 mr-2" />
                   Send Message
                 </button>
+                  </>
+                )}
+                
               </div>
             </div>
 
             {/* Map Placeholder */}
-            <div className="bg-white rounded-3xl p-6 border border-gray-200">
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
               <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
                 Location
               </h3>
