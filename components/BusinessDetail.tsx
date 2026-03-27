@@ -385,7 +385,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
             </div>
           </div> */}
 
-          <section className="max-w-8xl mx-auto px-6 mt-8">
+          <section className="max-w-8xl h-72 lg:h-full mx-auto px-6 mt-8">
             <div className="hidden md:grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-[500px] rounded-xl overflow-hidden">
             <div onClick={() => openImageModal(0)} className="md:col-span-2 md:row-span-2 relative group cursor-pointer overflow-hidden rounded-xl">
             <img alt={business.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt={business.name} src={business?.images?.[0]?.url}/>
@@ -441,7 +441,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
             </div>
             </div>
 
-              <div className="">
+              <div className="h-full">
                 { business && business.images && business.images.length > 0 ? (<>
                   {/* <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[600px] object-contain lg:h-80 w-full h-full rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 hidden lg:flex items-center justify-center' /> */}
 
@@ -457,7 +457,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                       clickable: true,
                     }}
                     modules={[Autoplay, Navigation]}
-                    className="mySwiper w-[80vw] h-[200px] lg:h-0 lg:w-0"
+                    className="mySwiper w-[80vw] h-full lg:h-0 lg:w-0"
                   >
                     <style jsx>{`
                       :global(.swiper-pagination-bullet) {
@@ -475,7 +475,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                       }
                     `}</style>
                     {business && business.images.map((image,index)=> (
-                      <SwiperSlide key={index} onClick={() => openImageModal(index)} className="h-full flex items-center justify-center rounded-xl">
+                      <SwiperSlide key={index} onClick={() => openImageModal(index)} className="flex items-center justify-center rounded-xl">
                         <div className="flex lg:h-0 lg:w-0 h-full w-full justify-center cursor-pointer transition-transform slick-padding rounded-xl">
                           <img alt={`Slide ${index}`} loading="lazy" className='w-full h-full object-cover rounded-xl' src={image.url}></img>
                         </div>
@@ -511,18 +511,22 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
 <span className="font-headline font-bold">{business.rating}</span>
 <span className="text-on-surface-variant text-sm">({business.reviews} Reviews)</span>
 </div>
-<div className={`flex items-center ${displayText === 'Closed Now' || displayText === 'Closed Today' ? 'bg-red-100 text-red-700' : 'bg-[#8bfaa7] text-green-700'} px-4 py-1 lg:py-2 rounded-full`}>
+<div className={`lg:flex hidden items-center ${displayText === 'Closed Now' || displayText === 'Closed Today' ? 'bg-red-100 text-red-700' : 'bg-[#8bfaa7] text-green-700'} px-4 py-1 lg:py-2 rounded-full`}>
   <Clock className="w-4 h-4 mr-2" />
   <span className="text-sm font-medium">{displayText}</span>
 </div>
 </div>
+{/* <div className={`flex lg:hidden  items-center ${displayText === 'Closed Now' || displayText === 'Closed Today' ? 'bg-red-100 text-red-700' : 'bg-[#8bfaa7] text-green-700'} px-4 py-1 lg:py-2 rounded-full`}>
+  <Clock className="w-4 h-4 mr-2" />
+  <span className="text-sm font-medium">{displayText}</span>
+</div> */}
 <h1 className="text-4xl md:text-5xl font-headline font-extrabold text-on-surface tracking-tight leading-none mb-4">{business.name}</h1>
 <p className="text-on-surface-variant flex items-center text-lg max-w-2xl leading-relaxed">
   <MapPin className="w-5 h-5 mr-2" />
   {business.city.charAt(0).toUpperCase() + business.city.slice(1)} • {business.category.charAt(0).toUpperCase() + business.category.slice(1)}
   </p>
 </div>
-            <div className='mt-2 lg:mt-0'>
+            <div className='mt-2 hidden lg:block lg:mt-0'>
                   <button
                     onClick={() => {
                       if (navigator.share) {
@@ -557,13 +561,13 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
 
                 {/* Action Buttons */}
                 <div className="flex lg:flex-row flex-col lg:items-center items-start lg:gap-4 lg:mb-2">
-                  <div className='flex justify-center items-center gap-x-2 lg:gap-x-4'>
+                  <div className='flex lg:flex-row w-full lg:w-96 flex-col justify-center items-center gap-y-2 gap-x-2 lg:gap-x-4'>
                     {business.phone && (
                       <>
                       <a 
                         href={`tel:${business.phone}`}
                         onClick={()=> axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)}
-                        className="bg-blue-600 text-white lg:px-8 px-4 py-2 lg:text-base text-sm rounded-xl transition-all duration-300 flex items-center font-semibold"
+                        className="bg-blue-600 text-white w-full lg:px-8 px-4 lg:py-2 py-4 lg:text-base text-sm rounded-xl transition-all duration-300 flex justify-center items-center font-semibold"
                       >
                         <Phone className="lg:w-5 w-4 h-4 lg:h-5 mr-2" />  
                         Call Now
@@ -571,7 +575,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                   <button onClick={() =>
                     {window.open(`https://wa.me/${business.phone}?text=Hello%20I%20want%20to%20know%20more`,"_blank");
                     axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/whatsapp`);}}
-                    className="bg-zinc-50 lg:px-6 px-4 py-2 lg:text-base text-sm text-green-600 border rounded-xl transition-all duration-300 flex items-center font-semibold">
+                    className="bg-zinc-50 w-full lg:px-6 px-4 lg:py-2 py-4 lg:text-base text-sm text-green-600 border rounded-xl transition-all duration-300 flex justify-center items-center font-semibold">
                     {/* <MessageSquare className="w-5 h-5 mr-2" /> */}
                     <FaWhatsapp className='size-5 mr-1 text-green-600'/>
                     WhatsApp
@@ -606,17 +610,6 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                   </button>
                   </div> */}
                 </div>
-
-                {/* Specialties */}
-                {business.specialties && (
-                  <div className="flex flex-wrap gap-2">
-                    {business.specialties.map((specialty, index) => (
-                      <span key={index} className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium">
-                        {specialty}
-                      </span>
-                    ))}
-                  </div>
-                )}
               </div>
 
               {/* Quick Stats */}
@@ -840,6 +833,22 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
               </div>
             </div>
 
+                     {/* Specialties */}
+              <div className='my-8 ms-2'>
+                {business.specialties && (
+                  <>
+                  <h2 className='lg:text-xl font-bold'>Key Specialties</h2>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {['fejf','fjeijf','fjeijf'].map((specialty, index) => (
+                      <span key={index} className="bg-[#8bfaa7] px-4 py-2 rounded-full text-sm font-medium">
+                        {specialty}
+                      </span>
+                    ))}
+                  </div>
+                  </>
+                )}
+              </div>
+
             {/* Similar Businesses */}
             <div>
             { similarBusinesses && similarBusinesses.length > 1 && <div className="bg-white rounded-lg mt-8 overflow-hidden">
@@ -852,7 +861,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                       href={formatBusinessUrl(similarBusiness)}
                       className={`block border p-2 bg-[#f2f4f6] rounded-lg group ${business._id  == similarBusiness._id ? 'hidden' : 'block'}`}
                     >
-                      {similarBusiness.images && similarBusiness.images.length > 0 ? (<img src={similarBusiness && similarBusiness.images && similarBusiness.images[0].url} alt="" className={`rounded-2xl h-48 mb-4 group-hover:shadow-lg transition-all duration-300`} />
+                      {similarBusiness.images && similarBusiness.images.length > 0 ? (<img src={similarBusiness && similarBusiness.images && similarBusiness.images[0].url} alt="" className={`rounded-2xl w-full object-cover h-48 mb-4 group-hover:shadow-lg transition-all duration-300`} />
                       ) : (
                         <div className={`bg-white rounded-lg h-48 mb-4 flex items-center justify-center group-hover:shadow-lg transition-all duration-300`}>
                          <Camera/>
