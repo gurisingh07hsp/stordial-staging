@@ -289,104 +289,8 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
         {/* Hero Section */}
         <div className="md:bg-white rounded-lg mt-2 overflow-hidden pb-4 mb-8">
           {/* Image Gallery */}
-          {/* <div className="relative h-60 lg:h-[350px] bg-gradient-to-br from-gray-100 to-gray-200">
-            <div className="grid lg:grid-cols-3 space-x-2 p-4 h-full">
-              <div className="">
-                { business && business.images && business.images.length > 0 ? (<>
-                  <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[600px] object-cover lg:h-80 w-full h-full rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 hidden lg:flex items-center justify-center' />
-
-                  <Swiper
-                    spaceBetween={30}
-                    loop={true}
-        
-                    autoplay={{
-                      delay: 2500,
-                      disableOnInteraction: false,
-                    }}
-                    pagination={{
-                      clickable: true,
-                    }}
-                    modules={[Autoplay, Navigation]}
-                    className="mySwiper w-[80vw] h-[200px] lg:h-0 lg:w-0"
-                  >
-                    <style jsx>{`
-                      :global(.swiper-pagination-bullet) {
-                        background-color: #e3e9f0; Tailwind gray-300
-                        width: 14px;
-                        height: 14px;
-                        opacity: 1;
-                        margin: 0 4px;
-                        border-radius: 9999px;
-                      }
-        
-                      :global(.swiper-pagination-bullet-active) {
-                        background-color: #079f9f; Tailwind orange-500
-                        width: 14px;
-                      }
-                    `}</style>
-                    {business && business.images.map((image,index)=> (
-                      <SwiperSlide key={index} onClick={() => openImageModal(index)} className="h-full flex items-center justify-center rounded-xl">
-                        <div className="flex lg:h-0 lg:w-0 justify-center cursor-pointer transition-transform slick-padding rounded-xl">
-                          <img alt={`Slide ${index}`} loading="lazy" className='w-full h-full rounded-xl' src={image.url}></img>
-                        </div>
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-
-
-
-                </>) : (
-                <div 
-                  className="lg:w-[480px] lg:h-80 w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
-                  onClick={() => openImageModal(0)}
-                >
-                   <Camera/>
-                </div>
-                )}
-              </div>
-              <div className="hidden lg:block">
-                { business && business.images && business.images.length > 1 ? (
-                  <img  onClick={() => openImageModal(1)} src={business?.images?.[1]?.url} alt="" className='hidden lg:w-[600px] lg:h-80 object-cover rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:flex items-center justify-center' />
-                ) : (
-                <div
-                  className="hidden lg:w-[480px] lg:h-80 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 lg:flex items-center justify-center shadow-lg hover:shadow-xl"
-                  onClick={() => openImageModal(1)}
-                >
-                   <Camera/>
-                </div>
-                )}
-              </div>
-              <div className="hidden w-[475px] h-80 lg:flex flex-col gap-x-1 gap-y-2">
-      
-                {business && business.images && business.images.length > 2 ? <div className={`flex space-x-2 w-full ${business.images.length == 3 ? 'h-[99%]' : 'h-[50%]'}`}> {business.images.slice(2, 4).map((image, index) => (
-                  <img key={index+1} onClick={() => openImageModal(index + 2)} src={image?.url} className={`${business.images?.length == 3 ? 'w-full h-full' : 'w-[49%] h-full'} rounded-xl cursor-pointer`}></img>
-                ))  }</div> : (
-                  <div className='hidden w-[480px] ms-2 h-full lg:flex flex-wrap gap-x-2'>
-                    {
-                  [1,2,3,4].map((item,index) => (
-                    <div 
-                    key={item}
-                    className="w-[48%] h-[48%] bg-gradient-to-br from-green-100 to-blue-100 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
-                    onClick={() => openImageModal(index + 2)}
-                  >
-                     <Camera/>
-                  </div>
-                  ))}
-                  </div>
-                )}
-                <div className={`${business.images?.length == 4 ? 'lg:flex' : 'hidden'} w-[480px] ms-1 h-full gap-x-2`}>
-                  <div 
-                    className="w-[98%] h-full bg-gray-300 rounded-xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg"
-                  >
-                    <Camera/>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> */}
-
           <section className="max-w-8xl h-72 lg:h-full mx-auto md:px-6 md:mt-8">
-            <div className="hidden md:grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-[500px] rounded-xl overflow-hidden">
+            <div className="hidden md:grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 lg:h-[500px] h-full rounded-xl overflow-hidden">
             <div onClick={() => openImageModal(0)} className="md:col-span-2 md:row-span-2 relative group cursor-pointer overflow-hidden rounded-xl">
             <img alt={business.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt={business.name} src={business?.images?.[0]?.url}/>
             <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors"></div>
@@ -476,7 +380,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                     `}</style>
                     {business && business.images.map((image,index)=> (
                       <SwiperSlide key={index} onClick={() => openImageModal(index)} className="flex w-full items-center justify-center rounded-xl">
-                        <div className="flex lg:h-0 lg:w-0 h-full w-full justify-center cursor-pointer transition-transform slick-padding rounded-xl">
+                        <div className="flex md:h-0 md:w-0 h-full w-full justify-center cursor-pointer transition-transform slick-padding rounded-xl">
                           <img alt={`Slide ${index}`} loading="lazy" className='w-full h-full object-cover rounded-xl' src={image.url}></img>
                         </div>
                       </SwiperSlide>
