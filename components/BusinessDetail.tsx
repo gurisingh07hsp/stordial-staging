@@ -285,9 +285,9 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
         </Link>
       </div> */}
 
-      <div className="container mx-auto mt-2 lg:mt-0 px-4 pb-12">
+      <div className="container mx-auto mt-2 lg:mt-0 md:px-4 pb-12">
         {/* Hero Section */}
-        <div className="bg-white border rounded-lg mt-2 overflow-hidden pb-4 mb-8">
+        <div className="md:bg-white rounded-lg mt-2 overflow-hidden pb-4 mb-8">
           {/* Image Gallery */}
           {/* <div className="relative h-60 lg:h-[350px] bg-gradient-to-br from-gray-100 to-gray-200">
             <div className="grid lg:grid-cols-3 space-x-2 p-4 h-full">
@@ -385,7 +385,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
             </div>
           </div> */}
 
-          <section className="max-w-8xl h-72 lg:h-full mx-auto px-6 mt-8">
+          <section className="max-w-8xl h-72 lg:h-full mx-auto md:px-6 md:mt-8">
             <div className="hidden md:grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-[500px] rounded-xl overflow-hidden">
             <div onClick={() => openImageModal(0)} className="md:col-span-2 md:row-span-2 relative group cursor-pointer overflow-hidden rounded-xl">
             <img alt={business.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt={business.name} src={business?.images?.[0]?.url}/>
@@ -441,7 +441,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
             </div>
             </div>
 
-              <div className="h-full">
+              <div className="h-full w-full">
                 { business && business.images && business.images.length > 0 ? (<>
                   {/* <img  onClick={() => openImageModal(0)} src={business?.images?.[0]?.url} alt="" className='lg:w-[600px] object-contain lg:h-80 w-full h-full rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 hidden lg:flex items-center justify-center' /> */}
 
@@ -457,7 +457,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                       clickable: true,
                     }}
                     modules={[Autoplay, Navigation]}
-                    className="mySwiper w-[80vw] h-full lg:h-0 lg:w-0"
+                    className="mySwiper w-full h-full lg:h-0 lg:w-0"
                   >
                     <style jsx>{`
                       :global(.swiper-pagination-bullet) {
@@ -475,7 +475,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                       }
                     `}</style>
                     {business && business.images.map((image,index)=> (
-                      <SwiperSlide key={index} onClick={() => openImageModal(index)} className="flex items-center justify-center rounded-xl">
+                      <SwiperSlide key={index} onClick={() => openImageModal(index)} className="flex w-full items-center justify-center rounded-xl">
                         <div className="flex lg:h-0 lg:w-0 h-full w-full justify-center cursor-pointer transition-transform slick-padding rounded-xl">
                           <img alt={`Slide ${index}`} loading="lazy" className='w-full h-full object-cover rounded-xl' src={image.url}></img>
                         </div>
@@ -496,36 +496,37 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
               </div>
           </section>
 
+          <section className='bg-white border border-gray-300 md:border-none mx-4 rounded-3xl md:mx-0 md:rounded-none'>
 
-          <section className="max-w-8xl mx-auto px-6 mt-8 flex flex-col md:flex-row justify-between items-start gap-6">
-<div className="flex-1">
-<div className="flex items-center gap-3 mb-2">
-  {business.isClaimed || business.verified && (
-  <span className="bg-[#8bfaa7] text-on-secondary-fixed text-[0.7rem] px-3 py-1 rounded-full font-label font-bold tracking-wider flex items-center gap-1 uppercase">
-  <span className="material-symbols-outlined text-sm"><CheckCircle size={14}/></span>
-    VERIFIED
-  </span>
- )}
-<div className="flex items-center gap-1 text-on-surface">
-<span className="material-symbols-outlined text-yellow-500 text-lg"><Star fill='#eab308'/></span>
-<span className="font-headline font-bold">{business.rating}</span>
-<span className="text-on-surface-variant text-sm">({business.reviews} Reviews)</span>
-</div>
-<div className={`lg:flex hidden items-center ${displayText === 'Closed Now' || displayText === 'Closed Today' ? 'bg-red-100 text-red-700' : 'bg-[#8bfaa7] text-green-700'} px-4 py-1 lg:py-2 rounded-full`}>
-  <Clock className="w-4 h-4 mr-2" />
-  <span className="text-sm font-medium">{displayText}</span>
-</div>
-</div>
-{/* <div className={`flex lg:hidden  items-center ${displayText === 'Closed Now' || displayText === 'Closed Today' ? 'bg-red-100 text-red-700' : 'bg-[#8bfaa7] text-green-700'} px-4 py-1 lg:py-2 rounded-full`}>
-  <Clock className="w-4 h-4 mr-2" />
-  <span className="text-sm font-medium">{displayText}</span>
-</div> */}
-<h1 className="text-4xl md:text-5xl font-headline font-extrabold text-on-surface tracking-tight leading-none mb-4">{business.name}</h1>
-<p className="text-on-surface-variant flex items-center text-lg max-w-2xl leading-relaxed">
-  <MapPin className="w-5 h-5 mr-2" />
-  {business.city.charAt(0).toUpperCase() + business.city.slice(1)} • {business.category.charAt(0).toUpperCase() + business.category.slice(1)}
-  </p>
-</div>
+          <div className="max-w-8xl mx-auto px-6 md:mt-8 mt-4 flex flex-col md:flex-row justify-between items-start gap-6">
+            <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              {business.isClaimed || business.verified && (
+              <span className="bg-[#8bfaa7] text-on-secondary-fixed text-[0.7rem] px-3 py-1 rounded-full font-label font-bold tracking-wider flex items-center gap-1 uppercase">
+              <span className="material-symbols-outlined text-sm"><CheckCircle size={14}/></span>
+                VERIFIED
+              </span>
+            )}
+            <div className="flex items-center gap-1 text-on-surface">
+            <span className="material-symbols-outlined text-yellow-500 text-lg"><Star fill='#eab308'/></span>
+            <span className="font-headline font-bold">{business.rating}</span>
+            <span className="text-on-surface-variant text-sm">({business.reviews} Reviews)</span>
+            </div>
+            <div className={`lg:flex hidden items-center ${displayText === 'Closed Now' || displayText === 'Closed Today' ? 'bg-red-100 text-red-700' : 'bg-[#8bfaa7] text-green-700'} px-4 py-1 lg:py-2 rounded-full`}>
+              <Clock className="w-4 h-4 mr-2" />
+              <span className="text-sm font-medium">{displayText}</span>
+            </div>
+            </div>
+            {/* <div className={`flex lg:hidden  items-center ${displayText === 'Closed Now' || displayText === 'Closed Today' ? 'bg-red-100 text-red-700' : 'bg-[#8bfaa7] text-green-700'} px-4 py-1 lg:py-2 rounded-full`}>
+              <Clock className="w-4 h-4 mr-2" />
+              <span className="text-sm font-medium">{displayText}</span>
+            </div> */}
+            <h1 className="text-2xl md:text-3xl font-headline font-extrabold text-on-surface tracking-tight leading-none mb-4">{business.name}</h1>
+            <p className="text-on-surface-variant flex items-center text-lg max-w-2xl leading-relaxed">
+              <MapPin className="w-5 h-5 mr-2" />
+              {business.city.charAt(0).toUpperCase() + business.city.slice(1)} • {business.category.charAt(0).toUpperCase() + business.category.slice(1)}
+              </p>
+            </div>
             <div className='mt-2 hidden lg:block lg:mt-0'>
                   <button
                     onClick={() => {
@@ -552,8 +553,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                     <Bookmark fill='blue' className="w-5 h-5 text-blue-600" />
                   </button>
                   </div>
-</section>
-
+          </div>
           {/* Business Info */}
           <div className="px-8 py-4 lg:py-8">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 lg:gap-6">
@@ -583,32 +583,6 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                   </>
                     )}
                 </div>
-                {/* <div className='mt-2 lg:mt-0'>
-                  <button
-                    onClick={() => {
-                      if (navigator.share) {
-                        navigator
-                          .share({
-                            title: document.title,
-                            text: "Check out this page!",
-                            url: window.location.href,
-                          })
-                          .catch((err) => console.log("Share failed:", err));
-                      } else {
-                        navigator.clipboard.writeText(window.location.href);
-                        alert("Link copied to clipboard!");
-                      }
-                    }}
-                    className="bg-gray-100 border text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-200 transition-all duration-300">
-                    <Share2 className="w-5 h-5" />
-                  </button>
-
-                  <button
-                    onClick={() => {alert("Press Ctrl+D (Windows) or Cmd+D (Mac) to bookmark this page!");}}
-                    className="bg-gray-100 ms-2 border text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-200 transition-all duration-300">
-                    <Bookmark className="w-5 h-5" />
-                  </button>
-                  </div> */}
                 </div>
               </div>
 
@@ -648,6 +622,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
               </div>
             </div>
           </div>
+        </section>
         </div>
 
         {/* Content Tabs */}
@@ -835,11 +810,11 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
 
                      {/* Specialties */}
               <div className='my-8 ms-2'>
-                {business.specialties && (
+                {business.specialties && business.specialties.length > 0 && (
                   <>
                   <h2 className='lg:text-xl font-bold'>Key Specialties</h2>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {['fejf','fjeijf','fjeijf'].map((specialty, index) => (
+                    {business.specialties.map((specialty, index) => (
                       <span key={index} className="bg-[#8bfaa7] px-4 py-2 rounded-full text-sm font-medium">
                         {specialty}
                       </span>
