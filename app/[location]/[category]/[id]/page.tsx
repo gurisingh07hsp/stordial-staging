@@ -1,4 +1,5 @@
 import React from 'react';
+import Script from "next/script";
 import BusinessDetail from '@/components/BusinessDetail';
 interface BusinessPageProps {
   params: {
@@ -63,10 +64,71 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
     : [];
 
   return (
-    <BusinessDetail
-      params={params}
-      business={businessData?.business || null}
-      similarBusinesses={similarBusinesses}
-    />
+    <div>
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+      >
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Home",
+              item: "https://www.stordial.com/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Location",
+              item: "https://www.stordial.com/" + params.location,
+            },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: "Category",
+              item: "https://www.stordial.com/" + params.location + "/" + params.category,
+            },
+            {
+              "@type": "ListItem",
+              position: 4,
+              name: "Business",
+              item: "https://www.stordial.com/" + params.location + "/" + params.category + "/" + businessData?.business?.name.replace(/\s+/g, "-"),
+            },
+          ],
+        })}
+      </Script>
+            <Script
+        id="local-business-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+      >
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": businessData?.business?.category, // or dynamic type
+          name: businessData?.business?.name,
+          image: businessData?.business?.image,
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: businessData?.business?.city,
+            addressCountry: "IN",
+          },
+          telephone: businessData?.business?.phone,
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: businessData?.business?.rating,
+            reviewCount: businessData?.business?.reviewCount,
+          },
+        })}
+      </Script>
+      <BusinessDetail
+        params={params}
+        business={businessData?.business || null}
+        similarBusinesses={similarBusinesses}
+      />
+    </div>
   );
 } 
