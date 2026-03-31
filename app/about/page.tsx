@@ -1,5 +1,5 @@
 import React from 'react';
-
+import Script from "next/script";
 export const metadata = {
   title: "About Stordial Platform",
   description:
@@ -12,6 +12,30 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+      >
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Home",
+              item: "https://www.stordial.com/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "About",
+              item: "https://www.stordial.com/about",
+            },
+          ],
+        })}
+      </Script>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-[35px] font-bold text-gray-900 mb-4">About Stordial</h1>

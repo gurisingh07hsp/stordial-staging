@@ -1,4 +1,5 @@
 import React from 'react'
+import Script from "next/script";
 import { Calendar, User} from 'lucide-react';
 import { Metadata } from "next";
 import SimilarBlogs from '@/components/SimilarBlogs';
@@ -76,6 +77,36 @@ const Blog = async({params}: BlogPageProps) => {
 
   return (
     <div className='w-[90vw] mb-8 mx-auto'>
+            <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+      >
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Home",
+              item: "https://www.stordial.com/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Blog",
+              item: "https://www.stordial.com/blog",
+            },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: "Blog Post",
+              item: "https://www.stordial.com/blog/" + blog?.title.replace(/\s+/g, "-"),
+            },
+          ],
+        })}
+      </Script>
         {!loading ? (
             <div className='flex lg:flex-row flex-col gap-x-10 mt-6 w-full'>
               <div className='lg:w-[65vw] w-full border min-h-[100vh] rounded-lg'>

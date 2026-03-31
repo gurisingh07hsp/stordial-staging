@@ -13,6 +13,22 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.stordial.com"),
   title: 'Find & Compare Local Businesses Near You | Stordial',
   description: 'Discover trusted local businesses on Stordial. Compare ratings, read real reviews, and connect instantly with the best services near you.',
+    openGraph: {
+    title: "Find & Compare Local Businesses Near You | Stordial",
+    description:
+      "Discover trusted local businesses on Stordial. Compare ratings, read real reviews, and connect instantly with the best services near you.",
+    url: "https://www.stordial.com",
+    siteName: "Stordial",
+    images: [
+      {
+        url: "https://www.stordial.com/Stordial.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+    type: "website",
+  },
+
   verification: {
     google: "N61LeFw-PwRB43fxm7OGjrtbtUbA-XK3WS-Iw38gGq8",
   },
@@ -47,6 +63,55 @@ export default function RootLayout({
             gtag('config', 'G-5D75P93DCH');
           `}
         </Script>
+
+        <Script
+          id="organization-schema"
+          type="application/ld+json"
+          strategy="afterInteractive"
+        >
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Stordial",
+            url: "https://www.stordial.com",
+            description:
+              "India's local business directory - find restaurants, hotels, hospitals, and more near you.",
+            logo: "https://www.stordial.com/Stordial crop.png",
+            contactPoint: {
+              "@type": "ContactPoint",
+              telephone: "+91-75890-75361",
+              contactType: "customer service",
+            },
+            sameAs: [
+              "https://facebook.com/stordial",
+              "https://instagram.com/stordial",
+              "https://linkedin.com/company/stordial",
+            ],
+          })}
+        </Script>
+
+        {/* Website Schema */}
+        <Script
+          id="website-schema"
+          type="application/ld+json"
+          strategy="afterInteractive"
+        >
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Stordial",
+            url: "https://www.stordial.com",
+            potentialAction: {
+              "@type": "SearchAction",
+              target:
+                "https://www.stordial.com/search?q={search_term_string}",
+              "query-input": "required name=search_term_string",
+            },
+          })}
+        </Script>
+
+
+
     </head>
       <body className={inter.className}>
         {/* <AuthProvider> */}
