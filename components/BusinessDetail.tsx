@@ -465,13 +465,13 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
 
                 {/* Action Buttons */}
                 <div className="flex lg:flex-row flex-col lg:items-center items-start lg:gap-4 lg:mb-2">
-                  <div className='flex lg:flex-row w-full lg:w-96 flex-col justify-center items-center gap-y-2 gap-x-2 lg:gap-x-4'>
+                  <div className='flex flex-row w-full lg:w-96 justify-center items-center gap-y-2 gap-x-2 lg:gap-x-4'>
                     {business.phone && (
                       <>
                       <a 
                         href={`tel:${business.phone}`}
                         onClick={()=> axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)}
-                        className="bg-blue-600 text-white w-full lg:px-8 px-4 lg:py-2 py-4 lg:text-base text-sm rounded-xl transition-all duration-300 flex justify-center items-center font-semibold"
+                        className="bg-blue-600 text-white w-full lg:px-8 lg:py-2 py-3 lg:text-base text-sm rounded-xl transition-all duration-300 flex justify-center items-center font-semibold"
                       >
                         <Phone className="lg:w-5 w-4 h-4 lg:h-5 mr-2" />  
                         Call Now
@@ -479,7 +479,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                   <button onClick={() =>
                     {window.open(`https://wa.me/${business.phone}?text=Hello%20I%20want%20to%20know%20more`,"_blank");
                     axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/whatsapp`);}}
-                    className="bg-zinc-50 w-full lg:px-6 px-4 lg:py-2 py-4 lg:text-base text-sm text-green-600 border rounded-xl transition-all duration-300 flex justify-center items-center font-semibold">
+                    className="bg-zinc-50 w-full lg:px-6 lg:py-2 py-3 lg:text-base text-sm text-green-600 border rounded-xl transition-all duration-300 flex justify-center items-center font-semibold">
                     {/* <MessageSquare className="w-5 h-5 mr-2" /> */}
                     <FaWhatsapp className='size-5 mr-1 text-green-600'/>
                     WhatsApp
