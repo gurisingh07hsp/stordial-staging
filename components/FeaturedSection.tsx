@@ -21,7 +21,9 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
   };
 
   // Filter featured businesses and limit to 4 businesses (1 row of 4)
-  const featuredBusinesses = businesses;
+  const featuredBusinesses = businesses.filter(
+  (b) => typeof b.subscriptionId === 'object' && b.subscriptionId !== null && b.subscriptionId.priority === 1
+  );
   const limitedBusinesses = featuredBusinesses.slice(0, 4);
 
   return (

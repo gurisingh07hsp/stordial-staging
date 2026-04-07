@@ -30,6 +30,7 @@ export interface Business {
   website?: string;
   featured?: boolean;
   verified?: boolean;
+  subscriptionId?: string | SubscriptionType;
   hours?: {
     [key: string]: { open: string; close: string; closed: boolean };
   };
@@ -119,4 +120,19 @@ export interface BusinessFormData {
       }[];
     }[];
   };
-} 
+}
+
+type SubscriptionType = {
+  userId: string;
+  businessId: string;
+  name: string;
+  priority: number;
+  paymentId: string;
+  amount: number;
+  duration_days: number;
+  startDate: Date;
+  endDate: Date;
+  paymentGateway: string;
+  status: 'active' | 'expired';
+  createdAt: Date;
+}

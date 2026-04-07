@@ -14,6 +14,7 @@ export default function HomePage() {
     const getFeaturedBusinesses = async () => {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/featured`, {withCredentials: true});
       if(response.status == 200){
+        console.log("Featured Businesses: ", response.data.businesses);
         setFeaturedBusinesses(response.data.businesses);
       }
     }
