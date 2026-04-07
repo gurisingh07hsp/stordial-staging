@@ -92,6 +92,10 @@ const businessSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  subscriptionId: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Payment'
+  },
   images: [{
     public_id: {
       type: String,

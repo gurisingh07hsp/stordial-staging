@@ -76,6 +76,8 @@ exports.getBusinesses = async (req, res, next) => {
 
     const businesses = await Business.find(query)
       .populate('owner', 'name email')
+      .populate('subscriptionId')
+      .sort({'subscriptionId.priority': -1})
       .skip((pageNum - 1) * limitNum)
       .limit(limitNum);
 
@@ -98,6 +100,7 @@ exports.getBusiness = async (req, res, next) => {
   try {
     const business = await Business.findById(req.params.id)
       .populate('owner', 'name email phone')
+      .populate('subscriptionId')
       .populate({
         path: 'reviews',
         // populate: {
@@ -132,6 +135,7 @@ exports.getBusinessById = async (req, res, next) => {
 
     const business = await Business.findById(id)
       .populate('owner', 'name email phone')
+      .populate('subscriptionId')
       .populate({
         path: 'reviews',
         // populate: {
@@ -159,7 +163,7 @@ exports.getBusinessById = async (req, res, next) => {
 
 exports.getBusinessByUser = async (req,res,next) => {
   try {
-    const businesses = await Business.find({owner: req.params.id});
+    const businesses = await Business.find({owner: req.params.id}).populate('owner', 'name email phone').populate('subscriptionId');
     if(!businesses){
       return res.status(404).json({
         success: false,
@@ -247,7 +251,8 @@ exports.getFeaturedBusinesses = async (req, res, next) => {
   try {
     const businesses = await Business.find({ featured: true })
       .populate('owner', 'name email')
-      .sort({ rating: -1, reviews: -1 })
+      .populate('subscriptionId')
+      .sort({'subscriptionId.priority': -1})
       .limit(8);
 
     res.status(200).json({

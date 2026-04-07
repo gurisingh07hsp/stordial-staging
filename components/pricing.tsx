@@ -6,10 +6,15 @@ import { Switch } from "@/components/ui/switch";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { Check, Star } from "lucide-react";
-import Link from "next/link";
-import { useState, useRef } from "react";
+import { Check, MapPin, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import NumberFlow from "@number-flow/react";
+import { X } from "lucide-react";
+import { Business } from "@/types";
+import axios from "axios";
+
 
 interface PricingPlan {
   name: string;
@@ -34,13 +39,86 @@ export function Pricing({
   title = "Simple, Transparent Pricing",
   description = "Choose the plan that works for you\nAll plans include access to our platform, lead generation tools, and dedicated support.",
 }: PricingProps) {
+  const {user} = useAuth();
+  const router = useRouter();
   const [isMonthly, setIsMonthly] = useState(true);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const switchRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  const [businesses,setBusinesses] = useState<Business[]>([]);
+  const [formData, setFormData] = useState({
+        userId: '',
+        businessId: '',
+        name: '',
+        priority: 0,
+        paymentId: '',
+        amount: 0,
+        duration_days: 0,
+        startDate: '',
+        endDate: '',
+        paymentGateway: "razorpay",
+        status: "active",
+  });
+
+
+  useEffect(()=> {
+    const getBusinesses = async() => {
+      try{
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/user/${user?._id}`,  { withCredentials: true });
+          if(response.status == 200){
+            console.log("Businesses : ", response.data.businesses);
+              setBusinesses(response.data.businesses);
+          }
+        } catch {
+            console.log("Server Error")
+        }
+      }
+      if(user){
+        getBusinesses();
+      }
+  },[user])
+
+
 
   const handleToggle = (checked: boolean) => {
     setIsMonthly(!checked);
   };
+
+  const handleClick = (index: number) => {
+    if(!user){
+      router.push('/login');
+    }
+    if(index == 0){
+      router.push('/')
+    }
+    else{
+      setFormData({
+        ...formData,
+        userId: user?._id || '',
+        name: plans[index].name,
+        amount: isMonthly ? Number(plans[index].price) : Number(plans[index].yearlyPrice),
+        priority: index,
+        duration_days: isMonthly ? 30 : 1,
+        startDate: new Date().toISOString().split('T')[0],
+        endDate: new Date(new Date().setDate(new Date().getDate() + (isMonthly ? 30 : 1))).toISOString().split('T')[0],
+      })
+      setOpen(true);
+    }
+  }
+
+  const handleSumbit = async(businessId: string) => {
+    const updatedFormData = {
+      ...formData,
+      businessId: businessId
+    };
+    console.log('Submitting promotion for business ID:', businessId);
+    console.log('Form DATA : ', updatedFormData);
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/promotions`, updatedFormData, { withCredentials: true });
+    if(response.status == 201){
+      setOpen(false);
+      router.push('/advertise');
+    }
+  }
 
   return (
     <div className="container py-20">
@@ -160,8 +238,8 @@ export function Pricing({
 
               <hr className="w-full my-4" />
 
-              <Link
-                href={plan.href}
+              <button
+                onClick={()=>handleClick(index)}
                 className={cn(
                   buttonVariants({
                     variant: "outline",
@@ -174,7 +252,8 @@ export function Pricing({
                 )}
               >
                 {plan.buttonText}
-              </Link>
+              </button>
+              
               <p className="mt-6 text-xs leading-5 text-muted-foreground">
                 {plan.description}
               </p>
@@ -182,6 +261,114 @@ export function Pricing({
           </motion.div>
         ))}
       </div>
+
+
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white w-[95%] max-w-6xl rounded-2xl shadow-lg relative">
+
+            {/* Header */}
+            <div className="flex justify-between items-center border-b p-4">
+              <h2 className="text-lg font-semibold">Your Businesses</h2>
+              <button onClick={()=> setOpen(false)}>
+                <X className="w-5 h-5 text-gray-600 hover:text-black" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-4 max-h-[80vh] overflow-y-auto">
+              <div className="bg-white rounded-xl mt-3 w-full mx-auto shadow-sm border border-gray-200">
+                <div className="overflow-x-auto overflow-y-auto max-h-[400px] hide-scrollbar">
+                  
+                  {/* 🔽 YOUR TABLE (UNCHANGED) */}
+                  <table className="min-w-full divide-y divide-gray-200">
+                    {/* keep your thead + tbody exactly same */}
+                  </table>
+                            <table className="min-w-full divide-y divide-gray-200">
+                              <thead className="bg-gray-50">
+                                <tr className='h-16'>
+                                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Business
+                                  </th>
+                                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                                    Category
+                                  </th>
+                                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                                    Location
+                                  </th>
+                                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                                    Status
+                                  </th>
+                                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell">
+                                    Promote Business
+                                  </th>
+                                </tr>
+                              </thead>
+                              {businesses.length > 0 && <tbody className="bg-white divide-y divide-gray-200">
+                                {businesses.map((business) => (
+                                  <tr key={business._id} className="hover:bg-gray-50 h-28">
+                                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                                      <div className="flex items-center">
+                                        <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10">
+                                          <img
+                                            className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg object-cover"
+                                            src={business.images && business.images[0]?.url}
+                                            alt={business.name}
+                                          />
+                                        </div>
+                                        <div className="ml-3 sm:ml-4 min-w-0">
+                                          <p className="text-sm font-medium text-gray-900 truncate max-w-80 break-words whitespace-normal">{business.name}</p>
+                                          <div className="text-xs sm:text-sm text-gray-500 truncate">{`${business?.description?.slice(0,25)}...`}</div>
+                                          <div className="sm:hidden text-xs text-gray-500">
+                                            {business.category} • {business.city}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+                                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {business.category.charAt(0).toUpperCase() + business.category.slice(1)}
+                                      </span>
+                                    </td>
+                                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden lg:table-cell">
+                                      <div className="flex items-center text-sm text-gray-900">
+                                        <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-gray-400 flex-shrink-0" />
+                                        <span className="truncate">{business.city.charAt(0).toUpperCase() + business.city.slice(1)}</span>
+                                      </div>
+                                    </td>
+                                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden lg:table-cell">
+                                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Active
+                                      </span>
+                                    </td>
+                                    <td className="text-center px-3 sm:px-6 py-4 whitespace-nowrap md:table-cell">
+                                      <button onClick={()=>handleSumbit(business._id)}
+                                        className={`mx-auto inline-flex items-center px-2 py-1 rounded-full text-xs font-medium transition-colors ${
+                                          business.subscriptionId
+                                            ? 'text-green-800 bg-green-100'
+                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        }`}
+                                      >
+                                      {business.subscriptionId ? 'Promoted' : 'Promote'}
+                                      </button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>}
+                            </table>
+                          <div className={`my-8 ${businesses.length > 0 ? 'hidden' : 'block'}`}>
+                              <p className='text-center text-2xl text-gray-600'>You have not listed any business.</p>
+                          </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+
+
     </div>
   );
 }
