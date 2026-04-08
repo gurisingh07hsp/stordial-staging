@@ -98,13 +98,17 @@ export function Pricing({
         name: plans[index].name,
         amount: isMonthly ? Number(plans[index].price) : Number(plans[index].yearlyPrice),
         priority: index,
-        duration_days: isMonthly ? 30 : 1,
+        duration_days: isMonthly ? 1 : 30,
         startDate: new Date().toISOString().split('T')[0],
         endDate: new Date(new Date().setDate(new Date().getDate() + (isMonthly ? 30 : 1))).toISOString().split('T')[0],
       })
       setOpen(true);
     }
   }
+
+  useEffect(()=> {
+    console.log("Form Data Updated : ", formData);
+  },[formData])
 
   const handleSumbit = async(businessId: string) => {
     const updatedFormData = {

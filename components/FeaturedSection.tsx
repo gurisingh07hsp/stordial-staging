@@ -20,10 +20,14 @@ export default function FeaturedSection({ businesses }: FeaturedSectionProps) {
     return url;
   };
 
-  // Filter featured businesses and limit to 4 businesses (1 row of 4)
-  const featuredBusinesses = businesses.filter(
-  (b) => typeof b.subscriptionId === 'object' && b.subscriptionId !== null && b.subscriptionId.priority === 1
-  );
+// Filter featured businesses and limit to 4 businesses (1 row of 4)
+const featuredBusinesses = businesses.filter(
+  (b) =>
+    typeof b.subscriptionId === 'object' &&
+    b.subscriptionId !== null &&
+    (b.subscriptionId.priority || 0) === 1 &&
+    b.subscriptionId.status === "active"
+);
   const limitedBusinesses = featuredBusinesses.slice(0, 4);
 
   return (

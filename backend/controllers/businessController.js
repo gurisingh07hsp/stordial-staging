@@ -6,7 +6,7 @@ exports.createBusiness = async (req, res, next) => {
   try {
     req.body.owner = req.user.id;
     req.body.category = req.body.category.toLowerCase()
-      .replace(/[^a-z\s-]/g, '') // Remove special characters
+      // .replace(/[^a-z\s-]/g, '') // Remove special characters
       .replace('-', ' ') // Replace spaces with hyphens
       .trim();
   const business = await Business.create(req.body);
@@ -74,12 +74,74 @@ exports.getBusinesses = async (req, res, next) => {
 
     const total = await Business.find(query).countDocuments();
 
-    const businesses = await Business.find(query)
-      .populate('owner', 'name email')
-      .populate('subscriptionId')
-      .sort({'subscriptionId.priority': -1})
-      .skip((pageNum - 1) * limitNum)
-      .limit(limitNum);
+    // const businesses = await Business.find(query)
+    //   .populate('owner', 'name email')
+    //   .populate('subscriptionId')
+    //   .sort({'subscriptionId.priority': -1})
+    //   .skip((pageNum - 1) * limitNum)
+    //   .limit(limitNum);
+
+    const businesses = await Business.aggregate([
+  { $match: query },
+
+  {
+    $lookup: {
+      from: "payments",
+      localField: "subscriptionId",
+      foreignField: "_id",
+      as: "subscriptionId"
+    }
+  },
+  {
+    $unwind: {
+      path: "$subscriptionId",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+
+  {
+    $lookup: {
+      from: "users",
+      localField: "owner",
+      foreignField: "_id",
+      as: "owner"
+    }
+  },
+  {
+    $unwind: {
+      path: "$owner",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+
+  {
+    $addFields: {
+      priority: {
+        $cond: [
+          {
+            $and: [
+              { $ne: ["$subscriptionId", null] },
+              { $eq: ["$subscriptionId.status", "active"] }
+            ]
+          },
+          { $ifNull: ["$subscriptionId.priority", 0] },
+          0
+        ]
+      }
+    }
+  },
+
+  {
+    $sort: { priority: -1 }
+  },
+
+  {
+    $skip: (pageNum - 1) * limitNum
+  },
+  {
+    $limit: limitNum
+  }
+]);
 
 
     res.status(200).json({
@@ -269,6 +331,7 @@ exports.getVerifiedBusinesses = async (req, res, next) => {
   try {
     const businesses = await Business.find({ verified: true })
       .populate('owner', 'name email')
+      .populate('subscriptionId')
       .sort({ rating: -1, reviews: -1 })
       .limit(8);
 
@@ -302,9 +365,55 @@ exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
       query.category = { $regex: category, $options: 'i' };
     }
 
-      let businesses = await Business.find(query)
-      .populate('owner', 'name email')
-      .sort({ rating: -1, reviews: -1 });
+      // let businesses = await Business.find(query)
+      // .populate('owner', 'name email')
+      // .populate('subscriptionId')
+      // .sort({ rating: -1, reviews: -1 });
+
+    const businesses = await Business.aggregate([
+  { $match: query },
+
+  // 🔗 Join Payment safely
+  {
+    $lookup: {
+      from: "payments",
+      localField: "subscriptionId", // if not exists → treated as null
+      foreignField: "_id",
+      as: "subscriptionId"
+    }
+  },
+
+  // 📦 Convert array → object safely
+  {
+    $unwind: {
+      path: "$subscriptionId",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+
+  // 🧠 SAFE priority logic (handles missing field)
+  {
+    $addFields: {
+      priority: {
+        $cond: [
+          {
+            $eq: [
+              { $ifNull: ["$subscriptionId.status", ""] }, // 👈 KEY FIX
+              "active"
+            ]
+          },
+          { $ifNull: ["$subscriptionId.priority", 0] },
+          0
+        ]
+      }
+    }
+  },
+
+  // 🔥 Sort
+  {
+    $sort: { priority: -1 }
+  }
+]);
 
 
     res.status(200).json({
