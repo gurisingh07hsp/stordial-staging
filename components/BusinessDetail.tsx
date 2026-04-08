@@ -391,7 +391,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
 
                 </>) : (
                 <div 
-                  className="lg:w-[480px] lg:h-80 w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
+                  className="md:w-0 md:h-0 w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
                   onClick={() => openImageModal(0)}
                 >
                    <Camera/>
@@ -468,6 +468,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                   <div className='flex flex-row w-full lg:w-96 justify-center items-center gap-y-2 gap-x-2 lg:gap-x-4'>
                     {business.phone && (
                       <>
+                      {business.subscriptionId && typeof business.subscriptionId === 'object' && business.subscriptionId.priority == 3 && (
                       <a 
                         href={`tel:${business.phone}`}
                         onClick={()=> axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)}
@@ -476,14 +477,17 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                         <Phone className="lg:w-5 w-4 h-4 lg:h-5 mr-2" />  
                         Call Now
                       </a>
-                  <button onClick={() =>
-                    {window.open(`https://wa.me/${business.phone}?text=Hello%20I%20want%20to%20know%20more`,"_blank");
-                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/whatsapp`);}}
-                    className="bg-zinc-50 w-full lg:px-6 lg:py-2 py-3 lg:text-base text-sm text-green-600 border rounded-xl transition-all duration-300 flex justify-center items-center font-semibold">
-                    {/* <MessageSquare className="w-5 h-5 mr-2" /> */}
-                    <FaWhatsapp className='size-5 mr-1 text-green-600'/>
-                    WhatsApp
-                  </button>
+                      )}
+                      {business.subscriptionId && typeof business.subscriptionId === 'object' && business.subscriptionId.priority >=2 && (
+                        <button onClick={() =>
+                          {window.open(`https://wa.me/${business.phone}?text=Hello%20I%20want%20to%20know%20more`,"_blank");
+                          axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/whatsapp`);}}
+                          className="bg-zinc-50 w-full lg:px-6 lg:py-2 py-3 lg:text-base text-sm text-green-600 border rounded-xl transition-all duration-300 flex justify-center items-center font-semibold">
+                          {/* <MessageSquare className="w-5 h-5 mr-2" /> */}
+                          <FaWhatsapp className='size-5 mr-1 text-green-600'/>
+                          WhatsApp
+                        </button>
+                      )}
                   </>
                     )}
                 </div>
@@ -776,9 +780,13 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Phone</p>
-                    <a href={`tel:${business.phone}`} onClick={()=>axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)} className="text-gray-800 font-semibold hover:text-blue-600 transition-colors">
-                      {business.phone}
-                    </a>
+                    {business.subscriptionId && typeof business.subscriptionId === 'object' && business.subscriptionId.priority >=2 ? (
+                      <a href={`tel:${business.phone}`} onClick={()=>axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)} className="text-gray-800 font-semibold hover:text-blue-600 transition-colors">
+                        {business.phone}
+                      </a>
+                    ) : (
+                      <span className="text-gray-800 font-semibold">{business.phone}</span>
+                    )}
                   </div>
                 </div>
 
@@ -822,13 +830,16 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
               <div className="mt-8 space-y-4">
                 {business.phone && (
                   <>
-                  <a 
-                    href={`tel:${business.phone}`}
-                    className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center font-semibold"
-                  >
-                    <Phone className="w-5 h-5 mr-2" />
-                    Call Now
-                  </a>
+                  {business.subscriptionId && typeof business.subscriptionId === 'object' && business.subscriptionId.priority >= 2 && (
+                    <a 
+                      href={`tel:${business.phone}`}
+                      onClick={()=>axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)}
+                      className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center font-semibold"
+                    >
+                      <Phone className="w-5 h-5 mr-2" />
+                      Call Now
+                    </a>
+                  )}
                 <button
                   onClick={() => {
                     const message = "Hello, I need more information!";

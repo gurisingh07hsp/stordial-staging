@@ -53,7 +53,15 @@ const BusinessDetailByCategoryAndLocation = ({ params }: CategoryPageProps) => {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
 
-  const premiumAds = filteredBusinesses.filter((business)=> business.featured == true).slice(0,4);
+  // const premiumAds = filteredBusinesses.filter((business)=> business.featured == true).slice(0,4);
+  const premiumAds = filteredBusinesses.filter(
+  (b) =>
+    typeof b.subscriptionId === 'object' &&
+    b.subscriptionId !== null &&
+    (b.subscriptionId.priority || 0) === 3 &&
+    b.subscriptionId.status === "active"
+).slice(0,4);
+  
 
   const sortedBusinesses = useMemo(() => {
     let sorted = [...filteredBusinesses];
@@ -307,11 +315,6 @@ const BusinessDetailByCategoryAndLocation = ({ params }: CategoryPageProps) => {
                       <div className="flex-1 ms-2">
                         <div className="flex items-center space-x-3 mb-2">
                           <h3 className="text-lg font-semibold text-gray-900 max-w-[450px]">{business.name}</h3>
-                          {/* {business.verified && (
-                            <span className="bg-[#60CE80] font-bold text-white text-xs px-2 py-1 rounded-full">
-                              Verified
-                            </span>
-                          )} */}
                         </div>
                         
                         <div className="flex lg:flex-row flex-col lg:items-center space-y-2 space-x-4 mb-3">
@@ -332,9 +335,7 @@ const BusinessDetailByCategoryAndLocation = ({ params }: CategoryPageProps) => {
                             <MapPin className="w-4 h-4" />
                             <span className="text-sm">{business.address}</span>
                             </div>
-                          </div>
-
-                        <div className="lg:flex hidden flex-wrap gap-2 mb-4 mt-2">
+                                          <div className="lg:flex hidden flex-wrap gap-2 mb-4 mt-2">
                           {business.services.slice(0, 5).map((service, index) => (
                             <span
                               key={index}
@@ -347,13 +348,7 @@ const BusinessDetailByCategoryAndLocation = ({ params }: CategoryPageProps) => {
                             <span className="text-gray-500 text-xs">+{business.services.length - 5} more</span>
                           )}
                         </div>
-
-                        {business.specialties && business.specialties.length > 0 && (
-                          <div className="mb-3">
-                            <span className="text-sm font-medium text-gray-700">Specialties: </span>
-                            <span className="text-sm text-gray-600">{business.specialties.join(', ')}</span>
                           </div>
-                        )}
                      
                       </div>
 
@@ -443,7 +438,7 @@ const BusinessDetailByCategoryAndLocation = ({ params }: CategoryPageProps) => {
                           width: 14px;
                         }
                       `}</style>
-                      {sortedBusinesses.filter((business)=>business.verified && business.featured).map((e,index)=> (
+                      {premiumAds.map((e,index)=> (
                         <SwiperSlide key={index} className="h-full flex items-center justify-center">
                           <div className="flex justify-center cursor-pointer transition-transform slick-padding rounded-lg">
                             <img alt={`Slide ${index}`} loading="lazy" width="1200" height="1200" className='rounded-lg' src={e.images && e?.images[0]?.url}></img>
