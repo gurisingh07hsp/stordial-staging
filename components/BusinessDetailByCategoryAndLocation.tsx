@@ -32,11 +32,7 @@ const BusinessDetailByCategoryAndLocation = ({ params }: CategoryPageProps) => {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/location/${decodedLocation}/category/${decodedCategory}`, {withCredentials: true});
         if(response.status == 200){
           setFilteredBusinesses(
-            response.data.businesses.sort((a: Business, b: Business) => {
-              if (a.featured === b.featured) return 0;
-                return a.featured ? -1 : 1;
-            })
-          );
+            response.data.businesses);
           setLoading(false);
         }
       }catch(error){
@@ -59,7 +55,8 @@ const BusinessDetailByCategoryAndLocation = ({ params }: CategoryPageProps) => {
     typeof b.subscriptionId === 'object' &&
     b.subscriptionId !== null &&
     (b.subscriptionId.priority || 0) === 3 &&
-    b.subscriptionId.status === "active"
+    b.subscriptionId.status === "active" &&
+     new Date(b.subscriptionId.endDate) > new Date()
 ).slice(0,4);
   
 

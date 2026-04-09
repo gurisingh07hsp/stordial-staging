@@ -468,7 +468,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                   <div className='flex flex-row w-full lg:w-96 justify-center items-center gap-y-2 gap-x-2 lg:gap-x-4'>
                     {business.phone && (
                       <>
-                      {business.subscriptionId && typeof business.subscriptionId === 'object' && business.subscriptionId.priority == 3 && (
+                      {business.subscriptionId && typeof business.subscriptionId === 'object' && new Date(business.subscriptionId.endDate) > new Date() && business.subscriptionId.priority == 3 && (
                       <a 
                         href={`tel:${business.phone}`}
                         onClick={()=> axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)}
@@ -478,7 +478,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                         Call Now
                       </a>
                       )}
-                      {business.subscriptionId && typeof business.subscriptionId === 'object' && business.subscriptionId.priority >=2 && (
+                      {business.subscriptionId && typeof business.subscriptionId === 'object' && new Date(business.subscriptionId.endDate) > new Date() && business.subscriptionId.priority >=2 && (
                         <button onClick={() =>
                           {window.open(`https://wa.me/${business.phone}?text=Hello%20I%20want%20to%20know%20more`,"_blank");
                           axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/whatsapp`);}}
@@ -780,7 +780,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Phone</p>
-                    {business.subscriptionId && typeof business.subscriptionId === 'object' && business.subscriptionId.priority >=2 ? (
+                    {business.subscriptionId && typeof business.subscriptionId === 'object' && new Date(business.subscriptionId.endDate) > new Date() && business.subscriptionId.priority >=2 ? (
                       <a href={`tel:${business.phone}`} onClick={()=>axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)} className="text-gray-800 font-semibold hover:text-blue-600 transition-colors">
                         {business.phone}
                       </a>
@@ -830,7 +830,7 @@ const BusinessDetail = ({ business, similarBusinesses, params }: BusinessPagePro
               <div className="mt-8 space-y-4">
                 {business.phone && (
                   <>
-                  {business.subscriptionId && typeof business.subscriptionId === 'object' && business.subscriptionId.priority >= 2 && (
+                  {business.subscriptionId && typeof business.subscriptionId === 'object' && new Date(business.subscriptionId.endDate) > new Date() && business.subscriptionId.priority >= 2 && (
                     <a 
                       href={`tel:${business.phone}`}
                       onClick={()=>axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/analytics/${business._id}/call`)}

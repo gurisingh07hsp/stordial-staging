@@ -110,18 +110,98 @@ export function Pricing({
     console.log("Form Data Updated : ", formData);
   },[formData])
 
+
+  const loadScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
   const handleSumbit = async(businessId: string) => {
     const updatedFormData = {
       ...formData,
       businessId: businessId
     };
-    console.log('Submitting promotion for business ID:', businessId);
-    console.log('Form DATA : ', updatedFormData);
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/promotions`, updatedFormData, { withCredentials: true });
-    if(response.status == 201){
-      setOpen(false);
-      router.push('/advertise');
+
+    const res = await loadScript();
+    console.log("Razorpay SDK Loaded: ", res);
+    if (!res) {
+      alert("Razorpay SDK failed to load");
+      return;
     }
+
+
+      // 2️⃣ Create order from backend
+  const orderRes = await axios.post(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/promotions/payment/create-order`,
+    { amount: formData.amount },
+    {withCredentials: true}
+  );
+
+  const order = orderRes.data.order;
+
+  console.log("Order created: ", order);
+
+    // 3️⃣ Open Razorpay
+  const options = {
+    key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+    amount: order.amount,
+    currency: "INR",
+    name: "Stordial",
+    description: formData.name,
+    order_id: order.id,
+
+    handler: async function (response: any) {
+      try {
+        // 4️⃣ Verify payment
+        const verifyRes = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/promotions/payment/verify`,
+          {
+            ...response,
+            businessId,
+            amount: formData.amount,
+            updatedFormData
+          },
+          { withCredentials: true }
+        );
+
+        if (verifyRes.data.success) {
+          alert("Payment successful 🎉");
+          setOpen(false);
+          router.push("/advertise");
+        }
+
+      } catch (error) {
+        console.error(error);
+        alert("Payment verification failed");
+      }
+    },
+
+    prefill: {
+      name: user?.name || '',
+      email: user?.email || 'user@example.com'
+    },
+
+    theme: {
+      color: "#0767f1"
+    }
+  };
+
+  const paymentObject = new (window as any).Razorpay(options);
+  paymentObject.open();
+
+
+    // console.log('Submitting promotion for business ID:', businessId);
+    // console.log('Form DATA : ', updatedFormData);
+    // const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/promotions`, updatedFormData, { withCredentials: true });
+    // if(response.status == 201){
+    //   setOpen(false);
+    //   router.push('/advertise');
+    // }
   }
 
   return (

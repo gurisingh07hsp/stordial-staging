@@ -121,7 +121,8 @@ exports.getBusinesses = async (req, res, next) => {
           {
             $and: [
               { $ne: ["$subscriptionId", null] },
-              { $eq: ["$subscriptionId.status", "active"] }
+              { $eq: ["$subscriptionId.status", "active"] },
+              { $gt: ["$subscriptionId.endDate", new Date()] }
             ]
           },
           { $ifNull: ["$subscriptionId.priority", 0] },
@@ -397,9 +398,19 @@ exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
       priority: {
         $cond: [
           {
-            $eq: [
-              { $ifNull: ["$subscriptionId.status", ""] }, // 👈 KEY FIX
-              "active"
+            $and: [
+              {
+                $eq: [
+                  { $ifNull: ["$subscriptionId.status", ""] },
+                  "active"
+                ]
+              },
+              {
+                $gt: [
+                  { $ifNull: ["$subscriptionId.endDate", new Date(0)] },
+                  new Date()
+                ]
+              }
             ]
           },
           { $ifNull: ["$subscriptionId.priority", 0] },
@@ -414,7 +425,6 @@ exports.getBusinessesByCategoryAndLocation = async (req, res, next) => {
     $sort: { priority: -1 }
   }
 ]);
-
 
     res.status(200).json({
       success: true,
