@@ -657,6 +657,27 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
       setId('');
     }
 
+    const handlePromoteBusiness = async(business: Business) => {
+      console.log('Promote business:', business);
+      const updatedFormData = {
+        userId: business.owner?._id,
+        businessId: business._id,
+        name: 'ELITE PLAN',
+        priority: 3,
+        paymentId: '',
+        amount: 0,
+        duration_days: 0,
+        startDate: new Date().toISOString(),
+        endDate: new Date(new Date().getTime() + 365*24*60*60*1000).toISOString(),
+        paymentGateway: "razorpay",
+        status: "active",
+      }
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/promotions`, updatedFormData, { withCredentials: true });
+      if(response.status == 201){
+        fetchBusinesses();
+      }
+    }
+
   return (
     <div className="space-y-4 sm:space-y-6">
       <Toaster
@@ -826,14 +847,17 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                   Rating
                 </th>
-                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                {/* <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                   Status
-                </th>
+                </th> */}
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                   Featured
                 </th>
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                   Verify
+                </th>
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                  Promotion
                 </th>
                 <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
@@ -886,11 +910,11 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                       <span className="text-sm text-gray-900">{business.rating}</span>
                     </div>
                   </td>
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden lg:table-cell">
+                  {/* <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden lg:table-cell">
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                       Active
                     </span>
-                  </td>
+                  </td> */}
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
                     <button
                       onClick={() => handleToggleFeatured(business._id)}
@@ -918,6 +942,20 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                     >
                       {verifiedBusinesses.includes(business._id) || business.verified ? 'Verified' : 'Not Verified'}
                       <Check className={`w-3 h-3 ms-1 ${verifiedBusinesses.includes(business._id) || business.verified ? 'block' : 'hidden'}`} />
+                    </button>
+                  </td>
+
+                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
+                    <button
+                      onClick={() => handlePromoteBusiness(business)}
+                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium transition-colors ${
+                        featuredBusinesses.includes(business._id) || business.featured
+                          ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                      title={featuredBusinesses.includes(business._id) || business.featured ? 'Remove From Promote' : 'Promote Business'}
+                    >
+                      {featuredBusinesses.includes(business._id) || business.featured ? 'Promoted' : 'Promote'}
                     </button>
                   </td>
 

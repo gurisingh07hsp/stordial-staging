@@ -36,6 +36,7 @@ export interface Business {
   };
   images?: imageData[];
   yearsInBusiness?: number;
+  owner?: {_id: string};
   isClaimed?: boolean;
   specialties?: string[];
   teamSize?: number;

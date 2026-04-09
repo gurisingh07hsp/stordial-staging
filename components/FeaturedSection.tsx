@@ -25,8 +25,9 @@ const featuredBusinesses = businesses.filter(
   (b) =>
     typeof b.subscriptionId === 'object' &&
     b.subscriptionId !== null &&
-    (b.subscriptionId.priority || 0) === 1 &&
-    b.subscriptionId.status === "active"
+    (b.subscriptionId.priority || 0) === 3 &&
+    b.subscriptionId.status === "active" &&
+    new Date(b.subscriptionId.endDate) > new Date()
 );
   const limitedBusinesses = featuredBusinesses.slice(0, 4);
 

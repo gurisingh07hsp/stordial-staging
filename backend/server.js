@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const connectDB = require('./config/database');
 const errorMiddleware = require('./middleware/error');
+require("./utils/cronJobs");
 
 
 // Load environment variables
