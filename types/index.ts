@@ -124,6 +124,7 @@ export interface BusinessFormData {
 }
 
 type SubscriptionType = {
+  _id: string;
   userId: string;
   businessId: string;
   name: string;
