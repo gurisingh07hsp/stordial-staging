@@ -15,6 +15,28 @@ import { X } from "lucide-react";
 import { Business } from "@/types";
 import axios from "axios";
 
+interface CashfreeOptions {
+  mode: "sandbox" | "production";
+}
+
+interface CashfreeCheckoutOptions {
+  paymentSessionId: string;
+  redirectTarget?: "_self" | "_blank" | "_modal";
+}
+
+interface CashfreeInstance {
+  checkout(options: CashfreeCheckoutOptions): void;
+}
+
+interface CashfreeConstructor {
+  new (options: CashfreeOptions): CashfreeInstance;
+}
+
+declare global {
+  interface Window {
+    Cashfree: CashfreeConstructor;
+  }
+}
 
 interface PricingPlan {
   name: string;
@@ -56,7 +78,7 @@ export function Pricing({
         duration_days: 0,
         startDate: '',
         endDate: '',
-        paymentGateway: "razorpay",
+        paymentGateway: "cashfree",
         status: "active",
   });
 
@@ -100,108 +122,52 @@ export function Pricing({
         priority: index,
         duration_days: isMonthly ? 1 : 30,
         startDate: new Date().toISOString().split('T')[0],
-        endDate: new Date(new Date().setDate(new Date().getDate() + (isMonthly ? 30 : 1))).toISOString().split('T')[0],
+        endDate: new Date(new Date().setDate(new Date().getDate() + (isMonthly ? 1 : 30))).toISOString().split('T')[0],
       })
       setOpen(true);
     }
   }
 
-  useEffect(()=> {
-    console.log("Form Data Updated : ", formData);
-  },[formData])
-
-
-  const loadScript = () => {
+const loadCashfree = () => {
   return new Promise((resolve) => {
     const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
     script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
     document.body.appendChild(script);
   });
 };
 
   const handleSumbit = async(businessId: string) => {
-    const updatedFormData = {
-      ...formData,
-      businessId: businessId
-    };
 
-    const res = await loadScript();
-    console.log("Razorpay SDK Loaded: ", res);
+    const res = await loadCashfree();
+    console.log("Cashfree SDK Loaded: ", res);
     if (!res) {
-      alert("Razorpay SDK failed to load");
+      alert("Cashfree SDK failed to load");
       return;
     }
-
 
       // 2️⃣ Create order from backend
   const orderRes = await axios.post(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/promotions/payment/create-order`,
-    { amount: formData.amount },
+      { amount: formData.amount, businessId: businessId },
     {withCredentials: true}
   );
 
-  const order = orderRes.data.order;
+  const { payment_session_id} = orderRes.data;
 
-  console.log("Order created: ", order);
+  const cashfree = new window.Cashfree({
+    mode: "sandbox" // change to production
+  });
 
-    // 3️⃣ Open Razorpay
-  const options = {
-    key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-    amount: order.amount,
-    currency: "INR",
-    name: "Stordial",
-    description: formData.name,
-    order_id: order.id,
+  // 4️⃣ Open checkout
+  cashfree.checkout({
+    paymentSessionId: payment_session_id,
+    redirectTarget: "_self"
+  });
 
-    handler: async function (response: any) {
-      try {
-        // 4️⃣ Verify payment
-        const verifyRes = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/promotions/payment/verify`,
-          {
-            ...response,
-            businessId,
-            amount: formData.amount,
-            updatedFormData
-          },
-          { withCredentials: true }
-        );
-
-        if (verifyRes.data.success) {
-          alert("Payment successful 🎉");
-          setOpen(false);
-          router.push("/advertise");
-        }
-
-      } catch (error) {
-        console.error(error);
-        alert("Payment verification failed");
-      }
-    },
-
-    prefill: {
-      name: user?.name || '',
-      email: user?.email || 'user@example.com'
-    },
-
-    theme: {
-      color: "#0767f1"
-    }
-  };
-
-  const paymentObject = new (window as any).Razorpay(options);
-  paymentObject.open();
-
-
-    // console.log('Submitting promotion for business ID:', businessId);
-    // console.log('Form DATA : ', updatedFormData);
-    // const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/promotions`, updatedFormData, { withCredentials: true });
-    // if(response.status == 201){
-    //   setOpen(false);
-    //   router.push('/advertise');
-    // }
+  // const paymentObject = new (window as any).Razorpay(options);
+    // const paymentObject = new window.Razorpay(options);
+    // paymentObject.open();
   }
 
   return (

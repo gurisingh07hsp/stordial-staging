@@ -582,7 +582,6 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
     const fetchBusinesses = async () => {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/?page=${page}
         &limit=5&search=${searchQuery}&category=${selectedCategory}&${selectedStatus.toLowerCase()}=${true}`);
-        console.log(response.data);
       setBusinesses(response.data.businesses);
        setTotalPages(response.data.totalPages);
   };
@@ -657,24 +656,48 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
       setId('');
     }
 
+    const [promoteDataFrom, setPromoteDataForm] = useState({
+        name: '',
+        duration_days: 0,
+    })
+
     const handlePromoteBusiness = async(business: Business) => {
       console.log('Promote business:', business);
+      if(!promoteDataFrom.name || !promoteDataFrom.duration_days){
+        toast.error('Please select a promotion plan and duration before promoting the business.');
+        return ;
+      }
       const updatedFormData = {
         userId: business.owner?._id,
         businessId: business._id,
-        name: 'ELITE PLAN',
-        priority: 3,
+        name: promoteDataFrom.name,
+        priority: promoteDataFrom.name === 'STANDARD PLAN' ? 1 : promoteDataFrom.name === 'PREMIUM PLAN' ? 2 : 3,
         paymentId: '',
         amount: 0,
-        duration_days: 0,
+        duration_days: promoteDataFrom.duration_days,
         startDate: new Date().toISOString(),
-        endDate: new Date(new Date().getTime() + 365*24*60*60*1000).toISOString(),
-        paymentGateway: "razorpay",
+        endDate: new Date(new Date().getTime() + promoteDataFrom.duration_days*24*60*60*1000).toISOString(),
+        paymentGateway: "",
         status: "active",
       }
       const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/promotions`, updatedFormData, { withCredentials: true });
       if(response.status == 201){
         fetchBusinesses();
+      }
+    }
+
+
+    const handleUnpromoteBusiness = async(businessId: string)=> {
+      console.log('Unpromote business with promotion ID:', businessId);
+      try{
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/promotions/${businessId}`,  {status: 'expired'}, { withCredentials: true });
+        if(response.status == 200){
+          fetchBusinesses();
+          toast.success('Business removed from promote successfully!');
+        }
+      }catch(error){
+        console.log(error);
+        toast.error('Failed to unpromote business. Please try again.');
       }
     }
 
@@ -752,8 +775,8 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
               className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white text-sm"
             >
               <option>All Categories</option>
-              {categories.map(category => (
-                <option key={category} value={category}>{category}</option>
+              {categories.map((category, index) => (
+                <option key={index} value={category}>{category}</option>
               ))}
             </select>
           </div>
@@ -946,17 +969,34 @@ Green Gardens,Landscaping and garden maintenance,Spa,Cleaning,"Landscaping, Gard
                   </td>
 
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
+                      <div className='flex flex-col space-y-1'>
+                        <select onChange={(e)=> setPromoteDataForm({...promoteDataFrom, duration_days: parseInt(e.target.value)})} className='border border-gray-300 rounded-sm text-xs'>
+                          <option value={''}>select days</option>
+                          <option value={1} >1</option>
+                          <option value={30}>30</option>
+                          <option value={90}>90</option>
+                          <option value={180}>180</option>
+                          <option value={365}>365</option>
+                        </select>
+
+                        <select onChange={(e)=> setPromoteDataForm({...promoteDataFrom, name: e.target.value})} className='border border-gray-300 rounded-sm text-xs'>
+                          <option value={''}>select plan</option>
+                          <option value={'STANDARD PLAN'}>STANDARD PLAN</option>
+                          <option value={'PREMIUM PLAN'}>PREMIUM PLAN</option>
+                          <option value={'ELITE PLAN'}>ELITE PLAN</option>
+                        </select>
                     <button
-                      onClick={() => handlePromoteBusiness(business)}
-                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium transition-colors ${
-                        featuredBusinesses.includes(business._id) || business.featured
+                      onClick={() => business.subscriptionId instanceof Object && business.subscriptionId.status === 'active' ? handleUnpromoteBusiness(business._id) : handlePromoteBusiness(business)}
+                      className={`inline-flex items-center justify-center px-2 py-1 rounded-full text-xs font-medium transition-colors ${
+                        business.subscriptionId instanceof Object && business.subscriptionId.status === 'active'
                           ? 'bg-green-100 text-green-800 hover:bg-green-200'
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                       }`}
-                      title={featuredBusinesses.includes(business._id) || business.featured ? 'Remove From Promote' : 'Promote Business'}
+                      title={business.subscriptionId instanceof Object && business.subscriptionId.status === 'active' ? 'Remove From Promote' : 'Promote Business'}
                     >
-                      {featuredBusinesses.includes(business._id) || business.featured ? 'Promoted' : 'Promote'}
+                      {business.subscriptionId instanceof Object && business.subscriptionId.status === 'active' ? 'Promoted' : 'Promote'}
                     </button>
+                      </div>
                   </td>
 
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

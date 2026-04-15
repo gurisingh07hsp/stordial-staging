@@ -37,7 +37,7 @@ const paymentSchema = new mongoose.Schema({
     },
     paymentGateway: {
         type: String,
-        default: "razorpay"
+        default: "CASHFREE"
     },
     status: {
         type: String,

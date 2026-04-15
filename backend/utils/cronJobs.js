@@ -23,7 +23,7 @@ cron.schedule("0 * * * *", async () => {
         _id: { $in: expiredPayments.map(p => p._id) }
       },
       {
-        $set: { status: "expired" }
+        $set: { status: "expired", }
       }
     );
 
