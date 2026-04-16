@@ -712,11 +712,11 @@ const [analytics, setAnalytics] = useState<{ calls: number; whatsapp: number; di
                     </button>
                   </td>
                   <td className="text-center px-3 sm:px-6 py-4 whitespace-nowrap md:table-cell">
-                    <button onClick={()=> {if(!business.featured){window.location.href = '/advertise'}}}
-                      className={`mx-auto inline-flex items-center px-2 py-1 rounded-full text-xs font-medium transition-colors ${
-                        business.featured
-                          ? 'text-green-800 bg-green-100'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    <button onClick={()=> {window.location.href = '/advertise'}}
+                      className={`mx-auto inline-flex items-center px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                        business.subscriptionId && typeof business.subscriptionId === 'object' && business.subscriptionId.status === 'active'
+                          ? 'bg-green-600 text-white'
+                          : 'bg-blue-600 text-white'
                       }`}
                     >
                     {business.featured ? 'Promoted' : 'Promote'}
