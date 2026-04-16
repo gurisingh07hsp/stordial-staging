@@ -156,7 +156,7 @@ const loadCashfree = () => {
   const { payment_session_id} = orderRes.data;
 
   const cashfree = new window.Cashfree({
-    mode: "sandbox" // change to production
+    mode: "production" // change to production
   });
 
   // 4️⃣ Open checkout
@@ -164,10 +164,6 @@ const loadCashfree = () => {
     paymentSessionId: payment_session_id,
     redirectTarget: "_self"
   });
-
-  // const paymentObject = new (window as any).Razorpay(options);
-    // const paymentObject = new window.Razorpay(options);
-    // paymentObject.open();
   }
 
   return (
@@ -391,12 +387,12 @@ const loadCashfree = () => {
                                         Active
                                       </span>
                                     </td>
-                                    <td className="text-center px-3 sm:px-6 py-4 whitespace-nowrap md:table-cell">
+                                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap md:table-cell">
                                       <button onClick={()=>handleSumbit(business._id)}
-                                        className={`mx-auto inline-flex items-center px-2 py-1 rounded-full text-xs font-medium transition-colors ${
-                                          business.subscriptionId
-                                            ? 'text-green-800 bg-green-100'
-                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        className={`md:ms-6 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                                          business.subscriptionId && typeof business.subscriptionId === 'object' && business.subscriptionId.status === 'active'
+                                            ? 'bg-green-600 text-white'
+                                            : 'bg-blue-600 text-white'
                                         }`}
                                       >
                                       {business.subscriptionId ? 'Promoted' : 'Promote'}

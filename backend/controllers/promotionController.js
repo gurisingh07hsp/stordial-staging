@@ -5,8 +5,8 @@ const { Cashfree, CFEnvironment } = require("cashfree-pg");
 
 // ✅ Instantiate with credentials in constructor
 const cashfree = new Cashfree(
-  CFEnvironment.SANDBOX,           // XEnvironment
-  process.env.CASHFREE_APP_ID,     // XClientId
+  CFEnvironment.PRODUCTION,          // XEnvironment
+  process.env.CASHFREE_APP_ID,      // XClientId
   process.env.CASHFREE_SECRET_KEY  // XClientSecret
 );
 
