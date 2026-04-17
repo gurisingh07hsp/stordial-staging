@@ -719,7 +719,7 @@ const [analytics, setAnalytics] = useState<{ calls: number; whatsapp: number; di
                           : 'bg-blue-600 text-white'
                       }`}
                     >
-                    {business.featured ? 'Promoted' : 'Promote'}
+                    {business.subscriptionId && typeof business.subscriptionId === 'object' && business.subscriptionId.status === 'active' ? 'Promoted' : 'Promote'}
                     </button>
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
