@@ -395,7 +395,7 @@ const loadCashfree = () => {
                                             : 'bg-blue-600 text-white'
                                         }`}
                                       >
-                                      {business.subscriptionId ? 'Promoted' : 'Promote'}
+                                      {business.subscriptionId && typeof business.subscriptionId === 'object' && business.subscriptionId.status === 'active' ? 'Promoted' : 'Promote'}
                                       </button>
                                     </td>
                                   </tr>
