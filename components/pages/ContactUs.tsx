@@ -142,7 +142,7 @@ export default function ContactUs() {
                   </div>
                   <div className="ml-4">
                     <h3 className="text-lg font-semibold text-gray-800">Email</h3>
-                    <p className="text-gray-600">info@stordial.com</p>
+                    <p className="text-gray-600">contact@stordial.com</p>
                     <p className="text-sm text-gray-500">We&apos;ll respond within 24 hours</p>
                   </div>
                 </div>
