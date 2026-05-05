@@ -13,9 +13,11 @@ export default function AuthModal() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     if (isLogin) {
       login(email, password);
     } else {
@@ -28,6 +30,7 @@ export default function AuthModal() {
       setName('');
       setPhone('');
     }
+    setLoading(false);
   };
 
   if (!showAuthModal) {
@@ -149,7 +152,7 @@ export default function AuthModal() {
                 type="submit"
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                {isLogin ? 'Sign In' : 'Create Account'}
+                {isLogin ? loading ? 'Signing in...' : 'Sign In' : loading ? 'Creating account...' :  'Create Account'}
               </button>
             </form>
 
