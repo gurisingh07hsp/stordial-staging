@@ -52,7 +52,7 @@ export async function DELETE(request: Request) {
       }
 
       const response = await fetch(
-        `${process.env.IMAGE_SERVER_URL}/api/images/stordial/businesses/${encodeURIComponent(imgName)}`,
+        `${process.env.IMAGE_SERVER_URL}/api/images/stordial/businesses/${imgName}`,
         {
           method: "DELETE",
           headers,
