@@ -55,6 +55,7 @@ const UserDashboard = () => {
     const {user, setUser} = useAuth();
     const [stat,setStat] = useState('weekly');
     const [images, setImages] = useState<imageData[]>([]);
+    const [deletedImages, setDeletedImages] = useState<string[]>([]);
     const [openingHours, setOpeningHours] = useState<OpeningHours>({
         monday: { open: '09:00', close: '17:00', closed: false },
         tuesday: { open: '09:00', close: '17:00', closed: false },
@@ -184,17 +185,20 @@ const UserDashboard = () => {
         const removeImage = (index: number) => {
           setUploadedImages(prev => prev.filter((_, i) => i !== index));
         };
+
+        const selectDeleteImages = async(index: number) => {
+          const image = formData.images[index].public_id;
+          setDeletedImages((prev) => [...prev, image]);
+          setFormData((prev) => ({
+            ...prev,
+            images: prev.images.filter((_, i) => i !== index),
+          }));
+        }
         
-        const removeImageFormForm = async(index: number) => {
+        const removeImageFormForm = async() => {
           try{
-            const id = formData.images[index].public_id;
-            const result = await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/uploadimages/delete`, {data: {id}});
-            if(result.status == 200){
-              setFormData((prev) => ({
-                ...prev,
-                images: prev.images.filter((_, i) => i !== index),
-              }));
-            }
+            const images = deletedImages;
+            await axios.delete(`/api/images/delete`, { data: { images }, withCredentials: true });
           }catch(error){
             console.log(error);
           }
@@ -202,12 +206,17 @@ const UserDashboard = () => {
 
       const uploadimages = async() => {
         const formdata = new FormData();
-        uploadedImages.forEach((file) => {
-            formdata.append("files", file);
+        const validimages = 4 - formData.images.length;
+        uploadedImages.slice(0,validimages).forEach((file) => {
+            formdata.append("images", file);
         });
         try{
-            const result = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/uploadimages`, formdata);
-            setImages(result.data.files);
+            const data = await axios.post(`/api/images/upload`, formdata, {withCredentials: true});
+            const imagesData = [];
+            for(let i=0;i<data.data.images.length;i++){
+              imagesData.push({url: data.data.images[i], public_id: data.data.images[i]});
+            }
+            setImages(imagesData);
             setUploadedImages([]);
         }catch(error){
             console.log(error);
@@ -248,6 +257,11 @@ const UserDashboard = () => {
         formData.city = formData.city.toLowerCase();
         formData.category = formData.category.toLowerCase();
         if(isEditing){
+        
+        if(deletedImages.length > 0){
+          removeImageFormForm();
+        }
+
         if(uploadedImages.length > 0)
         {
             uploadimages();
@@ -1099,7 +1113,7 @@ const [analytics, setAnalytics] = useState<{ calls: number; whatsapp: number; di
                         />
                         <button
                           type="button"
-                          onClick={() => removeImageFormForm(index)}
+                          onClick={() => selectDeleteImages(index)}
                           className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 transition-colors"
                         >
                           <X className="w-3 h-3" />

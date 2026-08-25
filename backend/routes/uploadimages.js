@@ -14,7 +14,7 @@ cloudinary.config({
 const upload = multer({ dest: "uploads/" });
 
 
-router.post('/', upload.array("files"), async(req,res) => {
+router.post('/', upload.array("images"), async(req,res) => {
     try {
     const uploadPromises = req.files.map(file => {
       return cloudinary.uploader.upload(file.path, {
@@ -25,6 +25,7 @@ router.post('/', upload.array("files"), async(req,res) => {
         return result;
       });
     });
+
 
     const results = await Promise.all(uploadPromises);
 

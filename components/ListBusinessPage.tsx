@@ -103,7 +103,6 @@ export default function ListBusinessPage() {
   const submitBusiness = async() => {
     formData.city = formData.city.toLowerCase();
     formData.category = formData.category.toLowerCase();
-
       try{
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/businesses/new`, formData,{withCredentials: true});
         if(response.status == 201){
@@ -129,14 +128,18 @@ export default function ListBusinessPage() {
 
       if(uploadedImages.length > 0)
       {
-        const formdata = new FormData();
+        const formData = new FormData();
         // Suppose uploadedImages is an array of File objects
         uploadedImages.forEach((file) => {
-          formdata.append("files", file); // all files under "files" field
+          formData.append("images", file);
         });
         try{
-        const result = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/uploadimages`, formdata);
-        setImages(result.data.files);
+        const data = await axios.post(`/api/images/upload`, formData, {withCredentials: true});
+        const imagesData = [];
+        for(let i=0;i<data.data.images.length;i++){
+          imagesData.push({url: data.data.images[i], public_id: data.data.images[i]});
+        }
+        setImages(imagesData);
         }catch(error){
           console.log(error);
         }
