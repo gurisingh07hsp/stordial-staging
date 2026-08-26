@@ -85,6 +85,7 @@ export async function POST(request: Request) {
             .find((c) => c.startsWith("token="))
             ?.split("=")[1];
 
+        console.log('cookieHeader : ', cookieHeader);
         console.log("Token : ", token);
 
 
