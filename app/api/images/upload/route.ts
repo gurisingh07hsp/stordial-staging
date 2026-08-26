@@ -45,7 +45,6 @@ export async function POST(request: Request) {
     try {
         const formData = await request.formData();
         const token = formData.get("token")?.toString();
-        console.log("Token : ", token);
         const files = formData
             .getAll("images")
             .filter((file): file is File => file instanceof File);
