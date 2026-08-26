@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { generateSlug } from '@/hooks/generateSlug'
 import MenuSection from '@/components/MenuSection'
+import { getToken } from '@/hooks/getToken'
 
 interface imageData {
   url: string;
@@ -197,8 +198,9 @@ const UserDashboard = () => {
         
         const removeImageFormForm = async() => {
           try{
+            const token = await getToken();
             const images = deletedImages;
-            await axios.delete(`/api/images/delete`, { data: { images }, withCredentials: true });
+            await axios.delete(`/api/images/delete`, { data: { images,token }, withCredentials: true });
           }catch(error){
             console.log(error);
           }
@@ -211,6 +213,9 @@ const UserDashboard = () => {
             formdata.append("images", file);
         });
         try{
+            const token = await getToken();
+            formdata.append("token", token);
+      
             const data = await axios.post(`/api/images/upload`, formdata, {withCredentials: true});
             const imagesData = [];
             for(let i=0;i<data.data.images.length;i++){

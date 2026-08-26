@@ -7,9 +7,7 @@ interface DeleteImageResponse {
 
 export async function DELETE(request: Request) {
   try {
-    const { images } = await request.json();
-
-    console.log("Images to delete:", images);
+    const { images, token } = await request.json();
 
     if (!Array.isArray(images) || images.length === 0) {
       return NextResponse.json(
@@ -22,13 +20,6 @@ export async function DELETE(request: Request) {
         }
       );
     }
-
-    const cookieHeader = request.headers.get("cookie") ?? "";
-
-    const token = cookieHeader
-      .split("; ")
-      .find((c) => c.startsWith("token="))
-      ?.split("=")[1];
 
     const headers = new Headers();
 

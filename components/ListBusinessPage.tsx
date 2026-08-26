@@ -9,6 +9,7 @@ import Select from "react-select";
 import { useTags } from '@/hooks/use-tags';
 import { categories } from '@/hooks/categories';
 import MenuSection from './MenuSection';
+import { getToken } from '@/hooks/getToken';
 
 interface OpeningHours {
   [key: string]: {
@@ -134,6 +135,8 @@ export default function ListBusinessPage() {
           formData.append("images", file);
         });
         try{
+        const token = await getToken();
+        formData.append("token", token);
         const data = await axios.post(`/api/images/upload`, formData, {withCredentials: true});
         const imagesData = [];
         for(let i=0;i<data.data.images.length;i++){

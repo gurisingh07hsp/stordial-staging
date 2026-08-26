@@ -44,6 +44,7 @@ async function uploadImages({files,project,folder,token}: {files: File[], projec
 export async function POST(request: Request) {
     try {
         const formData = await request.formData();
+        const token = formData.get("token")?.toString();
 
         const files = formData
             .getAll("images")
@@ -79,14 +80,15 @@ export async function POST(request: Request) {
 
         }
 
-        const cookieHeader = request.headers.get("cookie") ?? "";
-        const token = cookieHeader
-            .split("; ")
-            .find((c) => c.startsWith("token="))
-            ?.split("=")[1];
+        // const cookieHeader = request.headers.get("cookie") ?? "";
+        // const token = cookieHeader
+        //     .split("; ")
+        //     .find((c) => c.startsWith("token="))
+        //     ?.split("=")[1];
 
-        console.log('cookieHeader : ', cookieHeader);
-        console.log("Token : ", token);
+
+        // console.log('cookieHeader : ', cookieHeader);
+        // console.log("Token : ", token);
 
 
         const imageUrls = await uploadImages({

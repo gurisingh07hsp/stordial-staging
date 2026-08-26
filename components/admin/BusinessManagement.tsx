@@ -29,6 +29,7 @@ import { useTags } from '@/hooks/use-tags';
 import { generateSlug } from '@/hooks/generateSlug';
 import { categories} from '@/hooks/categories';
 import MenuSection from '@/components/MenuSection';
+import { getToken } from '@/hooks/getToken';
 
 interface OpeningHours {
   [key: string]: {
@@ -236,6 +237,8 @@ export default function BusinessManagement() {
       formdata.append("images", file);
     });
     try{
+      const token = await getToken();
+      formdata.append("token", token);
       const data = await axios.post(`/api/images/upload`, formdata, {withCredentials: true});
        const imagesData = [];
         for(let i=0;i<data.data.images.length;i++){
@@ -445,8 +448,9 @@ const filteredBusinesses = businesses;
 
   const removeImageFormForm = async() => {
     try{
+      const token = await getToken();
       const images = deletedImages;
-      await axios.delete(`/api/images/delete`, { data: { images }, withCredentials: true });
+      await axios.delete(`/api/images/delete`, { data: { images, token }, withCredentials: true });
     }catch(error){
       console.log(error);
     }

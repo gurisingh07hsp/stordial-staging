@@ -39,6 +39,7 @@ app.use('/api/v1/places', require('./routes/places'));
 app.use('/api/v1/uploadimages', require('./routes/uploadimages'));
 app.use('/api/v1/jobs', require('./routes/jobs'));
 app.use('/api/v1/promotions', require('./routes/promotions'));
+app.use('/api/v1/get-token', require('./routes/getToken'));
 
 // Health check route
 app.get('/api/v1/health', (req, res) => {
